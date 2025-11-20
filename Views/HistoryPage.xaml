@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:AcuPuntos.Views"
              xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+             xmlns:models="clr-namespace:AcuPuntos.Models"
              x:Class="AcuPuntos.Views.HistoryPage"
              x:DataType="viewmodels:HistoryViewModel"
              Title="{Binding Title}"
@@ -101,7 +102,7 @@
                     </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
                         <Border Style="{StaticResource CardFrame}"
                                Padding="15"
                                Margin="0,0,0,10">
