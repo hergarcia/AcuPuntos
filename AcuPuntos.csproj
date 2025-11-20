@@ -53,4 +53,8 @@
         <PackageReference Include="Plugin.Firebase.Auth.Google" Version="3.1.2" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+        <GoogleServicesJson Include="Platforms\Android\google-services.json" />
+    </ItemGroup>
+
 </Project>

@@ -49,7 +49,7 @@ public static class MauiProgram
             {
                 CrossFirebase.Initialize(activity);
                 // TODO: Reemplazar con tu Google Request ID Token del Google API Console
-                FirebaseAuthGoogleImplementation.Initialize("YOUR_GOOGLE_REQUEST_ID_TOKEN");
+                FirebaseAuthGoogleImplementation.Initialize("289604700066-ai6amis5kgfcnk9gu81huf9gqj26j9kd.apps.googleusercontent.com");
             }));
 #endif
         });

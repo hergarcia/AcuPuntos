@@ -17,7 +17,7 @@ Sistema de gestión de puntos y recompensas para un emprendimiento de acupuntura
 
 ### Prerrequisitos
 
-- .NET 8.0 SDK
+- .NET 10.0 SDK
 - Visual Studio 2022 o VS Code
 - Cuenta de Firebase
 - Android SDK (para Android)
