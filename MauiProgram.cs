@@ -72,6 +72,7 @@ public static class MauiProgram
         services.AddSingleton(_ => CrossFirebaseAuthGoogle.Current);
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IFirestoreService, FirestoreService>();
+        services.AddSingleton<UserStateService>();
     }
 
     private static void RegisterViewModels(IServiceCollection services)

@@ -149,6 +149,12 @@ namespace AcuPuntos.ViewModels
         }
 
         [RelayCommand]
+        private async Task GoToAdmin()
+        {
+            await Shell.Current.GoToAsync(nameof(AdminPage));
+        }
+
+        [RelayCommand]
         private async Task RefreshData()
         {
             await LoadTransactions();

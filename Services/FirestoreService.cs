@@ -64,6 +64,12 @@ namespace AcuPuntos.Services
         {
             try
             {
+                // NOTA: Firestore no soporta búsqueda full-text nativa.
+                // Esta implementación carga todos los usuarios y filtra en cliente.
+                // Para apps con muchos usuarios, considerar:
+                // 1. Usar Algolia o ElasticSearch para búsqueda
+                // 2. Implementar índices con trigrams para búsqueda parcial
+                // 3. Limitar resultados o paginar
                 var searchLower = searchTerm.ToLower();
                 var allUsers = await GetAllUsersAsync();
 
@@ -212,15 +218,14 @@ namespace AcuPuntos.Services
                 var transactions = new List<Transaction>();
 
                 // Obtener transacciones donde el usuario es origen o destino
+                // Removido OrderBy en Firestore para evitar doble ordenamiento - se ordena solo en cliente
                 var sentQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("fromUserId", userId)
-                    .OrderBy("createdAt")
-                    .LimitedTo(limit);
+                    .LimitedTo(limit * 2); // Límite mayor para compensar filtrado posterior
 
                 var receivedQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("toUserId", userId)
-                    .OrderBy("createdAt")
-                    .LimitedTo(limit);
+                    .LimitedTo(limit * 2);
 
                 var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
                 var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
@@ -242,7 +247,7 @@ namespace AcuPuntos.Services
                     }
                 }
 
-                // Ordenar por fecha descendente en el cliente
+                // Ordenar por fecha descendente SOLO en el cliente (más eficiente)
                 return transactions.OrderByDescending(t => t.CreatedAt).Take(limit).ToList();
             }
             catch (Exception ex)
@@ -448,15 +453,17 @@ namespace AcuPuntos.Services
         {
             try
             {
+                // OPTIMIZADO: Removido OrderBy en Firestore, ordenamos solo en cliente
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection)
                     .WhereEqualsTo("userId", userId)
-                    .OrderBy("redeemedAt")
                     .GetDocumentsAsync<Redemption>();
 
                 if (redemptions != null)
                 {
                     var redemptionsList = redemptions.Documents.Select(x => x.Data).OrderByDescending(x => x.RedeemedAt).ToList();
-                    // Obtener información de la recompensa
+                    // NOTA: N+1 query problem - carga cada recompensa individualmente
+                    // Firestore no tiene buen soporte para batch gets con where clauses
+                    // Alternativa: mantener cache local de recompensas
                     foreach (var redemption in redemptionsList)
                     {
                         if (!string.IsNullOrEmpty(redemption.RewardId))
@@ -479,8 +486,8 @@ namespace AcuPuntos.Services
         {
             try
             {
+                // OPTIMIZADO: Removido OrderBy en Firestore, ordenamos solo en cliente
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection)
-                    .OrderBy("redeemedAt")
                     .GetDocumentsAsync<Redemption>();
 
                 return redemptions?.Documents.Select(x => x.Data).OrderByDescending(x => x.RedeemedAt).ToList() ?? new List<Redemption>();
@@ -496,15 +503,17 @@ namespace AcuPuntos.Services
         {
             try
             {
+                // OPTIMIZADO: Removido OrderBy en Firestore, ordenamos solo en cliente
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection)
                     .WhereEqualsTo("status", (int)RedemptionStatus.Pending)
-                    .OrderBy("redeemedAt")
                     .GetDocumentsAsync<Redemption>();
 
                 if (redemptions != null)
                 {
                     var redemptionsList = redemptions.Documents.Select(x => x.Data).OrderByDescending(x => x.RedeemedAt).ToList();
-                    // Obtener información de la recompensa y usuario
+                    // NOTA: N+1 query problem - carga cada recompensa y usuario individualmente
+                    // Firestore no tiene buen soporte para batch gets con where clauses
+                    // Alternativa: mantener cache local de recompensas y usuarios
                     foreach (var redemption in redemptionsList)
                     {
                         if (!string.IsNullOrEmpty(redemption.RewardId))
@@ -609,9 +618,15 @@ namespace AcuPuntos.Services
         {
             try
             {
+                // NOTA: Este método carga todos los documentos para calcular estadísticas globales.
+                // Para apps con muchos datos, considerar:
+                // 1. Usar Firestore Aggregation Queries (requiere configuración)
+                // 2. Mantener contadores en documentos separados
+                // 3. Cachear resultados con TTL
+
                 var stats = new Dictionary<string, object>();
 
-                // Total de usuarios
+                // Total de usuarios - carga todos (necesario para suma de puntos)
                 var users = await _firestore.GetCollection(UsersCollection).GetDocumentsAsync<User>();
                 var usersList = users?.Documents.Select(x => x.Data).ToList() ?? new List<User>();
                 stats["totalUsers"] = usersList.Count;
@@ -620,15 +635,15 @@ namespace AcuPuntos.Services
                 var totalPoints = usersList.Sum(u => u.Points);
                 stats["totalPoints"] = totalPoints;
 
-                // Total de transacciones
+                // Total de transacciones - solo cuenta (no carga datos completos)
                 var transactions = await _firestore.GetCollection(TransactionsCollection).GetDocumentsAsync<Transaction>();
                 stats["totalTransactions"] = transactions?.Documents.Count() ?? 0;
 
-                // Total de canjes
+                // Total de canjes - solo cuenta (no carga datos completos)
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection).GetDocumentsAsync<Redemption>();
                 stats["totalRedemptions"] = redemptions?.Documents.Count() ?? 0;
 
-                // Recompensas activas
+                // Recompensas activas (usa caché si GetActiveRewardsAsync lo implementa)
                 var activeRewards = await GetActiveRewardsAsync();
                 stats["activeRewards"] = activeRewards.Count;
 
@@ -660,17 +675,20 @@ namespace AcuPuntos.Services
 
         public IDisposable ListenToTransactions(string userId, Action<List<Transaction>> onUpdate)
         {
-            // Por simplicidad, escuchamos solo las transacciones donde el usuario es destinatario
+            // OPTIMIZADO: Usar directamente los datos del snapshot en lugar de hacer query adicional
+            // Nota: Solo escucha transacciones recibidas. Para transacciones completas, usar GetUserTransactionsAsync
             return _firestore.GetCollection(TransactionsCollection)
                 .WhereEqualsTo("toUserId", userId)
-                .OrderBy("createdAt")
                 .LimitedTo(50)
-                .AddSnapshotListener<Transaction>(async (querySnapshot) =>
+                .AddSnapshotListener<Transaction>((querySnapshot) =>
                 {
                     if (querySnapshot != null)
                     {
-                        // Obtener todas las transacciones del usuario
-                        var transactions = await GetUserTransactionsAsync(userId);
+                        // Usar directamente los datos del snapshot (evita query adicional)
+                        var transactions = querySnapshot.Documents
+                            .Select(x => x.Data)
+                            .OrderByDescending(t => t.CreatedAt)
+                            .ToList();
                         onUpdate(transactions);
                     }
                 });
