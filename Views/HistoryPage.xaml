@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.HistoryPage"
+             Title="{Binding Title}"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="📊 Historial"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#333333"/>
+                <Label Text="Todas tus transacciones"
+                       FontSize="16"
+                       TextColor="#666666"/>
+            </VerticalStackLayout>
+
+            <!-- Mensaje de desarrollo -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="30"
+                   BackgroundColor="#F3E5F5">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="📋"
+                           FontSize="50"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Sección en desarrollo"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#9B59B6"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Aquí podrás ver el historial completo de tus transacciones"
+                           FontSize="14"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

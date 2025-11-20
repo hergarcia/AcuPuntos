@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.RewardDetailPage"
+             Title="{Binding Title}"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="🎁 Detalle de Recompensa"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#333333"/>
+            </VerticalStackLayout>
+
+            <!-- Mensaje de desarrollo -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="30"
+                   BackgroundColor="#E8F5E9">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="ℹ️"
+                           FontSize="50"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Detalle de recompensa"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#2ECC71"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Información detallada de la recompensa seleccionada"
+                           FontSize="14"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.RewardsPage"
+             Title="{Binding Title}"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="🎁 Recompensas"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#333333"/>
+                <Label Text="Canjea tus puntos por beneficios"
+                       FontSize="16"
+                       TextColor="#666666"/>
+            </VerticalStackLayout>
+
+            <!-- Mensaje de desarrollo -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="30"
+                   BackgroundColor="#E8F5E9">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="🚧"
+                           FontSize="50"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Sección en desarrollo"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#2ECC71"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Pronto podrás canjear tus puntos por recompensas exclusivas"
+                           FontSize="14"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
