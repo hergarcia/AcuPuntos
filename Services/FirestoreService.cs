@@ -26,16 +26,13 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var document = await _firestore.Collection(UsersCollection)
-                    .Document(uid)
-                    .GetAsync();
-                
-                if (document.Exists)
+                var snapshot = await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(uid)
+                    .GetDocumentSnapshotAsync<User>();
+
+                if (snapshot != null && snapshot.Data != null)
                 {
-                    var user = document.ToObject<User>();
-                    if (user != null)
-                        user.Uid = uid;
-                    return user;
+                    return snapshot.Data;
                 }
                 return null;
             }
@@ -50,21 +47,11 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var snapshot = await _firestore.Collection(UsersCollection)
+                var querySnapshot = await _firestore.GetCollection(UsersCollection)
                     .OrderBy("displayName")
-                    .GetAsync();
-                
-                var users = new List<User>();
-                foreach (var document in snapshot.Documents)
-                {
-                    var user = document.ToObject<User>();
-                    if (user != null)
-                    {
-                        user.Uid = document.Id;
-                        users.Add(user);
-                    }
-                }
-                return users;
+                    .GetDocumentsAsync<User>();
+
+                return querySnapshot?.ToList() ?? new List<User>();
             }
             catch (Exception ex)
             {
@@ -98,10 +85,10 @@ namespace AcuPuntos.Services
             {
                 if (string.IsNullOrEmpty(user.Uid))
                     throw new ArgumentException("User UID cannot be null or empty");
-                
-                await _firestore.Collection(UsersCollection)
-                    .Document(user.Uid)
-                    .SetAsync(user);
+
+                await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(user.Uid)
+                    .SetDataAsync(user);
             }
             catch (Exception ex)
             {
@@ -116,10 +103,23 @@ namespace AcuPuntos.Services
             {
                 if (string.IsNullOrEmpty(user.Uid))
                     throw new ArgumentException("User UID cannot be null or empty");
-                
-                await _firestore.Collection(UsersCollection)
-                    .Document(user.Uid)
-                    .UpdateAsync(user);
+
+                // Plugin.Firebase UpdateDataAsync requires a dictionary
+                var updates = new Dictionary<object, object>
+                {
+                    { "email", user.Email ?? "" },
+                    { "displayName", user.DisplayName ?? "" },
+                    { "photoUrl", user.PhotoUrl ?? "" },
+                    { "points", user.Points },
+                    { "role", user.Role },
+                    { "createdAt", user.CreatedAt },
+                    { "lastLogin", user.LastLogin },
+                    { "fcmToken", user.FcmToken ?? "" }
+                };
+
+                await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(user.Uid)
+                    .UpdateDataAsync(updates);
             }
             catch (Exception ex)
             {
@@ -155,43 +155,34 @@ namespace AcuPuntos.Services
             try
             {
                 var transactions = new List<Transaction>();
-                
+
                 // Obtener transacciones donde el usuario es origen o destino
-                var sentQuery = _firestore.Collection(TransactionsCollection)
+                var sentQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("fromUserId", userId)
                     .OrderByDescending("createdAt")
                     .LimitTo(limit);
-                
-                var receivedQuery = _firestore.Collection(TransactionsCollection)
+
+                var receivedQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("toUserId", userId)
                     .OrderByDescending("createdAt")
                     .LimitTo(limit);
-                
-                var sentSnapshot = await sentQuery.GetAsync();
-                var receivedSnapshot = await receivedQuery.GetAsync();
-                
-                foreach (var doc in sentSnapshot.Documents)
+
+                var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
+                var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
+
+                if (sentTransactions != null)
+                    transactions.AddRange(sentTransactions);
+
+                if (receivedTransactions != null)
                 {
-                    var transaction = doc.ToObject<Transaction>();
-                    if (transaction != null)
+                    foreach (var transaction in receivedTransactions)
                     {
-                        transaction.Id = doc.Id;
-                        transactions.Add(transaction);
-                    }
-                }
-                
-                foreach (var doc in receivedSnapshot.Documents)
-                {
-                    var transaction = doc.ToObject<Transaction>();
-                    if (transaction != null)
-                    {
-                        transaction.Id = doc.Id;
                         // Evitar duplicados en transferencias
                         if (!transactions.Any(t => t.Id == transaction.Id))
                             transactions.Add(transaction);
                     }
                 }
-                
+
                 // Ordenar por fecha
                 return transactions.OrderByDescending(t => t.CreatedAt).Take(limit).ToList();
             }
@@ -206,8 +197,8 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var docRef = await _firestore.Collection(TransactionsCollection)
-                    .AddAsync(transaction);
+                var docRef = await _firestore.GetCollection(TransactionsCollection)
+                    .AddDocumentAsync(transaction);
                 transaction.Id = docRef.Id;
             }
             catch (Exception ex)
@@ -277,22 +268,12 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var snapshot = await _firestore.Collection(RewardsCollection)
+                var rewards = await _firestore.GetCollection(RewardsCollection)
                     .WhereEqualsTo("isActive", true)
                     .OrderBy("pointsCost")
-                    .GetAsync();
-                
-                var rewards = new List<Reward>();
-                foreach (var doc in snapshot.Documents)
-                {
-                    var reward = doc.ToObject<Reward>();
-                    if (reward != null)
-                    {
-                        reward.Id = doc.Id;
-                        rewards.Add(reward);
-                    }
-                }
-                return rewards;
+                    .GetDocumentsAsync<Reward>();
+
+                return rewards?.ToList() ?? new List<Reward>();
             }
             catch (Exception ex)
             {
@@ -305,21 +286,11 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var snapshot = await _firestore.Collection(RewardsCollection)
+                var rewards = await _firestore.GetCollection(RewardsCollection)
                     .OrderBy("pointsCost")
-                    .GetAsync();
-                
-                var rewards = new List<Reward>();
-                foreach (var doc in snapshot.Documents)
-                {
-                    var reward = doc.ToObject<Reward>();
-                    if (reward != null)
-                    {
-                        reward.Id = doc.Id;
-                        rewards.Add(reward);
-                    }
-                }
-                return rewards;
+                    .GetDocumentsAsync<Reward>();
+
+                return rewards?.ToList() ?? new List<Reward>();
             }
             catch (Exception ex)
             {
@@ -332,16 +303,13 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var document = await _firestore.Collection(RewardsCollection)
-                    .Document(rewardId)
-                    .GetAsync();
-                
-                if (document.Exists)
+                var snapshot = await _firestore.GetCollection(RewardsCollection)
+                    .GetDocument(rewardId)
+                    .GetDocumentSnapshotAsync<Reward>();
+
+                if (snapshot != null && snapshot.Data != null)
                 {
-                    var reward = document.ToObject<Reward>();
-                    if (reward != null)
-                        reward.Id = rewardId;
-                    return reward;
+                    return snapshot.Data;
                 }
                 return null;
             }
@@ -356,8 +324,8 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var docRef = await _firestore.Collection(RewardsCollection)
-                    .AddAsync(reward);
+                var docRef = await _firestore.GetCollection(RewardsCollection)
+                    .AddDocumentAsync(reward);
                 reward.Id = docRef.Id;
             }
             catch (Exception ex)
@@ -373,10 +341,23 @@ namespace AcuPuntos.Services
             {
                 if (string.IsNullOrEmpty(reward.Id))
                     throw new ArgumentException("Reward ID cannot be null or empty");
-                
-                await _firestore.Collection(RewardsCollection)
-                    .Document(reward.Id)
-                    .UpdateAsync(reward);
+
+                var updates = new Dictionary<object, object>
+                {
+                    { "name", reward.Name ?? "" },
+                    { "pointsCost", reward.PointsCost },
+                    { "description", reward.Description ?? "" },
+                    { "isActive", reward.IsActive },
+                    { "icon", reward.Icon ?? "" },
+                    { "category", reward.Category ?? "" },
+                    { "createdAt", reward.CreatedAt },
+                    { "maxRedemptionsPerUser", reward.MaxRedemptionsPerUser ?? 0 },
+                    { "expiryDate", reward.ExpiryDate }
+                };
+
+                await _firestore.GetCollection(RewardsCollection)
+                    .GetDocument(reward.Id)
+                    .UpdateDataAsync(updates);
             }
             catch (Exception ex)
             {
@@ -389,9 +370,9 @@ namespace AcuPuntos.Services
         {
             try
             {
-                await _firestore.Collection(RewardsCollection)
-                    .Document(rewardId)
-                    .DeleteAsync();
+                await _firestore.GetCollection(RewardsCollection)
+                    .GetDocument(rewardId)
+                    .DeleteDocumentAsync();
             }
             catch (Exception ex)
             {
@@ -408,27 +389,25 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var snapshot = await _firestore.Collection(RedemptionsCollection)
+                var redemptions = await _firestore.GetCollection(RedemptionsCollection)
                     .WhereEqualsTo("userId", userId)
                     .OrderByDescending("redeemedAt")
-                    .GetAsync();
-                
-                var redemptions = new List<Redemption>();
-                foreach (var doc in snapshot.Documents)
+                    .GetDocumentsAsync<Redemption>();
+
+                if (redemptions != null)
                 {
-                    var redemption = doc.ToObject<Redemption>();
-                    if (redemption != null)
+                    var redemptionsList = redemptions.ToList();
+                    // Obtener información de la recompensa
+                    foreach (var redemption in redemptionsList)
                     {
-                        redemption.Id = doc.Id;
-                        // Obtener información de la recompensa
                         if (!string.IsNullOrEmpty(redemption.RewardId))
                         {
                             redemption.Reward = await GetRewardAsync(redemption.RewardId);
                         }
-                        redemptions.Add(redemption);
                     }
+                    return redemptionsList;
                 }
-                return redemptions;
+                return new List<Redemption>();
             }
             catch (Exception ex)
             {
@@ -441,21 +420,11 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var snapshot = await _firestore.Collection(RedemptionsCollection)
+                var redemptions = await _firestore.GetCollection(RedemptionsCollection)
                     .OrderByDescending("redeemedAt")
-                    .GetAsync();
-                
-                var redemptions = new List<Redemption>();
-                foreach (var doc in snapshot.Documents)
-                {
-                    var redemption = doc.ToObject<Redemption>();
-                    if (redemption != null)
-                    {
-                        redemption.Id = doc.Id;
-                        redemptions.Add(redemption);
-                    }
-                }
-                return redemptions;
+                    .GetDocumentsAsync<Redemption>();
+
+                return redemptions?.ToList() ?? new List<Redemption>();
             }
             catch (Exception ex)
             {
@@ -490,8 +459,8 @@ namespace AcuPuntos.Services
                     RedeemedAt = DateTime.UtcNow
                 };
                 
-                var docRef = await _firestore.Collection(RedemptionsCollection)
-                    .AddAsync(redemption);
+                var docRef = await _firestore.GetCollection(RedemptionsCollection)
+                    .AddDocumentAsync(redemption);
                 redemption.Id = docRef.Id;
                 
                 // Crear transacción
@@ -527,9 +496,9 @@ namespace AcuPuntos.Services
                     ["completedAt"] = status == RedemptionStatus.Completed ? DateTime.UtcNow : (DateTime?)null
                 };
                 
-                await _firestore.Collection(RedemptionsCollection)
-                    .Document(redemptionId)
-                    .UpdateAsync(updates);
+                await _firestore.GetCollection(RedemptionsCollection)
+                    .GetDocument(redemptionId)
+                    .UpdateDataAsync(updates);
             }
             catch (Exception ex)
             {
@@ -547,33 +516,28 @@ namespace AcuPuntos.Services
             try
             {
                 var stats = new Dictionary<string, object>();
-                
+
                 // Total de usuarios
-                var usersSnapshot = await _firestore.Collection(UsersCollection).GetAsync();
-                stats["totalUsers"] = usersSnapshot.Count;
-                
+                var users = await _firestore.GetCollection(UsersCollection).GetDocumentsAsync<User>();
+                var usersList = users?.ToList() ?? new List<User>();
+                stats["totalUsers"] = usersList.Count;
+
                 // Total de puntos en circulación
-                var totalPoints = 0;
-                foreach (var doc in usersSnapshot.Documents)
-                {
-                    var user = doc.ToObject<User>();
-                    if (user != null)
-                        totalPoints += user.Points;
-                }
+                var totalPoints = usersList.Sum(u => u.Points);
                 stats["totalPoints"] = totalPoints;
-                
+
                 // Total de transacciones
-                var transactionsSnapshot = await _firestore.Collection(TransactionsCollection).GetAsync();
-                stats["totalTransactions"] = transactionsSnapshot.Count;
-                
+                var transactions = await _firestore.GetCollection(TransactionsCollection).GetDocumentsAsync<Transaction>();
+                stats["totalTransactions"] = transactions?.Count() ?? 0;
+
                 // Total de canjes
-                var redemptionsSnapshot = await _firestore.Collection(RedemptionsCollection).GetAsync();
-                stats["totalRedemptions"] = redemptionsSnapshot.Count;
-                
+                var redemptions = await _firestore.GetCollection(RedemptionsCollection).GetDocumentsAsync<Redemption>();
+                stats["totalRedemptions"] = redemptions?.Count() ?? 0;
+
                 // Recompensas activas
                 var activeRewards = await GetActiveRewardsAsync();
                 stats["activeRewards"] = activeRewards.Count;
-                
+
                 return stats;
             }
             catch (Exception ex)
@@ -589,24 +553,13 @@ namespace AcuPuntos.Services
 
         public IDisposable ListenToUserChanges(string uid, Action<User> onUpdate)
         {
-            return _firestore.Collection(UsersCollection)
-                .Document(uid)
-                .AddSnapshotListener((snapshot, error) =>
+            return _firestore.GetCollection(UsersCollection)
+                .GetDocument(uid)
+                .AddSnapshotListener<User>((snapshot) =>
                 {
-                    if (error != null)
+                    if (snapshot != null && snapshot.Data != null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Error in user listener: {error.Message}");
-                        return;
-                    }
-                    
-                    if (snapshot?.Exists == true)
-                    {
-                        var user = snapshot.ToObject<User>();
-                        if (user != null)
-                        {
-                            user.Uid = uid;
-                            onUpdate(user);
-                        }
+                        onUpdate(snapshot.Data);
                     }
                 });
         }
@@ -614,19 +567,13 @@ namespace AcuPuntos.Services
         public IDisposable ListenToTransactions(string userId, Action<List<Transaction>> onUpdate)
         {
             // Por simplicidad, escuchamos solo las transacciones donde el usuario es destinatario
-            return _firestore.Collection(TransactionsCollection)
+            return _firestore.GetCollection(TransactionsCollection)
                 .WhereEqualsTo("toUserId", userId)
                 .OrderByDescending("createdAt")
                 .LimitTo(50)
-                .AddSnapshotListener(async (snapshot, error) =>
+                .AddSnapshotListener<Transaction>(async (querySnapshot) =>
                 {
-                    if (error != null)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Error in transactions listener: {error.Message}");
-                        return;
-                    }
-                    
-                    if (snapshot != null)
+                    if (querySnapshot != null)
                     {
                         // Obtener todas las transacciones del usuario
                         var transactions = await GetUserTransactionsAsync(userId);
@@ -637,29 +584,14 @@ namespace AcuPuntos.Services
 
         public IDisposable ListenToRewards(Action<List<Reward>> onUpdate)
         {
-            return _firestore.Collection(RewardsCollection)
+            return _firestore.GetCollection(RewardsCollection)
                 .WhereEqualsTo("isActive", true)
                 .OrderBy("pointsCost")
-                .AddSnapshotListener((snapshot, error) =>
+                .AddSnapshotListener<Reward>((querySnapshot) =>
                 {
-                    if (error != null)
+                    if (querySnapshot != null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Error in rewards listener: {error.Message}");
-                        return;
-                    }
-                    
-                    if (snapshot != null)
-                    {
-                        var rewards = new List<Reward>();
-                        foreach (var doc in snapshot.Documents)
-                        {
-                            var reward = doc.ToObject<Reward>();
-                            if (reward != null)
-                            {
-                                reward.Id = doc.Id;
-                                rewards.Add(reward);
-                            }
-                        }
+                        var rewards = querySnapshot.ToList();
                         onUpdate(rewards);
                     }
                 });

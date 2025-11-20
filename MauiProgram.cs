@@ -3,7 +3,15 @@ using CommunityToolkit.Maui;
 using AcuPuntos.Services;
 using AcuPuntos.ViewModels;
 using AcuPuntos.Views;
-using Plugin.Firebase;
+using Plugin.Firebase.Auth;
+using Plugin.Firebase.Auth.Google;
+#if IOS
+using Plugin.Firebase.Core.Platforms.iOS;
+using Plugin.Firebase.Auth.Google.Platforms.iOS;
+#elif ANDROID
+using Plugin.Firebase.Core.Platforms.Android;
+using Plugin.Firebase.Auth.Google.Platforms.Android;
+#endif
 
 namespace AcuPuntos;
 
@@ -25,17 +33,34 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
+        // Configurar Firebase con eventos de ciclo de vida
+        builder.ConfigureLifecycleEvents(events =>
+        {
+#if IOS
+            events.AddiOS(iOS => iOS.WillFinishLaunching((app, launchOptions) =>
+            {
+                CrossFirebase.Initialize();
+                FirebaseAuthGoogleImplementation.Initialize();
+                return false;
+            }));
+#elif ANDROID
+            events.AddAndroid(android => android.OnCreate((activity, state) =>
+            {
+                CrossFirebase.Initialize(activity);
+                // TODO: Reemplazar con tu Google Request ID Token del Google API Console
+                FirebaseAuthGoogleImplementation.Initialize(activity, "YOUR_GOOGLE_REQUEST_ID_TOKEN");
+            }));
+#endif
+        });
+
         // Registrar servicios
         RegisterServices(builder.Services);
-        
+
         // Registrar ViewModels
         RegisterViewModels(builder.Services);
-        
+
         // Registrar Views
         RegisterViews(builder.Services);
-
-        // Inicializar Firebase
-        InitializeFirebase();
 
         return builder.Build();
     }
@@ -43,6 +68,8 @@ public static class MauiProgram
     private static void RegisterServices(IServiceCollection services)
     {
         // Servicios Singleton (una sola instancia para toda la app)
+        services.AddSingleton(_ => CrossFirebaseAuth.Current);
+        services.AddSingleton(_ => CrossFirebaseAuthGoogle.Current);
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IFirestoreService, FirestoreService>();
     }
@@ -71,16 +98,5 @@ public static class MauiProgram
         services.AddTransient<HistoryPage>();
         services.AddTransient<RewardDetailPage>();
         services.AddTransient<UserDetailPage>();
-    }
-
-    private static void InitializeFirebase()
-    {
-#if ANDROID
-        // La configuración de Firebase para Android se hace a través del google-services.json
-        CrossFirebase.Initialize();
-#elif IOS
-        // La configuración de Firebase para iOS se hace a través del GoogleService-Info.plist
-        CrossFirebase.Initialize();
-#endif
     }
 }

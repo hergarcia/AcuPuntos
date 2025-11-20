@@ -1,24 +1,33 @@
 using System;
 using Microsoft.Maui.Graphics;
+using Plugin.Firebase.Firestore;
 
 namespace AcuPuntos.Models
 {
-    public class Redemption
+    public class Redemption : IFirestoreObject
     {
+        [FirestoreDocumentId]
         public string? Id { get; set; }
 
+        [FirestoreProperty("userId")]
         public string? UserId { get; set; }
 
+        [FirestoreProperty("rewardId")]
         public string? RewardId { get; set; }
 
+        [FirestoreProperty("pointsUsed")]
         public int PointsUsed { get; set; }
 
+        [FirestoreProperty("status")]
         public RedemptionStatus Status { get; set; }
 
+        [FirestoreProperty("redeemedAt")]
         public DateTime RedeemedAt { get; set; }
 
+        [FirestoreProperty("completedAt")]
         public DateTime? CompletedAt { get; set; }
 
+        [FirestoreProperty("notes")]
         public string? Notes { get; set; }
 
         // Propiedades para UI
