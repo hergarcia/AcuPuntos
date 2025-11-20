@@ -147,19 +147,12 @@ namespace AcuPuntos.ViewModels
 
             await ExecuteAsync(async () =>
             {
-                var success = await _firestoreService.UpdateRedemptionStatusAsync(
+                await _firestoreService.UpdateRedemptionStatusAsync(
                     redemption.Id!,
                     RedemptionStatus.Completed);
 
-                if (success)
-                {
-                    await Shell.Current.DisplayAlert("¡Aprobado!", "El canje ha sido aprobado", "OK");
-                    await LoadData();
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Error", "No se pudo aprobar el canje", "OK");
-                }
+                await Shell.Current.DisplayAlert("¡Aprobado!", "El canje ha sido aprobado", "OK");
+                await LoadData();
             }, "Aprobando canje...");
         }
 
@@ -180,19 +173,12 @@ namespace AcuPuntos.ViewModels
 
             await ExecuteAsync(async () =>
             {
-                var success = await _firestoreService.UpdateRedemptionStatusAsync(
+                await _firestoreService.UpdateRedemptionStatusAsync(
                     redemption.Id!,
                     RedemptionStatus.Cancelled);
 
-                if (success)
-                {
-                    await Shell.Current.DisplayAlert("Rechazado", "El canje ha sido rechazado y los puntos devueltos", "OK");
-                    await LoadData();
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Error", "No se pudo rechazar el canje", "OK");
-                }
+                await Shell.Current.DisplayAlert("Rechazado", "El canje ha sido rechazado y los puntos devueltos", "OK");
+                await LoadData();
             }, "Rechazando canje...");
         }
 
