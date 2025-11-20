@@ -47,7 +47,8 @@ public static class MauiProgram
 #elif ANDROID
             events.AddAndroid(android => android.OnCreate((activity, state) =>
             {
-                CrossFirebase.Initialize(activity);
+                // Firebase ya se inicializó en MainApplication.OnCreate
+                // Solo inicializamos Google Auth aquí
                 FirebaseAuthGoogleImplementation.Initialize("289604700066-ai6amis5kgfcnk9gu81huf9gqj26j9kd.apps.googleusercontent.com");
             }));
 #endif
