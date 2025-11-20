@@ -160,12 +160,12 @@ namespace AcuPuntos.Services
                 var sentQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("fromUserId", userId)
                     .OrderBy("createdAt")
-                    .LimitTo(limit);
+                    .LimitedTo(limit);
 
                 var receivedQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("toUserId", userId)
                     .OrderBy("createdAt")
-                    .LimitTo(limit);
+                    .LimitedTo(limit);
 
                 var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
                 var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
@@ -574,7 +574,7 @@ namespace AcuPuntos.Services
             return _firestore.GetCollection(TransactionsCollection)
                 .WhereEqualsTo("toUserId", userId)
                 .OrderBy("createdAt")
-                .LimitTo(50)
+                .LimitedTo(50)
                 .AddSnapshotListener<Transaction>(async (querySnapshot) =>
                 {
                     if (querySnapshot != null)
