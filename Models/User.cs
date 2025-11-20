@@ -24,10 +24,10 @@ namespace AcuPuntos.Models
         public string Role { get; set; } = "user"; // "admin" or "user"
 
         [FirestoreProperty("createdAt")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         [FirestoreProperty("lastLogin")]
-        public DateTime LastLogin { get; set; }
+        public DateTime? LastLogin { get; set; }
 
         [FirestoreProperty("fcmToken")]
         public string? FcmToken { get; set; }

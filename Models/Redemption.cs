@@ -30,7 +30,7 @@ namespace AcuPuntos.Models
         public RedemptionStatus Status { get; set; }
 
         [FirestoreProperty("redeemedAt")]
-        public DateTime RedeemedAt { get; set; }
+        public DateTime? RedeemedAt { get; set; }
 
         [FirestoreProperty("completedAt")]
         public DateTime? CompletedAt { get; set; }

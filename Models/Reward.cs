@@ -28,7 +28,7 @@ namespace AcuPuntos.Models
         public string? Category { get; set; }
 
         [FirestoreProperty("createdAt")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         [FirestoreProperty("maxRedemptionsPerUser")]
         public int? MaxRedemptionsPerUser { get; set; }
