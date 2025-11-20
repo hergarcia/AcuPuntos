@@ -2,7 +2,7 @@ using AcuPuntos.ViewModels;
 
 namespace AcuPuntos.Views;
 
-public partial class RewardsPage : ContentPage
+public partial class RewardsPage : BasePage
 {
     public RewardsPage(RewardsViewModel viewModel)
     {
