@@ -59,7 +59,7 @@ namespace AcuPuntos.Services
                         // Crear transacción de bienvenida
                         var welcomeTransaction = new Transaction
                         {
-                            Type = TransactionType.Earned,
+                            Type = TransactionType.Reward,
                             Amount = 100,
                             FromUserId = "system",
                             ToUserId = user.Uid,

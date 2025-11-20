@@ -99,12 +99,11 @@ namespace AcuPuntos.ViewModels
 
             await ExecuteAsync(async () =>
             {
-                var success = await _firestoreService.RedeemRewardAsync(
+                var redemption = await _firestoreService.RedeemRewardAsync(
                     CurrentUser.Uid!,
-                    Reward.Id!,
-                    Reward.PointsCost);
+                    Reward.Id!);
 
-                if (success)
+                if (redemption != null)
                 {
                     await Shell.Current.DisplayAlert(
                         "¡Éxito!",

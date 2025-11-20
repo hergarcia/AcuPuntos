@@ -146,6 +146,61 @@ namespace AcuPuntos.Services
             }
         }
 
+        public async Task<bool> AssignPointsToUserAsync(string userId, int points, string description)
+        {
+            try
+            {
+                // Actualizar puntos del usuario
+                await UpdateUserPointsAsync(userId, points);
+
+                // Crear transacción de recompensa
+                var transaction = new Transaction
+                {
+                    Type = TransactionType.Reward,
+                    Amount = points,
+                    ToUserId = userId,
+                    Description = description,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await CreateTransactionAsync(transaction);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error assigning points: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<Dictionary<string, object>> GetUserStatsAsync(string userId)
+        {
+            try
+            {
+                var stats = new Dictionary<string, object>();
+                var transactions = await GetUserTransactionsAsync(userId, 1000);
+                var redemptions = await GetUserRedemptionsAsync(userId);
+
+                stats["totalTransactions"] = transactions.Count;
+                stats["totalRedemptions"] = redemptions.Count;
+
+                stats["totalPointsEarned"] = transactions
+                    .Where(t => t.Type == TransactionType.Received || t.Type == TransactionType.Reward)
+                    .Sum(t => t.Amount);
+
+                stats["totalPointsSpent"] = transactions
+                    .Where(t => t.Type == TransactionType.Sent || t.Type == TransactionType.Redemption)
+                    .Sum(t => t.Amount);
+
+                return stats;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting user stats: {ex.Message}");
+                return new Dictionary<string, object>();
+            }
+        }
+
         #endregion
 
         #region Transacciones
@@ -233,7 +288,7 @@ namespace AcuPuntos.Services
                 // Crear transacción de envío
                 var sendTransaction = new Transaction
                 {
-                    Type = TransactionType.Transferred,
+                    Type = TransactionType.Sent,
                     Amount = points,
                     FromUserId = fromUserId,
                     ToUserId = toUserId,
@@ -437,6 +492,41 @@ namespace AcuPuntos.Services
             }
         }
 
+        public async Task<List<Redemption>> GetPendingRedemptionsAsync()
+        {
+            try
+            {
+                var redemptions = await _firestore.GetCollection(RedemptionsCollection)
+                    .WhereEqualsTo("status", (int)RedemptionStatus.Pending)
+                    .OrderBy("redeemedAt")
+                    .GetDocumentsAsync<Redemption>();
+
+                if (redemptions != null)
+                {
+                    var redemptionsList = redemptions.Documents.Select(x => x.Data).OrderByDescending(x => x.RedeemedAt).ToList();
+                    // Obtener información de la recompensa y usuario
+                    foreach (var redemption in redemptionsList)
+                    {
+                        if (!string.IsNullOrEmpty(redemption.RewardId))
+                        {
+                            redemption.Reward = await GetRewardAsync(redemption.RewardId);
+                        }
+                        if (!string.IsNullOrEmpty(redemption.UserId))
+                        {
+                            redemption.User = await GetUserAsync(redemption.UserId);
+                        }
+                    }
+                    return redemptionsList;
+                }
+                return new List<Redemption>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting pending redemptions: {ex.Message}");
+                return new List<Redemption>();
+            }
+        }
+
         public async Task<Redemption?> RedeemRewardAsync(string userId, string rewardId)
         {
             try
@@ -470,7 +560,7 @@ namespace AcuPuntos.Services
                 // Crear transacción
                 var transaction = new Transaction
                 {
-                    Type = TransactionType.Spent,
+                    Type = TransactionType.Redemption,
                     Amount = reward.PointsCost,
                     FromUserId = userId,
                     Description = $"Canje: {reward.Name}",

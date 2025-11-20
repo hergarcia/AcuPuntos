@@ -44,26 +44,26 @@ namespace AcuPuntos.Models
         {
             return Type switch
             {
-                TransactionType.Earned => "🟢",
-                TransactionType.Spent => "🔴",
-                TransactionType.Transferred => "➡️",
-                TransactionType.Received => "⬅️",
-                _ => "⚪"
+                TransactionType.Received => "📩",
+                TransactionType.Reward => "🎁",
+                TransactionType.Sent => "📤",
+                TransactionType.Redemption => "🎯",
+                _ => "📝"
             };
         }
 
         public string GetFormattedAmount()
         {
-            var sign = Type == TransactionType.Earned || Type == TransactionType.Received ? "+" : "-";
+            var sign = Type == TransactionType.Received || Type == TransactionType.Reward ? "+" : "-";
             return $"{sign}{Amount} pts";
         }
     }
 
     public enum TransactionType
     {
-        Earned,
-        Spent,
-        Transferred,
-        Received
+        Received,      // Transferencia recibida de otro usuario
+        Reward,        // Puntos recibidos por recompensa/admin
+        Sent,          // Transferencia enviada a otro usuario
+        Redemption     // Puntos gastados en canje de recompensa
     }
 }
