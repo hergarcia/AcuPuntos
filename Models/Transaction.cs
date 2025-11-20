@@ -16,8 +16,7 @@ namespace AcuPuntos.Models
             set => Type = (TransactionType)value;
         }
 
-        // Propiedad pública para uso en código
-        [FirestoreIgnored]
+        // Propiedad pública para uso en código (sin atributo = ignorada por Firestore)
         public TransactionType Type { get; set; }
 
         [FirestoreProperty("amount")]
