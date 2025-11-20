@@ -48,22 +48,22 @@ namespace AcuPuntos.Models
             CreatedAt = DateTimeOffset.UtcNow;
         }
 
-        public string GetIcon()
+        public string Icon => Type switch
         {
-            return Type switch
-            {
-                TransactionType.Received => "📩",
-                TransactionType.Reward => "🎁",
-                TransactionType.Sent => "📤",
-                TransactionType.Redemption => "🎯",
-                _ => "📝"
-            };
-        }
+            TransactionType.Received => "📩",
+            TransactionType.Reward => "🎁",
+            TransactionType.Sent => "📤",
+            TransactionType.Redemption => "🎯",
+            _ => "📝"
+        };
 
-        public string GetFormattedAmount()
+        public string FormattedAmount
         {
-            var sign = Type == TransactionType.Received || Type == TransactionType.Reward ? "+" : "-";
-            return $"{sign}{Amount} pts";
+            get
+            {
+                var sign = Type == TransactionType.Received || Type == TransactionType.Reward ? "+" : "-";
+                return $"{sign}{Amount} pts";
+            }
         }
     }
 

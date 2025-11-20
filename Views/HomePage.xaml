@@ -137,10 +137,10 @@
                                            Margin="0,5">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
                                             <!-- Icono -->
-                                            <Label Text="{Binding GetIcon}"
+                                            <Label Text="{Binding Icon}"
                                                    FontSize="30"
                                                    VerticalOptions="Center"/>
-                                            
+
                                             <!-- Información -->
                                             <VerticalStackLayout Grid.Column="1"
                                                                VerticalOptions="Center"
@@ -153,10 +153,10 @@
                                                        FontSize="12"
                                                        TextColor="#666666"/>
                                             </VerticalStackLayout>
-                                            
+
                                             <!-- Monto -->
                                             <Label Grid.Column="2"
-                                                   Text="{Binding GetFormattedAmount}"
+                                                   Text="{Binding FormattedAmount}"
                                                    FontSize="18"
                                                    FontAttributes="Bold"
                                                    VerticalOptions="Center">
