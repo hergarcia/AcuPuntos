@@ -6,7 +6,6 @@ using AcuPuntos.ViewModels;
 using AcuPuntos.Views;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Auth.Google;
-using Plugin.Firebase.Core;
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
 using Plugin.Firebase.Auth.Google.Platforms.iOS;
@@ -41,15 +40,14 @@ public static class MauiProgram
 #if IOS
             events.AddiOS(iOS => iOS.WillFinishLaunching((app, launchOptions) =>
             {
-                CrossFirebase.Initialize(CreateCrossFirebaseSettings());
+                CrossFirebase.Initialize();
                 FirebaseAuthGoogleImplementation.Initialize();
                 return false;
             }));
 #elif ANDROID
             events.AddAndroid(android => android.OnCreate((activity, state) =>
             {
-                CrossFirebase.Initialize(activity, CreateCrossFirebaseSettings());
-                // TODO: Reemplazar con tu Google Request ID Token del Google API Console
+                CrossFirebase.Initialize(activity);
                 FirebaseAuthGoogleImplementation.Initialize("289604700066-ai6amis5kgfcnk9gu81huf9gqj26j9kd.apps.googleusercontent.com");
             }));
 #endif
@@ -65,20 +63,6 @@ public static class MauiProgram
         RegisterViews(builder.Services);
 
         return builder.Build();
-    }
-
-    private static CrossFirebaseSettings CreateCrossFirebaseSettings()
-    {
-        return new CrossFirebaseSettings(
-            isAuthEnabled: true,
-            isCloudMessagingEnabled: false,
-            isDynamicLinksEnabled: false,
-            isFirestoreEnabled: true,
-            isFunctionsEnabled: false,
-            isStorageEnabled: false,
-            isAnalyticsEnabled: false,
-            isCrashlyticsEnabled: false  // Deshabilitar Crashlytics
-        );
     }
 
     private static void RegisterServices(IServiceCollection services)
