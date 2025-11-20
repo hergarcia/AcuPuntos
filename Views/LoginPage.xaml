@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.LoginPage"
+             Title="Login"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F5F5F5">
+
+    <Grid>
+        <!-- Fondo con gradiente -->
+        <BoxView>
+            <BoxView.Background>
+                <LinearGradientBrush EndPoint="0,1">
+                    <GradientStop Color="#2ECC71" Offset="0.0" />
+                    <GradientStop Color="#27AE60" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Contenido principal -->
+        <ScrollView>
+            <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+                
+                <!-- Logo/Icono -->
+                <Frame BackgroundColor="White" 
+                       WidthRequest="120" 
+                       HeightRequest="120"
+                       CornerRadius="60"
+                       HorizontalOptions="Center"
+                       HasShadow="True"
+                       BorderColor="Transparent">
+                    <Label Text="🍃" 
+                           FontSize="60" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"/>
+                </Frame>
+
+                <!-- Título de la App -->
+                <Label Text="AcuPuntos"
+                       FontSize="36"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       Margin="0,10,0,0">
+                    <Label.Shadow>
+                        <Shadow Brush="Black"
+                                Offset="2,2"
+                                Radius="5"
+                                Opacity="0.3"/>
+                    </Label.Shadow>
+                </Label>
+
+                <!-- Subtítulo -->
+                <Label Text="{Binding SubtitleMessage}"
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       Opacity="0.9"/>
+
+                <!-- Espacio -->
+                <BoxView HeightRequest="40"/>
+
+                <!-- Card de Login -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="20"
+                       HasShadow="True"
+                       Padding="30">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Mensaje de bienvenida -->
+                        <Label Text="{Binding WelcomeMessage}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#333333"
+                               HorizontalOptions="Center"/>
+
+                        <Label Text="Inicia sesión para comenzar a acumular y canjear tus puntos"
+                               FontSize="14"
+                               TextColor="#666666"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+
+                        <!-- Separador -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="#E0E0E0"
+                                 Margin="0,10"/>
+
+                        <!-- Botón de Google Sign In -->
+                        <Button Text="Iniciar sesión con Google"
+                                Command="{Binding SignInWithGoogleCommand}"
+                                BackgroundColor="White"
+                                TextColor="#333333"
+                                BorderColor="#E0E0E0"
+                                BorderWidth="1"
+                                CornerRadius="25"
+                                HeightRequest="50"
+                                FontAttributes="Bold">
+                            <Button.ImageSource>
+                                <FileImageSource File="google_logo.png"/>
+                            </Button.ImageSource>
+                            <Button.Shadow>
+                                <Shadow Brush="#000000"
+                                        Offset="0,2"
+                                        Radius="5"
+                                        Opacity="0.1"/>
+                            </Button.Shadow>
+                        </Button>
+
+                        <!-- Indicador de carga -->
+                        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                         IsVisible="{Binding IsBusy}"
+                                         Color="#2ECC71"
+                                         HorizontalOptions="Center"/>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Información adicional -->
+                <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
+                    <Label Text="🎁 Obtén 100 puntos de bienvenida"
+                           TextColor="White"
+                           FontSize="14"
+                           HorizontalOptions="Center"/>
+                    <Label Text="💚 Acumula puntos en cada sesión"
+                           TextColor="White"
+                           FontSize="14"
+                           HorizontalOptions="Center"/>
+                    <Label Text="🎯 Canjea por increíbles recompensas"
+                           TextColor="White"
+                           FontSize="14"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
