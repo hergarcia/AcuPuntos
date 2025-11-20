@@ -1,33 +1,23 @@
 using System;
-using Google.Cloud.Firestore;
 
 namespace AcuPuntos.Models
 {
-    [FirestoreData]
     public class Transaction
     {
-        [FirestoreProperty]
         public string? Id { get; set; }
 
-        [FirestoreProperty]
         public TransactionType Type { get; set; }
 
-        [FirestoreProperty]
         public int Amount { get; set; }
 
-        [FirestoreProperty]
         public string? FromUserId { get; set; }
 
-        [FirestoreProperty]
         public string? ToUserId { get; set; }
 
-        [FirestoreProperty]
         public string? Description { get; set; }
 
-        [FirestoreProperty]
         public DateTime CreatedAt { get; set; }
 
-        [FirestoreProperty]
         public string? RewardId { get; set; }
 
         // Propiedades adicionales para mostrar en UI

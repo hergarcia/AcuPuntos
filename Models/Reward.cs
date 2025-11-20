@@ -1,39 +1,28 @@
 using System;
-using Google.Cloud.Firestore;
+using Microsoft.Maui.Graphics;
 
 namespace AcuPuntos.Models
 {
-    [FirestoreData]
     public class Reward
     {
-        [FirestoreProperty]
         public string? Id { get; set; }
 
-        [FirestoreProperty]
         public string? Name { get; set; }
 
-        [FirestoreProperty]
         public int PointsCost { get; set; }
 
-        [FirestoreProperty]
         public string? Description { get; set; }
 
-        [FirestoreProperty]
         public bool IsActive { get; set; }
 
-        [FirestoreProperty]
         public string? Icon { get; set; }
 
-        [FirestoreProperty]
         public string? Category { get; set; }
 
-        [FirestoreProperty]
         public DateTime CreatedAt { get; set; }
 
-        [FirestoreProperty]
         public int? MaxRedemptionsPerUser { get; set; }
 
-        [FirestoreProperty]
         public DateTime? ExpiryDate { get; set; }
 
         // Propiedades para UI

@@ -1,33 +1,24 @@
 using System;
-using Google.Cloud.Firestore;
+using Microsoft.Maui.Graphics;
 
 namespace AcuPuntos.Models
 {
-    [FirestoreData]
     public class Redemption
     {
-        [FirestoreProperty]
         public string? Id { get; set; }
 
-        [FirestoreProperty]
         public string? UserId { get; set; }
 
-        [FirestoreProperty]
         public string? RewardId { get; set; }
 
-        [FirestoreProperty]
         public int PointsUsed { get; set; }
 
-        [FirestoreProperty]
         public RedemptionStatus Status { get; set; }
 
-        [FirestoreProperty]
         public DateTime RedeemedAt { get; set; }
 
-        [FirestoreProperty]
         public DateTime? CompletedAt { get; set; }
 
-        [FirestoreProperty]
         public string? Notes { get; set; }
 
         // Propiedades para UI
