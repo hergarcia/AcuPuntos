@@ -32,7 +32,7 @@ namespace AcuPuntos.Models
         public string? Description { get; set; }
 
         [FirestoreProperty("createdAt")]
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         [FirestoreProperty("rewardId")]
         public string? RewardId { get; set; }
@@ -45,7 +45,7 @@ namespace AcuPuntos.Models
 
         public Transaction()
         {
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTimeOffset.UtcNow;
         }
 
         public string GetIcon()

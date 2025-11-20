@@ -28,13 +28,13 @@ namespace AcuPuntos.Models
         public string? Category { get; set; }
 
         [FirestoreProperty("createdAt")]
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         [FirestoreProperty("maxRedemptionsPerUser")]
         public int? MaxRedemptionsPerUser { get; set; }
 
         [FirestoreProperty("expiryDate")]
-        public DateTime? ExpiryDate { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
 
         // Propiedades para UI
         public bool CanRedeem { get; set; }
@@ -42,7 +42,7 @@ namespace AcuPuntos.Models
 
         public Reward()
         {
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTimeOffset.UtcNow;
             IsActive = true;
         }
 

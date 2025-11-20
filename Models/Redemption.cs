@@ -30,10 +30,10 @@ namespace AcuPuntos.Models
         public RedemptionStatus Status { get; set; }
 
         [FirestoreProperty("redeemedAt")]
-        public DateTime? RedeemedAt { get; set; }
+        public DateTimeOffset? RedeemedAt { get; set; }
 
         [FirestoreProperty("completedAt")]
-        public DateTime? CompletedAt { get; set; }
+        public DateTimeOffset? CompletedAt { get; set; }
 
         [FirestoreProperty("notes")]
         public string? Notes { get; set; }
@@ -44,7 +44,7 @@ namespace AcuPuntos.Models
 
         public Redemption()
         {
-            RedeemedAt = DateTime.UtcNow;
+            RedeemedAt = DateTimeOffset.UtcNow;
             Status = RedemptionStatus.Pending;
         }
 
