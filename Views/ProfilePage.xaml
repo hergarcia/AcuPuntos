@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.ProfilePage"
+             Title="{Binding Title}"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="👤 Mi Perfil"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#333333"/>
+                <Label Text="Información de tu cuenta"
+                       FontSize="16"
+                       TextColor="#666666"/>
+            </VerticalStackLayout>
+
+            <!-- Mensaje de desarrollo -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="30"
+                   BackgroundColor="#E3F2FD">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="⚙️"
+                           FontSize="50"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Sección en desarrollo"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#3498DB"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Aquí podrás ver y editar tu información personal"
+                           FontSize="14"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

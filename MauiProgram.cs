@@ -77,10 +77,10 @@ public static class MauiProgram
     {
 #if ANDROID
         // La configuración de Firebase para Android se hace a través del google-services.json
-        // CrossFirebase.Initialize();
+        CrossFirebase.Initialize();
 #elif IOS
         // La configuración de Firebase para iOS se hace a través del GoogleService-Info.plist
-        // CrossFirebase.Initialize();
+        CrossFirebase.Initialize();
 #endif
     }
 }

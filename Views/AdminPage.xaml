@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.AdminPage"
+             Title="{Binding Title}"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="⚙️ Administración"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#333333"/>
+                <Label Text="Gestiona usuarios y recompensas"
+                       FontSize="16"
+                       TextColor="#666666"/>
+            </VerticalStackLayout>
+
+            <!-- Mensaje de desarrollo -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="30"
+                   BackgroundColor="#FFF3E0">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="🔧"
+                           FontSize="50"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Panel de administración"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#F39C12"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Aquí podrás gestionar usuarios, asignar puntos y configurar recompensas"
+                           FontSize="14"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
