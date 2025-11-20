@@ -162,7 +162,7 @@
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label"
                                                                Binding="{Binding Type}"
-                                                               Value="Earned">
+                                                               Value="Reward">
                                                         <Setter Property="TextColor" Value="#2ECC71"/>
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label"
@@ -172,12 +172,12 @@
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label"
                                                                Binding="{Binding Type}"
-                                                               Value="Spent">
+                                                               Value="Redemption">
                                                         <Setter Property="TextColor" Value="#E74C3C"/>
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label"
                                                                Binding="{Binding Type}"
-                                                               Value="Transferred">
+                                                               Value="Sent">
                                                         <Setter Property="TextColor" Value="#E74C3C"/>
                                                     </DataTrigger>
                                                 </Label.Triggers>
