@@ -51,7 +51,7 @@ namespace AcuPuntos.Services
                     .OrderBy("displayName")
                     .GetDocumentsAsync<User>();
 
-                return querySnapshot?.ToList() ?? new List<User>();
+                return querySnapshot?.Documents.Select(x => x.Data).ToList() ?? new List<User>();
             }
             catch (Exception ex)
             {
@@ -66,8 +66,8 @@ namespace AcuPuntos.Services
             {
                 var searchLower = searchTerm.ToLower();
                 var allUsers = await GetAllUsersAsync();
-                
-                return allUsers.Where(u => 
+
+                return allUsers.Where(u =>
                     u.DisplayName?.ToLower().Contains(searchLower) == true ||
                     u.Email?.ToLower().Contains(searchLower) == true)
                     .ToList();
@@ -159,23 +159,27 @@ namespace AcuPuntos.Services
                 // Obtener transacciones donde el usuario es origen o destino
                 var sentQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("fromUserId", userId)
-                    .OrderByDescending("createdAt")
+                    .OrderBy("createdAt")
                     .LimitTo(limit);
 
                 var receivedQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("toUserId", userId)
-                    .OrderByDescending("createdAt")
+                    .OrderBy("createdAt")
                     .LimitTo(limit);
 
                 var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
                 var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
 
                 if (sentTransactions != null)
-                    transactions.AddRange(sentTransactions);
+                {
+                    var sentList = sentTransactions.Documents.Select(x => x.Data).ToList();
+                    transactions.AddRange(sentList);
+                }
 
                 if (receivedTransactions != null)
                 {
-                    foreach (var transaction in receivedTransactions)
+                    var receivedList = receivedTransactions.Documents.Select(x => x.Data).ToList();
+                    foreach (var transaction in receivedList)
                     {
                         // Evitar duplicados en transferencias
                         if (!transactions.Any(t => t.Id == transaction.Id))
@@ -183,7 +187,7 @@ namespace AcuPuntos.Services
                     }
                 }
 
-                // Ordenar por fecha
+                // Ordenar por fecha descendente en el cliente
                 return transactions.OrderByDescending(t => t.CreatedAt).Take(limit).ToList();
             }
             catch (Exception ex)
@@ -215,17 +219,17 @@ namespace AcuPuntos.Services
                 // Verificar que el usuario origen tiene suficientes puntos
                 var fromUser = await GetUserAsync(fromUserId);
                 var toUser = await GetUserAsync(toUserId);
-                
+
                 if (fromUser == null || toUser == null)
                     return false;
-                
+
                 if (fromUser.Points < points)
                     return false;
-                
+
                 // Actualizar puntos
                 await UpdateUserPointsAsync(fromUserId, -points);
                 await UpdateUserPointsAsync(toUserId, points);
-                
+
                 // Crear transacción de envío
                 var sendTransaction = new Transaction
                 {
@@ -236,7 +240,7 @@ namespace AcuPuntos.Services
                     Description = description ?? $"Transferencia a {toUser.DisplayName}",
                     CreatedAt = DateTime.UtcNow
                 };
-                
+
                 // Crear transacción de recepción
                 var receiveTransaction = new Transaction
                 {
@@ -247,10 +251,10 @@ namespace AcuPuntos.Services
                     Description = description ?? $"Transferencia de {fromUser.DisplayName}",
                     CreatedAt = DateTime.UtcNow
                 };
-                
+
                 await CreateTransactionAsync(sendTransaction);
                 await CreateTransactionAsync(receiveTransaction);
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -273,7 +277,7 @@ namespace AcuPuntos.Services
                     .OrderBy("pointsCost")
                     .GetDocumentsAsync<Reward>();
 
-                return rewards?.ToList() ?? new List<Reward>();
+                return rewards?.Documents.Select(x => x.Data).ToList() ?? new List<Reward>();
             }
             catch (Exception ex)
             {
@@ -290,7 +294,7 @@ namespace AcuPuntos.Services
                     .OrderBy("pointsCost")
                     .GetDocumentsAsync<Reward>();
 
-                return rewards?.ToList() ?? new List<Reward>();
+                return rewards?.Documents.Select(x => x.Data).ToList() ?? new List<Reward>();
             }
             catch (Exception ex)
             {
@@ -391,12 +395,12 @@ namespace AcuPuntos.Services
             {
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection)
                     .WhereEqualsTo("userId", userId)
-                    .OrderByDescending("redeemedAt")
+                    .OrderBy("redeemedAt")
                     .GetDocumentsAsync<Redemption>();
 
                 if (redemptions != null)
                 {
-                    var redemptionsList = redemptions.ToList();
+                    var redemptionsList = redemptions.Documents.Select(x => x.Data).OrderByDescending(x => x.RedeemedAt).ToList();
                     // Obtener información de la recompensa
                     foreach (var redemption in redemptionsList)
                     {
@@ -421,10 +425,10 @@ namespace AcuPuntos.Services
             try
             {
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection)
-                    .OrderByDescending("redeemedAt")
+                    .OrderBy("redeemedAt")
                     .GetDocumentsAsync<Redemption>();
 
-                return redemptions?.ToList() ?? new List<Redemption>();
+                return redemptions?.Documents.Select(x => x.Data).OrderByDescending(x => x.RedeemedAt).ToList() ?? new List<Redemption>();
             }
             catch (Exception ex)
             {
@@ -439,16 +443,16 @@ namespace AcuPuntos.Services
             {
                 var user = await GetUserAsync(userId);
                 var reward = await GetRewardAsync(rewardId);
-                
+
                 if (user == null || reward == null)
                     return null;
-                
+
                 if (user.Points < reward.PointsCost)
                     return null;
-                
+
                 // Actualizar puntos del usuario
                 await UpdateUserPointsAsync(userId, -reward.PointsCost);
-                
+
                 // Crear canje
                 var redemption = new Redemption
                 {
@@ -458,11 +462,11 @@ namespace AcuPuntos.Services
                     Status = RedemptionStatus.Pending,
                     RedeemedAt = DateTime.UtcNow
                 };
-                
+
                 var docRef = await _firestore.GetCollection(RedemptionsCollection)
                     .AddDocumentAsync(redemption);
                 redemption.Id = docRef.Id;
-                
+
                 // Crear transacción
                 var transaction = new Transaction
                 {
@@ -473,9 +477,9 @@ namespace AcuPuntos.Services
                     RewardId = rewardId,
                     CreatedAt = DateTime.UtcNow
                 };
-                
+
                 await CreateTransactionAsync(transaction);
-                
+
                 redemption.Reward = reward;
                 return redemption;
             }
@@ -490,12 +494,12 @@ namespace AcuPuntos.Services
         {
             try
             {
-                var updates = new Dictionary<string, object>
+                var updates = new Dictionary<object, object>
                 {
                     ["status"] = status.ToString(),
                     ["completedAt"] = status == RedemptionStatus.Completed ? DateTime.UtcNow : (DateTime?)null
                 };
-                
+
                 await _firestore.GetCollection(RedemptionsCollection)
                     .GetDocument(redemptionId)
                     .UpdateDataAsync(updates);
@@ -519,7 +523,7 @@ namespace AcuPuntos.Services
 
                 // Total de usuarios
                 var users = await _firestore.GetCollection(UsersCollection).GetDocumentsAsync<User>();
-                var usersList = users?.ToList() ?? new List<User>();
+                var usersList = users?.Documents.Select(x => x.Data).ToList() ?? new List<User>();
                 stats["totalUsers"] = usersList.Count;
 
                 // Total de puntos en circulación
@@ -528,11 +532,11 @@ namespace AcuPuntos.Services
 
                 // Total de transacciones
                 var transactions = await _firestore.GetCollection(TransactionsCollection).GetDocumentsAsync<Transaction>();
-                stats["totalTransactions"] = transactions?.Count() ?? 0;
+                stats["totalTransactions"] = transactions?.Documents.Count() ?? 0;
 
                 // Total de canjes
                 var redemptions = await _firestore.GetCollection(RedemptionsCollection).GetDocumentsAsync<Redemption>();
-                stats["totalRedemptions"] = redemptions?.Count() ?? 0;
+                stats["totalRedemptions"] = redemptions?.Documents.Count() ?? 0;
 
                 // Recompensas activas
                 var activeRewards = await GetActiveRewardsAsync();
@@ -569,7 +573,7 @@ namespace AcuPuntos.Services
             // Por simplicidad, escuchamos solo las transacciones donde el usuario es destinatario
             return _firestore.GetCollection(TransactionsCollection)
                 .WhereEqualsTo("toUserId", userId)
-                .OrderByDescending("createdAt")
+                .OrderBy("createdAt")
                 .LimitTo(50)
                 .AddSnapshotListener<Transaction>(async (querySnapshot) =>
                 {
@@ -591,7 +595,7 @@ namespace AcuPuntos.Services
                 {
                     if (querySnapshot != null)
                     {
-                        var rewards = querySnapshot.ToList();
+                        var rewards = querySnapshot.Documents.Select(x => x.Data).ToList();
                         onUpdate(rewards);
                     }
                 });

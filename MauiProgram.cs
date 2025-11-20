@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.LifecycleEvents;
 using CommunityToolkit.Maui;
 using AcuPuntos.Services;
 using AcuPuntos.ViewModels;

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using AcuPuntos.Models;
 using AcuPuntos.Services;
+using AcuPuntos.Views;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
