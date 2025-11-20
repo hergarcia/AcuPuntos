@@ -107,7 +107,7 @@ namespace AcuPuntos.Services
         /// <summary>
         /// Verifica si el usuario actual es administrador.
         /// </summary>
-        public bool IsAdmin => CurrentUser?.Role == UserRole.Admin;
+        public bool IsAdmin => CurrentUser?.Role == "admin";
 
         /// <summary>
         /// Verifica si hay un usuario autenticado.
