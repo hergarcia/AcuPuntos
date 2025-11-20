@@ -12,7 +12,7 @@
         <VerticalStackLayout Spacing="20" Padding="20">
 
             <!-- Saldo actual -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#2ECC71"
                    Padding="20">
                 <Grid ColumnDefinitions="*,Auto">
@@ -31,10 +31,10 @@
                            FontSize="50"
                            VerticalOptions="Center"/>
                 </Grid>
-            </Frame>
+            </Border>
 
             <!-- Búsqueda -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="15">
                 <VerticalStackLayout Spacing="10">
                     <SearchBar Placeholder="Buscar recompensas..."
@@ -54,7 +54,7 @@
                                 HorizontalOptions="FillAndExpand"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Lista de recompensas -->
             <Label Text="Recompensas Disponibles"
@@ -65,7 +65,7 @@
             <CollectionView ItemsSource="{Binding FilteredRewards}"
                           SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Frame Style="{StaticResource CardFrame}"
+                    <Border Style="{StaticResource CardFrame}"
                            Padding="40">
                         <VerticalStackLayout Spacing="10">
                             <Label Text="🔍"
@@ -76,18 +76,18 @@
                                    TextColor="#666666"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Style="{StaticResource CardFrame}"
+                        <Border Style="{StaticResource CardFrame}"
                                Padding="15"
                                Margin="0,0,0,10">
-                            <Frame.GestureRecognizers>
+                            <Border.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewRewardDetailCommand}"
                                     CommandParameter="{Binding .}"/>
-                            </Frame.GestureRecognizers>
+                            </Border.GestureRecognizers>
                             <Grid RowDefinitions="Auto,Auto,Auto,Auto"
                                   ColumnDefinitions="Auto,*,Auto">
 
@@ -112,7 +112,7 @@
                                 </VerticalStackLayout>
 
                                 <!-- Costo en puntos -->
-                                <Frame Grid.Row="0" Grid.Column="2"
+                                <Border Grid.Row="0" Grid.Column="2"
                                        BackgroundColor="#2ECC71"
                                        Padding="10,5"
                                        CornerRadius="15"
@@ -121,10 +121,10 @@
                                            TextColor="White"
                                            FontSize="14"
                                            FontAttributes="Bold"/>
-                                </Frame>
+                                </Border>
 
                                 <!-- Categoría -->
-                                <Frame Grid.Row="1" Grid.Column="1"
+                                <Border Grid.Row="1" Grid.Column="1"
                                        Grid.ColumnSpan="2"
                                        Padding="8,4"
                                        CornerRadius="10"
@@ -135,7 +135,7 @@
                                            TextColor="White"
                                            FontSize="12"
                                            FontAttributes="Bold"/>
-                                </Frame>
+                                </Border>
 
                                 <!-- Botón de canje -->
                                 <Button Grid.Row="3" Grid.ColumnSpan="3"
@@ -160,7 +160,7 @@
                                 </Button>
 
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

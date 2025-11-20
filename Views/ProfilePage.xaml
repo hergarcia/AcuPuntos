@@ -12,7 +12,7 @@
         <VerticalStackLayout Spacing="20" Padding="20">
 
             <!-- Foto de perfil y nombre -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#3498DB"
                    Padding="30">
                 <VerticalStackLayout Spacing="15">
@@ -36,7 +36,7 @@
                            HorizontalTextAlignment="Center"/>
 
                     <!-- Rol -->
-                    <Frame Padding="10,5"
+                    <Border Padding="10,5"
                            CornerRadius="15"
                            BackgroundColor="White"
                            HorizontalOptions="Center">
@@ -44,13 +44,13 @@
                                TextColor="#3498DB"
                                FontSize="14"
                                FontAttributes="Bold"/>
-                    </Frame>
+                    </Border>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Puntos actuales -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#2ECC71"
                    Padding="20">
                 <Grid ColumnDefinitions="*,Auto">
@@ -69,10 +69,10 @@
                            FontSize="60"
                            VerticalOptions="Center"/>
                 </Grid>
-            </Frame>
+            </Border>
 
             <!-- Estadísticas -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="20">
                 <VerticalStackLayout Spacing="15">
                     
@@ -87,7 +87,7 @@
                           ColumnSpacing="15">
 
                         <!-- Transacciones -->
-                        <Frame Grid.Row="0" Grid.Column="0"
+                        <Border Grid.Row="0" Grid.Column="0"
                                BackgroundColor="#E8F5E9"
                                Padding="15"
                                CornerRadius="15">
@@ -105,10 +105,10 @@
                                        TextColor="#2ECC71"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                         <!-- Canjes -->
-                        <Frame Grid.Row="0" Grid.Column="1"
+                        <Border Grid.Row="0" Grid.Column="1"
                                BackgroundColor="#FFF3E0"
                                Padding="15"
                                CornerRadius="15">
@@ -126,10 +126,10 @@
                                        TextColor="#F39C12"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                         <!-- Puntos ganados -->
-                        <Frame Grid.Row="1" Grid.Column="0"
+                        <Border Grid.Row="1" Grid.Column="0"
                                BackgroundColor="#E3F2FD"
                                Padding="15"
                                CornerRadius="15">
@@ -147,10 +147,10 @@
                                        TextColor="#3498DB"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                         <!-- Puntos gastados -->
-                        <Frame Grid.Row="1" Grid.Column="1"
+                        <Border Grid.Row="1" Grid.Column="1"
                                BackgroundColor="#FFEBEE"
                                Padding="15"
                                CornerRadius="15">
@@ -168,15 +168,15 @@
                                        TextColor="#E74C3C"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                     </Grid>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Información de cuenta -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="20">
                 <VerticalStackLayout Spacing="15">
                     
@@ -211,7 +211,7 @@
                     </HorizontalStackLayout>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Botones de acción -->
             <Button Text="✏️ Editar Perfil"

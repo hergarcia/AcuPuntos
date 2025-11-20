@@ -14,7 +14,7 @@
             <!-- Estadísticas rápidas -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <!-- Total usuarios -->
-                <Frame Grid.Column="0"
+                <Border Grid.Column="0"
                        Style="{StaticResource CardFrame}"
                        BackgroundColor="#3498DB"
                        Padding="15">
@@ -32,10 +32,10 @@
                                FontAttributes="Bold"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
 
                 <!-- Canjes pendientes -->
-                <Frame Grid.Column="1"
+                <Border Grid.Column="1"
                        Style="{StaticResource CardFrame}"
                        BackgroundColor="#F39C12"
                        Padding="15">
@@ -53,7 +53,7 @@
                                FontAttributes="Bold"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
             </Grid>
 
             <!-- Canjes pendientes -->
@@ -66,7 +66,7 @@
                           SelectionMode="None"
                           HeightRequest="250">
                 <CollectionView.EmptyView>
-                    <Frame Style="{StaticResource CardFrame}"
+                    <Border Style="{StaticResource CardFrame}"
                            Padding="30">
                         <VerticalStackLayout Spacing="10">
                             <Label Text="✅"
@@ -77,11 +77,11 @@
                                    TextColor="#666666"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Style="{StaticResource CardFrame}"
+                        <Border Style="{StaticResource CardFrame}"
                                Padding="15"
                                Margin="0,0,0,10">
                             <Grid RowDefinitions="Auto,Auto,Auto"
@@ -137,7 +137,7 @@
                                 </HorizontalStackLayout>
 
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -157,24 +157,24 @@
             <CollectionView ItemsSource="{Binding Users}"
                           SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Frame Style="{StaticResource CardFrame}"
+                    <Border Style="{StaticResource CardFrame}"
                            Padding="30">
                         <Label Text="No hay usuarios"
                                FontSize="14"
                                TextColor="#666666"
                                HorizontalOptions="Center"/>
-                    </Frame>
+                    </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Style="{StaticResource CardFrame}"
+                        <Border Style="{StaticResource CardFrame}"
                                Padding="15"
                                Margin="0,0,0,10">
-                            <Frame.GestureRecognizers>
+                            <Border.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewUserDetailCommand}"
                                     CommandParameter="{Binding .}"/>
-                            </Frame.GestureRecognizers>
+                            </Border.GestureRecognizers>
                             <Grid RowDefinitions="Auto,Auto"
                                   ColumnDefinitions="Auto,*,Auto">
 
@@ -218,7 +218,7 @@
                                         Margin="15,10,0,0"/>
 
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
