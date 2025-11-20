@@ -1,6 +1,8 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Plugin.Firebase.Auth.Google;
 
 namespace AcuPuntos;
 
@@ -9,4 +11,9 @@ namespace AcuPuntos;
                            ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
+    protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+    {
+        FirebaseAuthGoogleImplementation.HandleActivityResultAsync(requestCode, resultCode, data);
+        base.OnActivityResult(requestCode, resultCode, data);
+    }
 }

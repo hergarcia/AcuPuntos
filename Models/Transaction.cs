@@ -1,33 +1,32 @@
 using System;
-using Google.Cloud.Firestore;
+using Plugin.Firebase.Firestore;
 
 namespace AcuPuntos.Models
 {
-    [FirestoreData]
-    public class Transaction
+    public class Transaction : IFirestoreObject
     {
-        [FirestoreProperty]
+        [FirestoreDocumentId]
         public string? Id { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("type")]
         public TransactionType Type { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("amount")]
         public int Amount { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("fromUserId")]
         public string? FromUserId { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("toUserId")]
         public string? ToUserId { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("description")]
         public string? Description { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("createdAt")]
         public DateTime CreatedAt { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("rewardId")]
         public string? RewardId { get; set; }
 
         // Propiedades adicionales para mostrar en UI
@@ -45,26 +44,26 @@ namespace AcuPuntos.Models
         {
             return Type switch
             {
-                TransactionType.Earned => "🟢",
-                TransactionType.Spent => "🔴",
-                TransactionType.Transferred => "➡️",
-                TransactionType.Received => "⬅️",
-                _ => "⚪"
+                TransactionType.Received => "📩",
+                TransactionType.Reward => "🎁",
+                TransactionType.Sent => "📤",
+                TransactionType.Redemption => "🎯",
+                _ => "📝"
             };
         }
 
         public string GetFormattedAmount()
         {
-            var sign = Type == TransactionType.Earned || Type == TransactionType.Received ? "+" : "-";
+            var sign = Type == TransactionType.Received || Type == TransactionType.Reward ? "+" : "-";
             return $"{sign}{Amount} pts";
         }
     }
 
     public enum TransactionType
     {
-        Earned,
-        Spent,
-        Transferred,
-        Received
+        Received,      // Transferencia recibida de otro usuario
+        Reward,        // Puntos recibidos por recompensa/admin
+        Sent,          // Transferencia enviada a otro usuario
+        Redemption     // Puntos gastados en canje de recompensa
     }
 }

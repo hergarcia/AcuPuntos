@@ -8,37 +8,233 @@
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
 
-            <!-- Header -->
-            <VerticalStackLayout Spacing="5">
-                <Label Text="👤 Mi Perfil"
-                       FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="#333333"/>
-                <Label Text="Información de tu cuenta"
-                       FontSize="16"
-                       TextColor="#666666"/>
-            </VerticalStackLayout>
-
-            <!-- Mensaje de desarrollo -->
+            <!-- Foto de perfil y nombre -->
             <Frame Style="{StaticResource CardFrame}"
-                   Padding="30"
-                   BackgroundColor="#E3F2FD">
+                   BackgroundColor="#3498DB"
+                   Padding="30">
                 <VerticalStackLayout Spacing="15">
-                    <Label Text="⚙️"
-                           FontSize="50"
+                    
+                    <Label Text="👤"
+                           FontSize="80"
                            HorizontalOptions="Center"/>
-                    <Label Text="Sección en desarrollo"
-                           FontSize="20"
+
+                    <Label Text="{Binding CurrentUser.DisplayName}"
+                           TextColor="White"
+                           FontSize="24"
                            FontAttributes="Bold"
-                           TextColor="#3498DB"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Aquí podrás ver y editar tu información personal"
-                           FontSize="14"
-                           TextColor="#666666"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"/>
+
+                    <Label Text="{Binding CurrentUser.Email}"
+                           TextColor="White"
+                           FontSize="14"
+                           Opacity="0.9"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+
+                    <!-- Rol -->
+                    <Frame Padding="10,5"
+                           CornerRadius="15"
+                           BackgroundColor="White"
+                           HorizontalOptions="Center">
+                        <Label Text="{Binding CurrentUser.Role}"
+                               TextColor="#3498DB"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Frame>
+
                 </VerticalStackLayout>
             </Frame>
+
+            <!-- Puntos actuales -->
+            <Frame Style="{StaticResource CardFrame}"
+                   BackgroundColor="#2ECC71"
+                   Padding="20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout>
+                        <Label Text="Puntos Disponibles"
+                               TextColor="White"
+                               FontSize="16"
+                               Opacity="0.9"/>
+                        <Label Text="{Binding CurrentUser.Points, StringFormat='{0:N0}'}"
+                               TextColor="White"
+                               FontSize="36"
+                               FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1"
+                           Text="💰"
+                           FontSize="60"
+                           VerticalOptions="Center"/>
+                </Grid>
+            </Frame>
+
+            <!-- Estadísticas -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    
+                    <Label Text="📊 Estadísticas"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#333333"/>
+
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="*,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+
+                        <!-- Transacciones -->
+                        <Frame Grid.Row="0" Grid.Column="0"
+                               BackgroundColor="#E8F5E9"
+                               Padding="15"
+                               CornerRadius="15">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="📝"
+                                       FontSize="30"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Transacciones"
+                                       FontSize="12"
+                                       TextColor="#666666"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalTransactions}"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="#2ECC71"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Canjes -->
+                        <Frame Grid.Row="0" Grid.Column="1"
+                               BackgroundColor="#FFF3E0"
+                               Padding="15"
+                               CornerRadius="15">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="🎁"
+                                       FontSize="30"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Canjes"
+                                       FontSize="12"
+                                       TextColor="#666666"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalRedemptions}"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="#F39C12"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Puntos ganados -->
+                        <Frame Grid.Row="1" Grid.Column="0"
+                               BackgroundColor="#E3F2FD"
+                               Padding="15"
+                               CornerRadius="15">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="📈"
+                                       FontSize="30"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Ganados"
+                                       FontSize="12"
+                                       TextColor="#666666"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalPointsEarned, StringFormat='{0:N0}'}"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="#3498DB"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Puntos gastados -->
+                        <Frame Grid.Row="1" Grid.Column="1"
+                               BackgroundColor="#FFEBEE"
+                               Padding="15"
+                               CornerRadius="15">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="📉"
+                                       FontSize="30"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Gastados"
+                                       FontSize="12"
+                                       TextColor="#666666"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalPointsSpent, StringFormat='{0:N0}'}"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="#E74C3C"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Información de cuenta -->
+            <Frame Style="{StaticResource CardFrame}"
+                   Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    
+                    <Label Text="ℹ️ Información de Cuenta"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#333333"/>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Miembro desde:"
+                               FontSize="14"
+                               TextColor="#666666"
+                               VerticalOptions="Center"/>
+                        <Label Text="{Binding CurrentUser.CreatedAt, StringFormat='{0:dd/MM/yyyy}'}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#333333"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="UID:"
+                               FontSize="12"
+                               TextColor="#999999"
+                               VerticalOptions="Center"/>
+                        <Label Text="{Binding CurrentUser.Uid}"
+                               FontSize="12"
+                               TextColor="#999999"
+                               VerticalOptions="Center"
+                               LineBreakMode="TailTruncation"
+                               HorizontalOptions="FillAndExpand"/>
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Botones de acción -->
+            <Button Text="✏️ Editar Perfil"
+                    Command="{Binding EditProfileCommand}"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="25"/>
+
+            <Button Text="🔄 Actualizar"
+                    Command="{Binding RefreshProfileCommand}"
+                    BackgroundColor="#95A5A6"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="25"/>
+
+            <Button Text="🚪 Cerrar Sesión"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#E74C3C"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    Margin="0,0,0,20"/>
 
         </VerticalStackLayout>
     </ScrollView>

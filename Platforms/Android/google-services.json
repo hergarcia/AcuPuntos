@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "289604700066",
+    "project_id": "acupuntos-fa43a",
+    "storage_bucket": "acupuntos-fa43a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289604700066:android:bb951fab8c828cc789d4fb",
+        "android_client_info": {
+          "package_name": "com.hergarcia.acupuntos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289604700066-adoiv4q57hpdrpt69cuc0smbqpg2ufd7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hergarcia.acupuntos",
+            "certificate_hash": "a50c195059c2251e52279804a0ba3a611b1d8881"
+          }
+        },
+        {
+          "client_id": "289604700066-ai6amis5kgfcnk9gu81huf9gqj26j9kd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz8od7Yv_nJXPl0uM02OjwvjY_QqR7pe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289604700066-ai6amis5kgfcnk9gu81huf9gqj26j9kd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

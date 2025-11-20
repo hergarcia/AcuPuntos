@@ -14,6 +14,8 @@ namespace AcuPuntos.Services
         Task CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task UpdateUserPointsAsync(string uid, int pointsDelta);
+        Task<bool> AssignPointsToUserAsync(string userId, int points, string description);
+        Task<Dictionary<string, object>> GetUserStatsAsync(string userId);
         
         // Transacciones
         Task<List<Transaction>> GetUserTransactionsAsync(string userId, int limit = 50);
@@ -31,6 +33,7 @@ namespace AcuPuntos.Services
         // Canjes
         Task<List<Redemption>> GetUserRedemptionsAsync(string userId);
         Task<List<Redemption>> GetAllRedemptionsAsync();
+        Task<List<Redemption>> GetPendingRedemptionsAsync();
         Task<Redemption?> RedeemRewardAsync(string userId, string rewardId);
         Task UpdateRedemptionStatusAsync(string redemptionId, RedemptionStatus status);
         

@@ -1,8 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Application
     x:Class="AcuPuntos.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:local="clr-namespace:AcuPuntos"
+    xmlns:converters="clr-namespace:AcuPuntos.Converters"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
@@ -14,6 +15,12 @@
 
             <!--  Converters  -->
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <converters:SelectedColorConverter x:Key="SelectedColorConverter" />
+            <converters:TransactionColorConverter x:Key="TransactionColorConverter" />
+            <converters:TransactionIconConverter x:Key="TransactionIconConverter" />
+            <converters:TransactionTypeConverter x:Key="TransactionTypeConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

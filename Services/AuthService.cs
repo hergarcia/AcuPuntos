@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AcuPuntos.Models;
 using Plugin.Firebase.Auth;
+using Plugin.Firebase.Auth.Google;
 using User = AcuPuntos.Models.User;
 
 namespace AcuPuntos.Services
@@ -9,6 +10,8 @@ namespace AcuPuntos.Services
     public class AuthService : IAuthService
     {
         private readonly IFirestoreService _firestoreService;
+        private readonly IFirebaseAuth _firebaseAuth;
+        private readonly IFirebaseAuthGoogle _firebaseAuthGoogle;
         private User? _currentUser;
 
         public User? CurrentUser => _currentUser;
@@ -17,9 +20,11 @@ namespace AcuPuntos.Services
 
         public event EventHandler<User?>? AuthStateChanged;
 
-        public AuthService(IFirestoreService firestoreService)
+        public AuthService(IFirestoreService firestoreService, IFirebaseAuth firebaseAuth, IFirebaseAuthGoogle firebaseAuthGoogle)
         {
             _firestoreService = firestoreService;
+            _firebaseAuth = firebaseAuth;
+            _firebaseAuthGoogle = firebaseAuthGoogle;
         }
 
         public async Task<User?> SignInWithGoogleAsync()
@@ -27,23 +32,22 @@ namespace AcuPuntos.Services
             try
             {
 #if ANDROID || IOS
-                var auth = CrossFirebaseAuth.Current;
-                var result = await auth.SignInWithGoogleAsync();
+                var firebaseUser = await _firebaseAuthGoogle.SignInWithGoogleAsync();
 
-                if (result?.User != null)
+                if (firebaseUser != null)
                 {
                     // Verificar si el usuario existe en Firestore
-                    var user = await _firestoreService.GetUserAsync(result.User.Uid);
+                    var user = await _firestoreService.GetUserAsync(firebaseUser.Uid);
 
                     if (user == null)
                     {
                         // Crear nuevo usuario con puntos de bienvenida
                         user = new User
                         {
-                            Uid = result.User.Uid,
-                            Email = result.User.Email ?? "",
-                            DisplayName = result.User.DisplayName ?? "Usuario",
-                            PhotoUrl = result.User.PhotoUrl?.ToString(),
+                            Uid = firebaseUser.Uid,
+                            Email = firebaseUser.Email ?? "",
+                            DisplayName = firebaseUser.DisplayName ?? "Usuario",
+                            PhotoUrl = firebaseUser.PhotoUrl?.ToString(),
                             Role = "user",
                             Points = 100, // Puntos de bienvenida
                             CreatedAt = DateTime.UtcNow,
@@ -55,7 +59,7 @@ namespace AcuPuntos.Services
                         // Crear transacción de bienvenida
                         var welcomeTransaction = new Transaction
                         {
-                            Type = TransactionType.Earned,
+                            Type = TransactionType.Reward,
                             Amount = 100,
                             FromUserId = "system",
                             ToUserId = user.Uid,
@@ -94,8 +98,7 @@ namespace AcuPuntos.Services
             try
             {
 #if ANDROID || IOS
-                var auth = CrossFirebaseAuth.Current;
-                await auth.SignOutAsync();
+                await _firebaseAuth.SignOutAsync();
 #endif
                 _currentUser = null;
                 AuthStateChanged?.Invoke(this, null);
@@ -111,10 +114,9 @@ namespace AcuPuntos.Services
             try
             {
 #if ANDROID || IOS
-                var auth = CrossFirebaseAuth.Current;
-                if (auth.CurrentUser != null && _currentUser == null)
+                if (_firebaseAuth.CurrentUser != null && _currentUser == null)
                 {
-                    _currentUser = await _firestoreService.GetUserAsync(auth.CurrentUser.Uid);
+                    _currentUser = await _firestoreService.GetUserAsync(_firebaseAuth.CurrentUser.Uid);
                 }
 #endif
                 return _currentUser;

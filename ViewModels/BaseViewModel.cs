@@ -76,7 +76,7 @@ namespace AcuPuntos.ViewModels
             try
             {
                 IsBusy = true;
-                
+
                 if (!string.IsNullOrEmpty(loadingMessage))
                 {
                     Subtitle = loadingMessage;
@@ -95,6 +95,38 @@ namespace AcuPuntos.ViewModels
                 IsBusy = false;
                 Subtitle = null;
             }
+        }
+
+        /// <summary>
+        /// Muestra un diálogo de confirmación con mensajes personalizados.
+        /// </summary>
+        protected async Task<bool> ShowConfirmationAsync(string title, string message, string acceptButton = "Sí", string cancelButton = "No")
+        {
+            return await Shell.Current.DisplayAlert(title, message, acceptButton, cancelButton);
+        }
+
+        /// <summary>
+        /// Muestra un diálogo de información.
+        /// </summary>
+        protected async Task ShowAlertAsync(string title, string message, string button = "OK")
+        {
+            await Shell.Current.DisplayAlert(title, message, button);
+        }
+
+        /// <summary>
+        /// Muestra un mensaje de error.
+        /// </summary>
+        protected async Task ShowErrorAsync(string message, string title = "Error")
+        {
+            await Shell.Current.DisplayAlert(title, message, "OK");
+        }
+
+        /// <summary>
+        /// Muestra un mensaje de éxito.
+        /// </summary>
+        protected async Task ShowSuccessAsync(string message, string title = "¡Éxito!")
+        {
+            await Shell.Current.DisplayAlert(title, message, "OK");
         }
     }
 }

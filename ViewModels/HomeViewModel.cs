@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using AcuPuntos.Models;
 using AcuPuntos.Services;
+using AcuPuntos.Views;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -145,6 +146,12 @@ namespace AcuPuntos.ViewModels
         private async Task GoToProfile()
         {
             await Shell.Current.GoToAsync(nameof(ProfilePage));
+        }
+
+        [RelayCommand]
+        private async Task GoToAdmin()
+        {
+            await Shell.Current.GoToAsync(nameof(AdminPage));
         }
 
         [RelayCommand]

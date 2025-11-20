@@ -1,40 +1,38 @@
 using System;
-using Google.Cloud.Firestore;
+using Plugin.Firebase.Firestore;
 
 namespace AcuPuntos.Models
 {
-    [FirestoreData]
-    public class User
+    public class User : IFirestoreObject
     {
-        [FirestoreProperty]
+        [FirestoreDocumentId]
         public string? Uid { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("email")]
         public string? Email { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("displayName")]
         public string? DisplayName { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("photoUrl")]
         public string? PhotoUrl { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("points")]
         public int Points { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("role")]
         public string Role { get; set; } = "user"; // "admin" or "user"
 
-        [FirestoreProperty]
+        [FirestoreProperty("createdAt")]
         public DateTime CreatedAt { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("lastLogin")]
         public DateTime LastLogin { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("fcmToken")]
         public string? FcmToken { get; set; }
 
         // Propiedades no mapeadas a Firestore
-        [FirestoreProperty(ConverterType = typeof(Google.Cloud.Firestore.ConverterRegistry))]
         public bool IsAdmin => Role == "admin";
 
         public User()
