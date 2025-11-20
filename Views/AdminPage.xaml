@@ -8,37 +8,227 @@
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
 
-            <!-- Header -->
-            <VerticalStackLayout Spacing="5">
-                <Label Text="⚙️ Administración"
-                       FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="#333333"/>
-                <Label Text="Gestiona usuarios y recompensas"
-                       FontSize="16"
-                       TextColor="#666666"/>
-            </VerticalStackLayout>
+            <!-- Estadísticas rápidas -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <!-- Total usuarios -->
+                <Frame Grid.Column="0"
+                       Style="{StaticResource CardFrame}"
+                       BackgroundColor="#3498DB"
+                       Padding="15">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="👥"
+                               FontSize="30"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Usuarios"
+                               TextColor="White"
+                               FontSize="12"
+                               HorizontalOptions="Center"/>
+                        <Label Text="{Binding TotalUsers}"
+                               TextColor="White"
+                               FontSize="26"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-            <!-- Mensaje de desarrollo -->
-            <Frame Style="{StaticResource CardFrame}"
-                   Padding="30"
-                   BackgroundColor="#FFF3E0">
-                <VerticalStackLayout Spacing="15">
-                    <Label Text="🔧"
-                           FontSize="50"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Panel de administración"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="#F39C12"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Aquí podrás gestionar usuarios, asignar puntos y configurar recompensas"
-                           FontSize="14"
-                           TextColor="#666666"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
-            </Frame>
+                <!-- Canjes pendientes -->
+                <Frame Grid.Column="1"
+                       Style="{StaticResource CardFrame}"
+                       BackgroundColor="#F39C12"
+                       Padding="15">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="⏳"
+                               FontSize="30"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Pendientes"
+                               TextColor="White"
+                               FontSize="12"
+                               HorizontalOptions="Center"/>
+                        <Label Text="{Binding PendingRedemptionsCount}"
+                               TextColor="White"
+                               FontSize="26"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Canjes pendientes -->
+            <Label Text="⏳ Canjes Pendientes"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#333333"/>
+
+            <CollectionView ItemsSource="{Binding PendingRedemptions}"
+                          SelectionMode="None"
+                          HeightRequest="250">
+                <CollectionView.EmptyView>
+                    <Frame Style="{StaticResource CardFrame}"
+                           Padding="30">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="✅"
+                                   FontSize="40"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="No hay canjes pendientes"
+                                   FontSize="14"
+                                   TextColor="#666666"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource CardFrame}"
+                               Padding="15"
+                               Margin="0,0,0,10">
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  ColumnDefinitions="Auto,*,Auto">
+
+                                <Label Grid.Row="0" Grid.RowSpan="2"
+                                       Text="🎁"
+                                       FontSize="40"
+                                       VerticalOptions="Center"/>
+
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="1"
+                                                   Margin="15,0,0,0">
+                                    <Label Text="{Binding Reward.Name}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#333333"/>
+                                    <Label Text="{Binding User.DisplayName}"
+                                           FontSize="14"
+                                           TextColor="#666666"/>
+                                    <Label Text="{Binding RedeemedAt, StringFormat='Canjeado: {0:dd/MM/yyyy HH:mm}'}"
+                                           FontSize="12"
+                                           TextColor="#999999"/>
+                                </VerticalStackLayout>
+
+                                <Label Grid.Row="0" Grid.Column="2"
+                                       Text="{Binding PointsUsed, StringFormat='{0:N0} pts'}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#F39C12"
+                                       VerticalOptions="Start"/>
+
+                                <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="3"
+                                                     Spacing="10"
+                                                     Margin="0,10,0,0">
+                                    <Button Text="✅ Aprobar"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApproveRedemptionCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#2ECC71"
+                                            TextColor="White"
+                                            FontSize="12"
+                                            HeightRequest="35"
+                                            CornerRadius="17"
+                                            HorizontalOptions="FillAndExpand"/>
+                                    <Button Text="❌ Rechazar"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRedemptionCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#E74C3C"
+                                            TextColor="White"
+                                            FontSize="12"
+                                            HeightRequest="35"
+                                            CornerRadius="17"
+                                            HorizontalOptions="FillAndExpand"/>
+                                </HorizontalStackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Gestión de usuarios -->
+            <Label Text="👥 Gestión de Usuarios"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#333333"
+                   Margin="0,20,0,0"/>
+
+            <SearchBar Placeholder="Buscar usuarios..."
+                       Text="{Binding SearchText}"
+                       BackgroundColor="White"
+                       PlaceholderColor="#999999"/>
+
+            <CollectionView ItemsSource="{Binding Users}"
+                          SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Frame Style="{StaticResource CardFrame}"
+                           Padding="30">
+                        <Label Text="No hay usuarios"
+                               FontSize="14"
+                               TextColor="#666666"
+                               HorizontalOptions="Center"/>
+                    </Frame>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource CardFrame}"
+                               Padding="15"
+                               Margin="0,0,0,10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewUserDetailCommand}"
+                                    CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="Auto,*,Auto">
+
+                                <Label Grid.Row="0" Grid.RowSpan="2"
+                                       Text="👤"
+                                       FontSize="40"
+                                       VerticalOptions="Center"/>
+
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="1"
+                                                   Margin="15,0,0,0">
+                                    <Label Text="{Binding DisplayName}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#333333"/>
+                                    <Label Text="{Binding Email}"
+                                           FontSize="12"
+                                           TextColor="#666666"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="2">
+                                    <Label Text="{Binding Points, StringFormat='{0:N0}'}"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           TextColor="#2ECC71"
+                                           HorizontalOptions="End"/>
+                                    <Label Text="puntos"
+                                           FontSize="12"
+                                           TextColor="#999999"
+                                           HorizontalOptions="End"/>
+                                </VerticalStackLayout>
+
+                                <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Text="💰 Asignar Puntos"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AssignPointsCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#3498DB"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        HeightRequest="35"
+                                        CornerRadius="17"
+                                        Margin="15,10,0,0"/>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Botón de refrescar -->
+            <Button Text="🔄 Actualizar Todo"
+                    Command="{Binding RefreshDataCommand}"
+                    BackgroundColor="#95A5A6"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    Margin="0,10,0,20"/>
 
         </VerticalStackLayout>
     </ScrollView>
