@@ -18,7 +18,16 @@ namespace AcuPuntos.Models
         [FirestoreProperty("pointsUsed")]
         public int PointsUsed { get; set; }
 
+        // Propiedad interna para Firestore (maneja la conversión int <-> enum)
         [FirestoreProperty("status")]
+        private long StatusValue
+        {
+            get => (long)Status;
+            set => Status = (RedemptionStatus)value;
+        }
+
+        // Propiedad pública para uso en código
+        [FirestoreIgnored]
         public RedemptionStatus Status { get; set; }
 
         [FirestoreProperty("redeemedAt")]
