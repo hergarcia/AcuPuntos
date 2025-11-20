@@ -146,7 +146,7 @@
                                 <!-- Tipo de transacción -->
                                 <Border Grid.Row="2" Grid.ColumnSpan="3"
                                        Padding="8,4"
-                                       CornerRadius="10"
+                                       StrokeShape="RoundRectangle 10"
                                        BackgroundColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}"
                                        HorizontalOptions="Start"
                                        Margin="0,10,0,0">

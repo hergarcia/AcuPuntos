@@ -116,7 +116,7 @@
                                 <Border Grid.Row="0" Grid.Column="2"
                                        BackgroundColor="#2ECC71"
                                        Padding="10,5"
-                                       CornerRadius="15"
+                                       StrokeShape="RoundRectangle 15"
                                        VerticalOptions="Start">
                                     <Label Text="{Binding PointsCost, StringFormat='{0:N0} pts'}"
                                            TextColor="White"
@@ -128,7 +128,7 @@
                                 <Border Grid.Row="1" Grid.Column="1"
                                        Grid.ColumnSpan="2"
                                        Padding="8,4"
-                                       CornerRadius="10"
+                                       StrokeShape="RoundRectangle 10"
                                        BackgroundColor="LightBlue"
                                        HorizontalOptions="Start"
                                        Margin="15,5,0,0">

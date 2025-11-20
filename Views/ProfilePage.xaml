@@ -37,7 +37,7 @@
 
                     <!-- Rol -->
                     <Border Padding="10,5"
-                           CornerRadius="15"
+                           StrokeShape="RoundRectangle 15"
                            BackgroundColor="White"
                            HorizontalOptions="Center">
                         <Label Text="{Binding CurrentUser.Role}"
@@ -90,7 +90,7 @@
                         <Border Grid.Row="0" Grid.Column="0"
                                BackgroundColor="#E8F5E9"
                                Padding="15"
-                               CornerRadius="15">
+                               StrokeShape="RoundRectangle 15">
                             <VerticalStackLayout Spacing="5">
                                 <Label Text="📝"
                                        FontSize="30"
@@ -111,7 +111,7 @@
                         <Border Grid.Row="0" Grid.Column="1"
                                BackgroundColor="#FFF3E0"
                                Padding="15"
-                               CornerRadius="15">
+                               StrokeShape="RoundRectangle 15">
                             <VerticalStackLayout Spacing="5">
                                 <Label Text="🎁"
                                        FontSize="30"
@@ -132,7 +132,7 @@
                         <Border Grid.Row="1" Grid.Column="0"
                                BackgroundColor="#E3F2FD"
                                Padding="15"
-                               CornerRadius="15">
+                               StrokeShape="RoundRectangle 15">
                             <VerticalStackLayout Spacing="5">
                                 <Label Text="📈"
                                        FontSize="30"
@@ -153,7 +153,7 @@
                         <Border Grid.Row="1" Grid.Column="1"
                                BackgroundColor="#FFEBEE"
                                Padding="15"
-                               CornerRadius="15">
+                               StrokeShape="RoundRectangle 15">
                             <VerticalStackLayout Spacing="5">
                                 <Label Text="📉"
                                        FontSize="30"
