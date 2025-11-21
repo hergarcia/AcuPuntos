@@ -8,9 +8,10 @@ namespace AcuPuntos.Models
         [FirestoreDocumentId]
         public string? Id { get; set; }
 
-        // Propiedad interna para Firestore (maneja la conversión int <-> enum)
+        // Propiedad para Firestore (maneja la conversión int <-> enum)
+        // IMPORTANTE: Debe ser pública para que el serializador de Firestore pueda acceder a ella
         [FirestoreProperty("type")]
-        private long TypeValue
+        public long TypeValue
         {
             get => (long)Type;
             set => Type = (TransactionType)value;
