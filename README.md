@@ -77,6 +77,8 @@ Sistema de gestión de puntos y recompensas para un emprendimiento de acupuntura
 
 #### Reglas de Seguridad
 
+**IMPORTANTE**: Estas reglas de seguridad requieren el uso de Cloud Functions para transferencias de puntos entre usuarios no-admin. Ver sección "4. Configurar Cloud Functions" más abajo.
+
 ```javascript
 rules_version = '2';
 service cloud.firestore {
@@ -124,7 +126,34 @@ service cloud.firestore {
 }
 ```
 
-### 4. Configurar primer Admin
+### 4. Configurar Cloud Functions
+
+**REQUERIDO para transferencias de puntos**
+
+Las Cloud Functions permiten que usuarios no-admin transfieran puntos de manera segura, evitando problemas de permisos con las reglas de Firestore.
+
+1. **Instalar Firebase CLI**
+   ```bash
+   npm install -g firebase-tools
+   firebase login
+   ```
+
+2. **Instalar dependencias**
+   ```bash
+   cd functions
+   npm install
+   ```
+
+3. **Desplegar las funciones**
+   ```bash
+   npm run deploy
+   ```
+
+Para instrucciones detalladas, ver [functions/README.md](functions/README.md).
+
+**Nota**: Sin las Cloud Functions desplegadas, los usuarios no-admin recibirán errores de permisos al intentar transferir puntos.
+
+### 5. Configurar primer Admin
 
 1. Registra el primer usuario con Google Sign-In
 2. Ve a Firebase Console → Firestore

@@ -1,0 +1,20 @@
+# Compiled JavaScript files
+lib/**/*.js
+lib/**/*.js.map
+
+# Node modules
+node_modules/
+
+# Firebase cache
+.firebase/
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+.env.local
