@@ -18,6 +18,7 @@
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
             <converters:SelectedColorConverter x:Key="SelectedColorConverter" />
+            <converters:UserSelectionConverter x:Key="UserSelectionConverter" />
             <converters:TransactionColorConverter x:Key="TransactionColorConverter" />
             <converters:TransactionIconConverter x:Key="TransactionIconConverter" />
             <converters:TransactionTypeConverter x:Key="TransactionTypeConverter" />

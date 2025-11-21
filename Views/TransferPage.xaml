@@ -70,9 +70,15 @@
                                                Padding="15"
                                                BackgroundColor="White"
                                                StrokeShape="RoundRectangle 10"
-                                               Stroke="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}">
+                                               StrokeThickness="2">
+                                            <Border.Stroke>
+                                                <MultiBinding Converter="{StaticResource UserSelectionConverter}">
+                                                    <Binding Path="Uid" />
+                                                    <Binding Path="BindingContext.SelectedUser.Uid" Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                                </MultiBinding>
+                                            </Border.Stroke>
                                             <Border.GestureRecognizers>
-                                                <TapGestureRecognizer 
+                                                <TapGestureRecognizer
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectUserCommand}"
                                                     CommandParameter="{Binding .}"/>
                                             </Border.GestureRecognizers>
