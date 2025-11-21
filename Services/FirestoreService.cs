@@ -792,7 +792,7 @@ namespace AcuPuntos.Services
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine($"[FirestoreService] Documento con data null, ID: {doc.Id}");
+                        System.Diagnostics.Debug.WriteLine($"[FirestoreService] Documento con data null, ID: {doc.Reference.Id}");
                     }
                 }
 
