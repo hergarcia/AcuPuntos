@@ -297,17 +297,25 @@ namespace AcuPuntos.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"Iniciando transferencia de {points} puntos de {fromUserId} a {toUserId}");
+
                 // Verificar que el usuario origen tiene suficientes puntos
                 var fromUser = await GetUserAsync(fromUserId);
                 var toUser = await GetUserAsync(toUserId);
 
                 if (fromUser == null || toUser == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Usuario origen o destino no existe");
                     return false;
+                }
 
                 if (fromUser.Points < points)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Puntos insuficientes: tiene {fromUser.Points}, necesita {points}");
                     return false;
+                }
 
-                // Actualizar puntos
+                // Actualizar puntos (esto funcionará con las nuevas reglas de seguridad)
                 await UpdateUserPointsAsync(fromUserId, -points);
                 await UpdateUserPointsAsync(toUserId, points);
 
@@ -340,11 +348,13 @@ namespace AcuPuntos.Services
                 await CreateTransactionAsync(sendTransaction);
                 await CreateTransactionAsync(receiveTransaction);
 
+                System.Diagnostics.Debug.WriteLine($"Transferencia completada exitosamente");
                 return true;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error transferring points: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 return false;
             }
         }
