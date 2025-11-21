@@ -237,13 +237,14 @@ namespace AcuPuntos.Services
             try
             {
                 var transactions = new List<Transaction>();
+                var transactionIds = new HashSet<string>();
 
-                // Obtener transacciones donde el usuario es origen o destino
-                // Removido OrderBy en Firestore para evitar doble ordenamiento - se ordena solo en cliente
+                // Obtener transacciones donde el usuario es origen
                 var sentQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("fromUserId", userId)
-                    .LimitedTo(limit * 2); // Límite mayor para compensar filtrado posterior
+                    .LimitedTo(limit * 2);
 
+                // Obtener transacciones donde el usuario es destino
                 var receivedQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("toUserId", userId)
                     .LimitedTo(limit * 2);
@@ -251,35 +252,47 @@ namespace AcuPuntos.Services
                 var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
                 var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
 
+                // Procesar transacciones donde el usuario es el origen (fromUserId)
                 if (sentTransactions != null)
                 {
-                    var sentList = sentTransactions.Documents.Select(x => x.Data).ToList();
-                    // Solo agregar transacciones enviadas o redenciones (donde el usuario es el origen)
-                    foreach (var transaction in sentList)
+                    foreach (var doc in sentTransactions.Documents)
                     {
+                        var transaction = doc.Data;
+                        // Solo agregar si el tipo corresponde a acciones del remitente
                         if (transaction.Type == TransactionType.Sent || transaction.Type == TransactionType.Redemption)
                         {
-                            transactions.Add(transaction);
+                            if (!transactionIds.Contains(transaction.Id!))
+                            {
+                                transactions.Add(transaction);
+                                transactionIds.Add(transaction.Id!);
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Agregada transacción Sent/Redemption: {transaction.Id} - Type: {transaction.Type}");
+                            }
                         }
                     }
                 }
 
+                // Procesar transacciones donde el usuario es el destino (toUserId)
                 if (receivedTransactions != null)
                 {
-                    var receivedList = receivedTransactions.Documents.Select(x => x.Data).ToList();
-                    // Solo agregar transacciones recibidas o recompensas (donde el usuario es el destino)
-                    foreach (var transaction in receivedList)
+                    foreach (var doc in receivedTransactions.Documents)
                     {
+                        var transaction = doc.Data;
+                        // Solo agregar si el tipo corresponde a acciones del destinatario
                         if (transaction.Type == TransactionType.Received || transaction.Type == TransactionType.Reward)
                         {
-                            // Evitar duplicados por ID (por si acaso)
-                            if (!transactions.Any(t => t.Id == transaction.Id))
+                            if (!transactionIds.Contains(transaction.Id!))
+                            {
                                 transactions.Add(transaction);
+                                transactionIds.Add(transaction.Id!);
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Agregada transacción Received/Reward: {transaction.Id} - Type: {transaction.Type}");
+                            }
                         }
                     }
                 }
 
-                // Ordenar por fecha descendente SOLO en el cliente (más eficiente)
+                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Total transacciones para usuario {userId}: {transactions.Count}");
+
+                // Ordenar por fecha descendente SOLO en el cliente
                 return transactions.OrderByDescending(t => t.CreatedAt).Take(limit).ToList();
             }
             catch (Exception ex)
