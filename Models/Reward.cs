@@ -50,11 +50,11 @@ namespace AcuPuntos.Models
         {
             return Category?.ToLower() switch
             {
-                "servicios" => Color.FromArgb("#2ECC71"),
-                "productos" => Color.FromArgb("#3498DB"),
-                "descuentos" => Color.FromArgb("#E74C3C"),
-                "especial" => Color.FromArgb("#F39C12"),
-                _ => Color.FromArgb("#95A5A6")
+                "servicios" => Color.FromArgb("#10B981"), // Success
+                "productos" => Color.FromArgb("#0EA5E9"), // Secondary
+                "descuentos" => Color.FromArgb("#EF4444"), // Danger
+                "especial" => Color.FromArgb("#F59E0B"), // Warning
+                _ => Color.FromArgb("#6B7280") // Gray
             };
         }
     }

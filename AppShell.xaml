@@ -9,12 +9,12 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Style TargetType="Element" x:Key="BaseStyle">
-                <Setter Property="Shell.BackgroundColor" Value="#2ECC71" />
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="#2ECC71" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="White" />
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF" />
                 <Setter Property="Shell.TabBarTitleColor" Value="White" />
@@ -35,15 +35,15 @@
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
 
-        <Tab Title="Transferir">
+        <Tab Title="Transferir" Route="transfer">
             <ShellContent ContentTemplate="{DataTemplate local:TransferPage}" />
         </Tab>
 
-        <Tab Title="Recompensas">
+        <Tab Title="Recompensas" Route="rewards">
             <ShellContent ContentTemplate="{DataTemplate local:RewardsPage}" />
         </Tab>
 
-        <Tab Title="Perfil">
+        <Tab Title="Perfil" Route="profile">
             <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
         </Tab>
     </TabBar>

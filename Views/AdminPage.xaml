@@ -268,15 +268,33 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!--  Botón de inicializar badges  -->
-            <!--  <Button Text="🎖️ Inicializar Badges del Sistema"  -->
-            <!--  Command="{Binding InitializeBadgesCommand}"  -->
-            <!--  BackgroundColor="#9B59B6"  -->
-            <!--  TextColor="White"  -->
-            <!--  FontAttributes="Bold"  -->
-            <!--  HeightRequest="50"  -->
-            <!--  CornerRadius="25"  -->
-            <!--  Margin="0,10,0,0"/>  -->
+            <!--  Botones de inicialización del sistema  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Margin="0,20,0,10"
+                Text="⚙️ Configuración del Sistema"
+                TextColor="{StaticResource Dark}" />
+
+            <Button
+                BackgroundColor="{StaticResource Tertiary}"
+                Command="{Binding InitializeBadgesCommand}"
+                CornerRadius="25"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Margin="0,0,0,10"
+                Text="🎖️ Inicializar Badges del Sistema"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="{StaticResource Secondary}"
+                Command="{Binding InitializeRewardsCommand}"
+                CornerRadius="25"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Margin="0,0,0,20"
+                Text="🎁 Inicializar Recompensas del Sistema"
+                TextColor="White" />
 
         </VerticalStackLayout>
     </ScrollView>
