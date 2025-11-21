@@ -73,14 +73,21 @@
                             <CollectionView ItemsSource="{Binding FilteredUsers}" SelectionMode="None">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="models:User">
-                                        <Border
-                                            BackgroundColor="White"
-                                            Margin="5"
-                                            Padding="15"
-                                            Stroke="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
-                                            StrokeShape="RoundRectangle 10">
+                                        <Border Margin="5"
+                                               Padding="15"
+                                               BackgroundColor="White"
+                                               StrokeShape="RoundRectangle 10"
+                                               StrokeThickness="2">
+                                            <Border.Stroke>
+                                                <MultiBinding Converter="{StaticResource UserSelectionConverter}">
+                                                    <Binding Path="Uid" />
+                                                    <Binding Path="BindingContext.SelectedUser.Uid" Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                                </MultiBinding>
+                                            </Border.Stroke>
                                             <Border.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectUserCommand}" CommandParameter="{Binding .}" />
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectUserCommand}"
+                                                    CommandParameter="{Binding .}"/>
                                             </Border.GestureRecognizers>
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <Border
