@@ -32,7 +32,7 @@
                         WidthRequest="90">
                         <Image
                             Aspect="AspectFill"
-                            Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.png', FallbackValue='user_placeholder.png'}" />
+                            Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
                     </Border>
 
                     <Label

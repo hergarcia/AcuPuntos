@@ -146,7 +146,7 @@
                             WidthRequest="40">
                             <Image
                                 Aspect="AspectFill"
-                                Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.png', FallbackValue='user_placeholder.png'}" />
+                                Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
                         </Border>
                         <VerticalStackLayout>
                             <Label

@@ -86,7 +86,7 @@
                                                     WidthRequest="50">
                                                     <Image
                                                         Aspect="AspectFill"
-                                                        Source="{Binding PhotoUrl, TargetNullValue='user_placeholder.png', FallbackValue='user_placeholder.png'}" />
+                                                        Source="{Binding PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
                                                 </Border>
                                                 <VerticalStackLayout Grid.Column="1"
                                                                    Margin="10,0,0,0">
