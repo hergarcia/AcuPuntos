@@ -237,13 +237,14 @@ namespace AcuPuntos.Services
             try
             {
                 var transactions = new List<Transaction>();
+                var transactionIds = new HashSet<string>();
 
-                // Obtener transacciones donde el usuario es origen o destino
-                // Removido OrderBy en Firestore para evitar doble ordenamiento - se ordena solo en cliente
+                // Obtener transacciones donde el usuario es origen
                 var sentQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("fromUserId", userId)
-                    .LimitedTo(limit * 2); // Límite mayor para compensar filtrado posterior
+                    .LimitedTo(limit * 2);
 
+                // Obtener transacciones donde el usuario es destino
                 var receivedQuery = _firestore.GetCollection(TransactionsCollection)
                     .WhereEqualsTo("toUserId", userId)
                     .LimitedTo(limit * 2);
@@ -251,24 +252,66 @@ namespace AcuPuntos.Services
                 var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
                 var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
 
+                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query fromUserId=={userId}: {sentTransactions?.Documents.Count() ?? 0} transacciones encontradas");
+                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query toUserId=={userId}: {receivedTransactions?.Documents.Count() ?? 0} transacciones encontradas");
+
+                // Procesar transacciones donde el usuario es el origen (fromUserId)
                 if (sentTransactions != null)
                 {
-                    var sentList = sentTransactions.Documents.Select(x => x.Data).ToList();
-                    transactions.AddRange(sentList);
-                }
-
-                if (receivedTransactions != null)
-                {
-                    var receivedList = receivedTransactions.Documents.Select(x => x.Data).ToList();
-                    foreach (var transaction in receivedList)
+                    foreach (var doc in sentTransactions.Documents)
                     {
-                        // Evitar duplicados en transferencias
-                        if (!transactions.Any(t => t.Id == transaction.Id))
-                            transactions.Add(transaction);
+                        var transaction = doc.Data;
+                        System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query fromUserId - Transacción {transaction.Id}: Type={transaction.Type}, From={transaction.FromUserId}, To={transaction.ToUserId}");
+
+                        // Solo agregar si el tipo corresponde a acciones del remitente
+                        if (transaction.Type == TransactionType.Sent || transaction.Type == TransactionType.Redemption)
+                        {
+                            if (!transactionIds.Contains(transaction.Id!))
+                            {
+                                transactions.Add(transaction);
+                                transactionIds.Add(transaction.Id!);
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✓ Agregada transacción Sent/Redemption: {transaction.Id}");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✗ Filtrada (tipo {transaction.Type} no es Sent/Redemption)");
+                        }
                     }
                 }
 
-                // Ordenar por fecha descendente SOLO en el cliente (más eficiente)
+                // Procesar transacciones donde el usuario es el destino (toUserId)
+                if (receivedTransactions != null)
+                {
+                    foreach (var doc in receivedTransactions.Documents)
+                    {
+                        var transaction = doc.Data;
+                        System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query toUserId - Transacción {transaction.Id}: Type={transaction.Type}, From={transaction.FromUserId}, To={transaction.ToUserId}");
+
+                        // Solo agregar si el tipo corresponde a acciones del destinatario
+                        if (transaction.Type == TransactionType.Received || transaction.Type == TransactionType.Reward)
+                        {
+                            if (!transactionIds.Contains(transaction.Id!))
+                            {
+                                transactions.Add(transaction);
+                                transactionIds.Add(transaction.Id!);
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✓ Agregada transacción Received/Reward: {transaction.Id}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✗ Duplicada (ID ya existe)");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✗ Filtrada (tipo {transaction.Type} no es Received/Reward)");
+                        }
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Total transacciones para usuario {userId}: {transactions.Count}");
+
+                // Ordenar por fecha descendente SOLO en el cliente
                 return transactions.OrderByDescending(t => t.CreatedAt).Take(limit).ToList();
             }
             catch (Exception ex)
@@ -345,8 +388,13 @@ namespace AcuPuntos.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Creando transacción Sent: Type={sendTransaction.Type}, From={sendTransaction.FromUserId}, To={sendTransaction.ToUserId}");
                 await CreateTransactionAsync(sendTransaction);
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Transacción Sent creada con ID: {sendTransaction.Id}");
+
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Creando transacción Received: Type={receiveTransaction.Type}, From={receiveTransaction.FromUserId}, To={receiveTransaction.ToUserId}");
                 await CreateTransactionAsync(receiveTransaction);
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Transacción Received creada con ID: {receiveTransaction.Id}");
 
                 System.Diagnostics.Debug.WriteLine($"Transferencia completada exitosamente");
                 return true;
