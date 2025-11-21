@@ -30,9 +30,7 @@
                         StrokeShape="RoundRectangle 45"
                         StrokeThickness="3"
                         WidthRequest="90">
-                        <Image
-                            Aspect="AspectFill"
-                            Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
+                        <Image Aspect="AspectFill" Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
                     </Border>
 
                     <Label
@@ -278,7 +276,7 @@
                         <Border
                             Margin="0,0,0,8"
                             Padding="12"
-                            Style="{StaticResource CardFrame}">
+                            Style="{StaticResource ListItemCard}">
                             <Grid ColumnDefinitions="Auto,*,Auto">
 
                                 <Label
@@ -320,9 +318,9 @@
                 CornerRadius="25"
                 FontAttributes="Bold"
                 HeightRequest="50"
+                Margin="0,0,0,20"
                 Text="💰 Asignar Puntos"
-                TextColor="White"
-                Margin="0,0,0,20" />
+                TextColor="White" />
 
         </VerticalStackLayout>
     </ScrollView>
