@@ -187,8 +187,8 @@
                         Binding="{Binding CanRedeem}"
                         TargetType="Button"
                         Value="False">
-                        <Setter Property="BackgroundColor" Value="#E0E0E0" />
-                        <Setter Property="TextColor" Value="#999999" />
+                        <Setter Property="BackgroundColor" Value="{StaticResource Gray200}" />
+                        <Setter Property="TextColor" Value="{StaticResource Gray}" />
                         <Setter Property="Text" Value="No disponible" />
                     </DataTrigger>
                 </Button.Triggers>

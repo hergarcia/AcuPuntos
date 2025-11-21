@@ -146,7 +146,7 @@
                                     <Label
                                         FontSize="12"
                                         Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                                        TextColor="#999999" />
+                                        TextColor="{StaticResource Gray400}" />
                                 </VerticalStackLayout>
 
                                 <!--  Monto  -->
@@ -164,7 +164,7 @@
                                         FontSize="12"
                                         HorizontalOptions="End"
                                         Text="puntos"
-                                        TextColor="#999999" />
+                                        TextColor="{StaticResource Gray400}" />
                                 </VerticalStackLayout>
 
                                 <!--  Tipo de transacción  -->

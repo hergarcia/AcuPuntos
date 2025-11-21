@@ -299,7 +299,7 @@
                             FontSize="14"
                             HorizontalOptions="Center"
                             Text="Tus transacciones aparecerán aquí"
-                            TextColor="#999999" />
+                            TextColor="{StaticResource Gray400}" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
