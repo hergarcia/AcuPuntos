@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:AcuPuntos.Views"
+             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+             xmlns:models="clr-namespace:AcuPuntos.Models"
              x:Class="AcuPuntos.Views.HistoryPage"
+             x:DataType="viewmodels:HistoryViewModel"
              Title="{Binding Title}"
              BackgroundColor="#F5F5F5">
 
@@ -11,7 +15,7 @@
             <!-- Estadísticas -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <!-- Puntos ganados -->
-                <Frame Grid.Column="0"
+                <Border Grid.Column="0"
                        Style="{StaticResource CardFrame}"
                        BackgroundColor="#2ECC71"
                        Padding="15">
@@ -29,10 +33,10 @@
                                FontAttributes="Bold"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
 
                 <!-- Puntos gastados -->
-                <Frame Grid.Column="1"
+                <Border Grid.Column="1"
                        Style="{StaticResource CardFrame}"
                        BackgroundColor="#E74C3C"
                        Padding="15">
@@ -50,11 +54,11 @@
                                FontAttributes="Bold"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
             </Grid>
 
             <!-- Filtros -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="15">
                 <VerticalStackLayout Spacing="10">
                     <SearchBar Placeholder="Buscar en historial..."
@@ -73,7 +77,7 @@
                                 HorizontalOptions="FillAndExpand"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Lista de transacciones -->
             <Label Text="{Binding TotalTransactions, StringFormat='Total: {0} transacciones'}"
@@ -84,7 +88,7 @@
             <CollectionView ItemsSource="{Binding FilteredTransactions}"
                           SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Frame Style="{StaticResource CardFrame}"
+                    <Border Style="{StaticResource CardFrame}"
                            Padding="40">
                         <VerticalStackLayout Spacing="10">
                             <Label Text="📊"
@@ -95,11 +99,11 @@
                                    TextColor="#666666"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Style="{StaticResource CardFrame}"
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Border Style="{StaticResource CardFrame}"
                                Padding="15"
                                Margin="0,0,0,10">
                             <Grid RowDefinitions="Auto,Auto,Auto"
@@ -140,9 +144,9 @@
                                 </VerticalStackLayout>
 
                                 <!-- Tipo de transacción -->
-                                <Frame Grid.Row="2" Grid.ColumnSpan="3"
+                                <Border Grid.Row="2" Grid.ColumnSpan="3"
                                        Padding="8,4"
-                                       CornerRadius="10"
+                                       StrokeShape="RoundRectangle 10"
                                        BackgroundColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}"
                                        HorizontalOptions="Start"
                                        Margin="0,10,0,0">
@@ -150,10 +154,10 @@
                                            TextColor="White"
                                            FontSize="12"
                                            FontAttributes="Bold"/>
-                                </Frame>
+                                </Border>
 
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -170,4 +174,4 @@
 
         </VerticalStackLayout>
     </ScrollView>
-</ContentPage>
+</views:BasePage>

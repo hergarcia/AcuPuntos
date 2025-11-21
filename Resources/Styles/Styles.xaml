@@ -29,19 +29,21 @@
         <Setter Property="FontAttributes" Value="Bold" />
     </Style>
 
-    <!--  Estilos para Frames (Cards)  -->
-    <Style TargetType="Frame" x:Key="CardFrame">
+    <!--  Estilos para Borders (Cards)  -->
+    <Style TargetType="Border" x:Key="CardFrame">
         <Setter Property="BackgroundColor" Value="White" />
-        <Setter Property="CornerRadius" Value="15" />
-        <Setter Property="HasShadow" Value="True" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 15" />
+        <Setter Property="Stroke" Value="Transparent" />
         <Setter Property="Padding" Value="15" />
         <Setter Property="Margin" Value="5" />
-        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="Shadow">
+            <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.2" />
+        </Setter>
     </Style>
 
     <Style
         BasedOn="{StaticResource CardFrame}"
-        TargetType="Frame"
+        TargetType="Border"
         x:Key="RewardCard">
         <Setter Property="Padding" Value="20" />
     </Style>

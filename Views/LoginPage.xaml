@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:AcuPuntos.Views"
+             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
              x:Class="AcuPuntos.Views.LoginPage"
+             x:DataType="viewmodels:LoginViewModel"
              Title="Login"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#F5F5F5">
@@ -22,18 +25,20 @@
             <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
                 
                 <!-- Logo/Icono -->
-                <Frame BackgroundColor="White" 
-                       WidthRequest="120" 
+                <Border BackgroundColor="White"
+                       WidthRequest="120"
                        HeightRequest="120"
-                       CornerRadius="60"
-                       HorizontalOptions="Center"
-                       HasShadow="True"
-                       BorderColor="Transparent">
-                    <Label Text="🍃" 
-                           FontSize="60" 
-                           HorizontalOptions="Center" 
+                       StrokeShape="RoundRectangle 60"
+                       Stroke="Transparent"
+                       HorizontalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.3" />
+                    </Border.Shadow>
+                    <Label Text="🍃"
+                           FontSize="60"
+                           HorizontalOptions="Center"
                            VerticalOptions="Center"/>
-                </Frame>
+                </Border>
 
                 <!-- Título de la App -->
                 <Label Text="AcuPuntos"
@@ -61,10 +66,13 @@
                 <BoxView HeightRequest="40"/>
 
                 <!-- Card de Login -->
-                <Frame BackgroundColor="White"
-                       CornerRadius="20"
-                       HasShadow="True"
+                <Border BackgroundColor="White"
+                       StrokeShape="RoundRectangle 20"
+                       Stroke="Transparent"
                        Padding="30">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.3" />
+                    </Border.Shadow>
                     <VerticalStackLayout Spacing="20">
                         
                         <!-- Mensaje de bienvenida -->
@@ -113,7 +121,7 @@
                                          HorizontalOptions="Center"/>
 
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
 
                 <!-- Información adicional -->
                 <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
@@ -134,4 +142,4 @@
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
-</ContentPage>
+</views:BasePage>

@@ -2,7 +2,7 @@ using AcuPuntos.ViewModels;
 
 namespace AcuPuntos.Views;
 
-public partial class HistoryPage : ContentPage
+public partial class HistoryPage : BasePage
 {
     public HistoryPage(HistoryViewModel viewModel)
     {

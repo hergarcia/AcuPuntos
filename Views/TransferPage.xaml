@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:AcuPuntos.Views"
+             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+             xmlns:models="clr-namespace:AcuPuntos.Models"
              x:Class="AcuPuntos.Views.TransferPage"
+             x:DataType="viewmodels:TransferViewModel"
              Title="{Binding Title}"
              BackgroundColor="#F5F5F5">
 
@@ -9,7 +13,7 @@
         <VerticalStackLayout Spacing="20" Padding="20">
             
             <!-- Card de saldo actual -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#2ECC71"
                    Padding="20">
                 <Grid ColumnDefinitions="*,Auto">
@@ -28,10 +32,10 @@
                            FontSize="50"
                            VerticalOptions="Center"/>
                 </Grid>
-            </Frame>
+            </Border>
 
             <!-- Formulario de transferencia -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="20">
                 <VerticalStackLayout Spacing="20">
                     
@@ -52,26 +56,26 @@
                     </VerticalStackLayout>
 
                     <!-- Lista de usuarios -->
-                    <Frame BackgroundColor="#F5F5F5"
+                    <Border BackgroundColor="#F5F5F5"
                            Padding="5"
                            HeightRequest="200"
-                           CornerRadius="10"
-                           BorderColor="#E0E0E0">
+                           StrokeShape="RoundRectangle 10"
+                           Stroke="#E0E0E0">
                         <ScrollView>
                             <CollectionView ItemsSource="{Binding FilteredUsers}"
                                           SelectionMode="None">
                                 <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Frame Margin="5"
+                                    <DataTemplate x:DataType="models:User">
+                                        <Border Margin="5"
                                                Padding="15"
                                                BackgroundColor="White"
-                                               CornerRadius="10"
-                                               BorderColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}">
-                                            <Frame.GestureRecognizers>
+                                               StrokeShape="RoundRectangle 10"
+                                               Stroke="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}">
+                                            <Border.GestureRecognizers>
                                                 <TapGestureRecognizer 
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectUserCommand}"
                                                     CommandParameter="{Binding .}"/>
-                                            </Frame.GestureRecognizers>
+                                            </Border.GestureRecognizers>
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <Label Text="👤"
                                                        FontSize="30"
@@ -87,19 +91,19 @@
                                                            TextColor="#666666"/>
                                                 </VerticalStackLayout>
                                             </Grid>
-                                        </Frame>
+                                        </Border>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
                         </ScrollView>
-                    </Frame>
+                    </Border>
 
                     <!-- Usuario seleccionado -->
-                    <Frame IsVisible="{Binding SelectedUser, Converter={StaticResource NullToBoolConverter}}"
+                    <Border IsVisible="{Binding SelectedUser, Converter={StaticResource NullToBoolConverter}}"
                            BackgroundColor="#E8F8F5"
                            Padding="15"
-                           CornerRadius="10"
-                           BorderColor="#2ECC71">
+                           StrokeShape="RoundRectangle 10"
+                           Stroke="#2ECC71">
                         <Grid ColumnDefinitions="Auto,*,Auto">
                             <Label Text="✅"
                                    FontSize="25"
@@ -124,7 +128,7 @@
                                     WidthRequest="40"
                                     HeightRequest="40"/>
                         </Grid>
-                    </Frame>
+                    </Border>
 
                     <!-- Cantidad de puntos -->
                     <VerticalStackLayout Spacing="5">
@@ -174,10 +178,10 @@
                     </Button>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Información adicional -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#FFF9E6"
                    Padding="15">
                 <Grid ColumnDefinitions="Auto,*">
@@ -194,8 +198,8 @@
                                TextColor="#666666"/>
                     </VerticalStackLayout>
                 </Grid>
-            </Frame>
+            </Border>
 
         </VerticalStackLayout>
     </ScrollView>
-</ContentPage>
+</views:BasePage>

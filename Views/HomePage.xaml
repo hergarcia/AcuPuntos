@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:AcuPuntos.Views"
+             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+             xmlns:models="clr-namespace:AcuPuntos.Models"
              x:Class="AcuPuntos.Views.HomePage"
+             x:DataType="viewmodels:HomeViewModel"
              Title="{Binding Title}"
              BackgroundColor="#F5F5F5">
 
-    <ContentPage.ToolbarItems>
+    <views:BasePage.ToolbarItems>
         <ToolbarItem Text="Perfil" Command="{Binding GoToProfileCommand}" />
         <ToolbarItem Text="Salir" Command="{Binding SignOutCommand}" />
-    </ContentPage.ToolbarItems>
+    </views:BasePage.ToolbarItems>
 
     <RefreshView Command="{Binding RefreshDataCommand}"
                  IsRefreshing="{Binding IsBusy}"
@@ -29,7 +33,7 @@
                 </VerticalStackLayout>
 
                 <!-- Card de Puntos -->
-                <Frame Style="{StaticResource CardFrame}"
+                <Border Style="{StaticResource CardFrame}"
                        BackgroundColor="#2ECC71"
                        Padding="25">
                     <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
@@ -53,17 +57,17 @@
                                FontSize="80"
                                VerticalOptions="Center"/>
                     </Grid>
-                </Frame>
+                </Border>
 
                 <!-- Botones de acciones rápidas -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowSpacing="10">
                     <!-- Botón Transferir -->
-                    <Frame Grid.Column="0"
+                    <Border Grid.Column="0"
                            Style="{StaticResource CardFrame}"
                            Padding="15">
-                        <Frame.GestureRecognizers>
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToTransferCommand}"/>
-                        </Frame.GestureRecognizers>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
                             <Label Text="➡️"
                                    FontSize="40"
@@ -78,15 +82,15 @@
                                    TextColor="#666666"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <!-- Botón Recompensas -->
-                    <Frame Grid.Column="1"
+                    <Border Grid.Column="1"
                            Style="{StaticResource CardFrame}"
                            Padding="15">
-                        <Frame.GestureRecognizers>
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToRewardsCommand}"/>
-                        </Frame.GestureRecognizers>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
                             <Label Text="🎁"
                                    FontSize="40"
@@ -101,7 +105,7 @@
                                    TextColor="#666666"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
 
                 <!-- Transacciones recientes -->
@@ -127,16 +131,16 @@
                         <CollectionView ItemsSource="{Binding RecentTransactions}"
                                       SelectionMode="None">
                             <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame Style="{StaticResource CardFrame}"
+                                <DataTemplate x:DataType="models:Transaction">
+                                    <Border Style="{StaticResource CardFrame}"
                                            Padding="15"
                                            Margin="0,5">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
                                             <!-- Icono -->
-                                            <Label Text="{Binding GetIcon}"
+                                            <Label Text="{Binding Icon}"
                                                    FontSize="30"
                                                    VerticalOptions="Center"/>
-                                            
+
                                             <!-- Información -->
                                             <VerticalStackLayout Grid.Column="1"
                                                                VerticalOptions="Center"
@@ -149,17 +153,17 @@
                                                        FontSize="12"
                                                        TextColor="#666666"/>
                                             </VerticalStackLayout>
-                                            
+
                                             <!-- Monto -->
                                             <Label Grid.Column="2"
-                                                   Text="{Binding GetFormattedAmount}"
+                                                   Text="{Binding FormattedAmount}"
                                                    FontSize="18"
                                                    FontAttributes="Bold"
                                                    VerticalOptions="Center">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label"
                                                                Binding="{Binding Type}"
-                                                               Value="Earned">
+                                                               Value="Reward">
                                                         <Setter Property="TextColor" Value="#2ECC71"/>
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label"
@@ -169,25 +173,25 @@
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label"
                                                                Binding="{Binding Type}"
-                                                               Value="Spent">
+                                                               Value="Redemption">
                                                         <Setter Property="TextColor" Value="#E74C3C"/>
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label"
                                                                Binding="{Binding Type}"
-                                                               Value="Transferred">
+                                                               Value="Sent">
                                                         <Setter Property="TextColor" Value="#E74C3C"/>
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
                                         </Grid>
-                                    </Frame>
+                                    </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
                     </VerticalStackLayout>
 
                     <!-- Sin transacciones -->
-                    <Frame Style="{StaticResource CardFrame}"
+                    <Border Style="{StaticResource CardFrame}"
                            IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}"
                            Padding="30">
                         <VerticalStackLayout Spacing="10">
@@ -203,17 +207,17 @@
                                    TextColor="#999999"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </VerticalStackLayout>
 
                 <!-- Panel de Admin (si es admin) -->
-                <Frame Style="{StaticResource CardFrame}"
+                <Border Style="{StaticResource CardFrame}"
                        BackgroundColor="#F39C12"
                        IsVisible="{Binding CurrentUser.IsAdmin}"
                        Padding="20">
-                    <Frame.GestureRecognizers>
+                    <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAdminCommand}"/>
-                    </Frame.GestureRecognizers>
+                    </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*,Auto">
                         <VerticalStackLayout>
                             <Label Text="Panel de Administración"
@@ -230,9 +234,9 @@
                                FontSize="40"
                                VerticalOptions="Center"/>
                     </Grid>
-                </Frame>
+                </Border>
 
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
-</ContentPage>
+</views:BasePage>

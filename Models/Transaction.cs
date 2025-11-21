@@ -8,7 +8,15 @@ namespace AcuPuntos.Models
         [FirestoreDocumentId]
         public string? Id { get; set; }
 
+        // Propiedad interna para Firestore (maneja la conversión int <-> enum)
         [FirestoreProperty("type")]
+        private long TypeValue
+        {
+            get => (long)Type;
+            set => Type = (TransactionType)value;
+        }
+
+        // Propiedad pública para uso en código (sin atributo = ignorada por Firestore)
         public TransactionType Type { get; set; }
 
         [FirestoreProperty("amount")]
@@ -24,7 +32,7 @@ namespace AcuPuntos.Models
         public string? Description { get; set; }
 
         [FirestoreProperty("createdAt")]
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         [FirestoreProperty("rewardId")]
         public string? RewardId { get; set; }
@@ -37,25 +45,25 @@ namespace AcuPuntos.Models
 
         public Transaction()
         {
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTimeOffset.UtcNow;
         }
 
-        public string GetIcon()
+        public string Icon => Type switch
         {
-            return Type switch
+            TransactionType.Received => "📩",
+            TransactionType.Reward => "🎁",
+            TransactionType.Sent => "📤",
+            TransactionType.Redemption => "🎯",
+            _ => "📝"
+        };
+
+        public string FormattedAmount
+        {
+            get
             {
-                TransactionType.Received => "📩",
-                TransactionType.Reward => "🎁",
-                TransactionType.Sent => "📤",
-                TransactionType.Redemption => "🎯",
-                _ => "📝"
-            };
-        }
-
-        public string GetFormattedAmount()
-        {
-            var sign = Type == TransactionType.Received || Type == TransactionType.Reward ? "+" : "-";
-            return $"{sign}{Amount} pts";
+                var sign = Type == TransactionType.Received || Type == TransactionType.Reward ? "+" : "-";
+                return $"{sign}{Amount} pts";
+            }
         }
     }
 

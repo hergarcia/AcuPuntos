@@ -18,14 +18,22 @@ namespace AcuPuntos.Models
         [FirestoreProperty("pointsUsed")]
         public int PointsUsed { get; set; }
 
+        // Propiedad interna para Firestore (maneja la conversión int <-> enum)
         [FirestoreProperty("status")]
+        private long StatusValue
+        {
+            get => (long)Status;
+            set => Status = (RedemptionStatus)value;
+        }
+
+        // Propiedad pública para uso en código (sin atributo = ignorada por Firestore)
         public RedemptionStatus Status { get; set; }
 
         [FirestoreProperty("redeemedAt")]
-        public DateTime RedeemedAt { get; set; }
+        public DateTimeOffset? RedeemedAt { get; set; }
 
         [FirestoreProperty("completedAt")]
-        public DateTime? CompletedAt { get; set; }
+        public DateTimeOffset? CompletedAt { get; set; }
 
         [FirestoreProperty("notes")]
         public string? Notes { get; set; }
@@ -36,7 +44,7 @@ namespace AcuPuntos.Models
 
         public Redemption()
         {
-            RedeemedAt = DateTime.UtcNow;
+            RedeemedAt = DateTimeOffset.UtcNow;
             Status = RedemptionStatus.Pending;
         }
 

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:AcuPuntos.Views"
+             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+             xmlns:models="clr-namespace:AcuPuntos.Models"
              x:Class="AcuPuntos.Views.UserDetailPage"
+             x:DataType="viewmodels:UserDetailViewModel"
              Title="{Binding Title}"
              BackgroundColor="#F5F5F5">
 
@@ -9,7 +13,7 @@
         <VerticalStackLayout Spacing="20" Padding="20">
 
             <!-- Perfil del usuario -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#3498DB"
                    Padding="25">
                 <VerticalStackLayout Spacing="15">
@@ -30,7 +34,7 @@
                            Opacity="0.9"
                            HorizontalOptions="Center"/>
 
-                    <Frame Padding="8,4"
+                    <Border Padding="8,4"
                            CornerRadius="12"
                            BackgroundColor="White"
                            HorizontalOptions="Center">
@@ -38,13 +42,13 @@
                                TextColor="#3498DB"
                                FontSize="12"
                                FontAttributes="Bold"/>
-                    </Frame>
+                    </Border>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Puntos actuales -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    BackgroundColor="#2ECC71"
                    Padding="20">
                 <Grid ColumnDefinitions="*,Auto">
@@ -63,10 +67,10 @@
                            FontSize="55"
                            VerticalOptions="Center"/>
                 </Grid>
-            </Frame>
+            </Border>
 
             <!-- Estadísticas -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="20">
                 <VerticalStackLayout Spacing="15">
                     
@@ -80,7 +84,7 @@
                           RowSpacing="12"
                           ColumnSpacing="12">
 
-                        <Frame Grid.Row="0" Grid.Column="0"
+                        <Border Grid.Row="0" Grid.Column="0"
                                BackgroundColor="#E8F5E9"
                                Padding="15"
                                CornerRadius="12">
@@ -98,9 +102,9 @@
                                        TextColor="#2ECC71"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
-                        <Frame Grid.Row="0" Grid.Column="1"
+                        <Border Grid.Row="0" Grid.Column="1"
                                BackgroundColor="#FFF3E0"
                                Padding="15"
                                CornerRadius="12">
@@ -118,9 +122,9 @@
                                        TextColor="#F39C12"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
-                        <Frame Grid.Row="1" Grid.Column="0"
+                        <Border Grid.Row="1" Grid.Column="0"
                                BackgroundColor="#E3F2FD"
                                Padding="15"
                                CornerRadius="12">
@@ -138,9 +142,9 @@
                                        TextColor="#3498DB"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
-                        <Frame Grid.Row="1" Grid.Column="1"
+                        <Border Grid.Row="1" Grid.Column="1"
                                BackgroundColor="#FFEBEE"
                                Padding="15"
                                CornerRadius="12">
@@ -158,15 +162,15 @@
                                        TextColor="#E74C3C"
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                     </Grid>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Información de cuenta -->
-            <Frame Style="{StaticResource CardFrame}"
+            <Border Style="{StaticResource CardFrame}"
                    Padding="20">
                 <VerticalStackLayout Spacing="12">
                     
@@ -201,7 +205,7 @@
                     </HorizontalStackLayout>
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Transacciones recientes -->
             <Label Text="📝 Transacciones Recientes"
@@ -213,17 +217,17 @@
                           SelectionMode="None"
                           HeightRequest="300">
                 <CollectionView.EmptyView>
-                    <Frame Style="{StaticResource CardFrame}"
+                    <Border Style="{StaticResource CardFrame}"
                            Padding="30">
                         <Label Text="No hay transacciones"
                                FontSize="14"
                                TextColor="#666666"
                                HorizontalOptions="Center"/>
-                    </Frame>
+                    </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Style="{StaticResource CardFrame}"
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Border Style="{StaticResource CardFrame}"
                                Padding="12"
                                Margin="0,0,0,8">
                             <Grid ColumnDefinitions="Auto,*,Auto">
@@ -252,7 +256,7 @@
                                        VerticalOptions="Center"/>
 
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -277,4 +281,4 @@
 
         </VerticalStackLayout>
     </ScrollView>
-</ContentPage>
+</views:BasePage>
