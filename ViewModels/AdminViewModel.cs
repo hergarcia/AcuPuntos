@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private ObservableCollection<User> users;
@@ -28,10 +29,11 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private int pendingRedemptionsCount;
 
-        public AdminViewModel(IAuthService authService, IFirestoreService firestoreService)
+        public AdminViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _navigationService = navigationService;
             Title = "Administración";
             Users = new ObservableCollection<User>();
             PendingRedemptions = new ObservableCollection<Redemption>();
@@ -79,7 +81,7 @@ namespace AcuPuntos.ViewModels
                 { "User", user }
             };
 
-            await Shell.Current.GoToAsync(nameof(UserDetailPage), parameters);
+            await _navigationService.NavigateToAsync(nameof(UserDetailPage), parameters);
         }
 
         [RelayCommand]

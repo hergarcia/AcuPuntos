@@ -7,7 +7,9 @@
              x:Class="AcuPuntos.Views.HistoryPage"
              x:DataType="viewmodels:HistoryViewModel"
              Title="{Binding Title}"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="#F5F5F5"
+             Shell.TabBarIsVisible="False"
+             Shell.NavBarIsVisible="True">
 
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">

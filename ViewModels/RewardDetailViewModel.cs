@@ -11,6 +11,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private Reward? reward;
@@ -24,10 +25,11 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private string statusMessage = "";
 
-        public RewardDetailViewModel(IAuthService authService, IFirestoreService firestoreService)
+        public RewardDetailViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _navigationService = navigationService;
             Title = "Detalle de Recompensa";
         }
 
@@ -115,7 +117,7 @@ namespace AcuPuntos.ViewModels
                     CheckRedeemability();
 
                     // Volver atrás
-                    await Shell.Current.GoToAsync("..");
+                    await _navigationService.GoBackAsync();
                 }
                 else
                 {
