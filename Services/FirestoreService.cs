@@ -254,17 +254,28 @@ namespace AcuPuntos.Services
                 if (sentTransactions != null)
                 {
                     var sentList = sentTransactions.Documents.Select(x => x.Data).ToList();
-                    transactions.AddRange(sentList);
+                    // Solo agregar transacciones enviadas o redenciones (donde el usuario es el origen)
+                    foreach (var transaction in sentList)
+                    {
+                        if (transaction.Type == TransactionType.Sent || transaction.Type == TransactionType.Redemption)
+                        {
+                            transactions.Add(transaction);
+                        }
+                    }
                 }
 
                 if (receivedTransactions != null)
                 {
                     var receivedList = receivedTransactions.Documents.Select(x => x.Data).ToList();
+                    // Solo agregar transacciones recibidas o recompensas (donde el usuario es el destino)
                     foreach (var transaction in receivedList)
                     {
-                        // Evitar duplicados en transferencias
-                        if (!transactions.Any(t => t.Id == transaction.Id))
-                            transactions.Add(transaction);
+                        if (transaction.Type == TransactionType.Received || transaction.Type == TransactionType.Reward)
+                        {
+                            // Evitar duplicados por ID (por si acaso)
+                            if (!transactions.Any(t => t.Id == transaction.Id))
+                                transactions.Add(transaction);
+                        }
                     }
                 }
 
