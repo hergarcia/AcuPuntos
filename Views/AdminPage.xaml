@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BasePage
-    BackgroundColor="#F5F5F5"
+    BackgroundColor="{StaticResource Light}"
     Shell.NavBarIsVisible="True"
     Shell.TabBarIsVisible="False"
     Title="{Binding Title}"
@@ -19,7 +19,7 @@
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <!--  Total usuarios  -->
                 <Border
-                    BackgroundColor="#3498DB"
+                    BackgroundColor="{StaticResource Secondary}"
                     Grid.Column="0"
                     Padding="15"
                     Style="{StaticResource CardFrame}">
@@ -44,7 +44,7 @@
 
                 <!--  Canjes pendientes  -->
                 <Border
-                    BackgroundColor="#F39C12"
+                    BackgroundColor="{StaticResource Warning}"
                     Grid.Column="1"
                     Padding="15"
                     Style="{StaticResource CardFrame}">
@@ -73,7 +73,7 @@
                 FontAttributes="Bold"
                 FontSize="20"
                 Text="⏳ Canjes Pendientes"
-                TextColor="#333333" />
+                TextColor="{StaticResource Dark}" />
 
             <CollectionView
                 HeightRequest="250"
@@ -90,7 +90,7 @@
                                 FontSize="14"
                                 HorizontalOptions="Center"
                                 Text="No hay canjes pendientes"
-                                TextColor="#666666" />
+                                TextColor="{StaticResource Gray}" />
                         </VerticalStackLayout>
                     </Border>
                 </CollectionView.EmptyView>
@@ -117,15 +117,15 @@
                                         FontAttributes="Bold"
                                         FontSize="16"
                                         Text="{Binding Reward.Name}"
-                                        TextColor="#333333" />
+                                        TextColor="{StaticResource Dark}" />
                                     <Label
                                         FontSize="14"
                                         Text="{Binding User.DisplayName}"
-                                        TextColor="#666666" />
+                                        TextColor="{StaticResource Gray}" />
                                     <Label
                                         FontSize="12"
                                         Text="{Binding RedeemedAt, StringFormat='Canjeado: {0:dd/MM/yyyy HH:mm}'}"
-                                        TextColor="#999999" />
+                                        TextColor="{StaticResource Gray400}" />
                                 </VerticalStackLayout>
 
                                 <Label
@@ -134,7 +134,7 @@
                                     Grid.Column="2"
                                     Grid.Row="0"
                                     Text="{Binding PointsUsed, StringFormat='{0:N0} pts'}"
-                                    TextColor="#F39C12"
+                                    TextColor="{StaticResource Warning}"
                                     VerticalOptions="Start" />
 
                                 <HorizontalStackLayout
@@ -143,7 +143,7 @@
                                     Margin="0,10,0,0"
                                     Spacing="10">
                                     <Button
-                                        BackgroundColor="#2ECC71"
+                                        BackgroundColor="{StaticResource Primary}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApproveRedemptionCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="17"
@@ -153,7 +153,7 @@
                                         Text="✅ Aprobar"
                                         TextColor="White" />
                                     <Button
-                                        BackgroundColor="#E74C3C"
+                                        BackgroundColor="{StaticResource Danger}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRedemptionCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="17"
@@ -176,7 +176,7 @@
                 FontSize="20"
                 Margin="0,20,0,0"
                 Text="👥 Gestión de Usuarios"
-                TextColor="#333333" />
+                TextColor="{StaticResource Dark}" />
 
             <SearchBar
                 BackgroundColor="White"
@@ -191,7 +191,7 @@
                             FontSize="14"
                             HorizontalOptions="Center"
                             Text="No hay usuarios"
-                            TextColor="#666666" />
+                            TextColor="{StaticResource Gray}" />
                     </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
@@ -206,7 +206,7 @@
                             <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
 
                                 <Border
-                                    BackgroundColor="#E0E0E0"
+                                    BackgroundColor="{StaticResource Gray200}"
                                     Grid.Row="0"
                                     Grid.RowSpan="2"
                                     HeightRequest="55"
@@ -227,11 +227,11 @@
                                         FontAttributes="Bold"
                                         FontSize="16"
                                         Text="{Binding DisplayName}"
-                                        TextColor="#333333" />
+                                        TextColor="{StaticResource Dark}" />
                                     <Label
                                         FontSize="12"
                                         Text="{Binding Email}"
-                                        TextColor="#666666" />
+                                        TextColor="{StaticResource Gray}" />
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Grid.Column="2" Grid.Row="0">
@@ -240,16 +240,16 @@
                                         FontSize="20"
                                         HorizontalOptions="End"
                                         Text="{Binding Points, StringFormat='{0:N0}'}"
-                                        TextColor="#2ECC71" />
+                                        TextColor="{StaticResource Primary}" />
                                     <Label
                                         FontSize="12"
                                         HorizontalOptions="End"
                                         Text="puntos"
-                                        TextColor="#999999" />
+                                        TextColor="{StaticResource Gray400}" />
                                 </VerticalStackLayout>
 
                                 <Button
-                                    BackgroundColor="#3498DB"
+                                    BackgroundColor="{StaticResource Secondary}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AssignPointsCommand}"
                                     CommandParameter="{Binding .}"
                                     CornerRadius="17"

@@ -7,14 +7,14 @@
              x:Class="AcuPuntos.Views.RewardsPage"
              x:DataType="viewmodels:RewardsViewModel"
              Title="{Binding Title}"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{StaticResource Light}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
 
             <!-- Saldo actual -->
             <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="#2ECC71"
+                   BackgroundColor="{StaticResource Primary}"
                    Padding="20">
                 <Grid ColumnDefinitions="*,Auto">
                     <VerticalStackLayout>
@@ -40,18 +40,18 @@
                 <VerticalStackLayout Spacing="10">
                     <SearchBar Placeholder="Buscar recompensas..."
                                Text="{Binding SearchText}"
-                               BackgroundColor="#F5F5F5"
+                               BackgroundColor="{StaticResource Light}"
                                PlaceholderColor="#999999"/>
 
                     <!-- Filtro por categoría -->
                     <HorizontalStackLayout Spacing="10">
                         <Label Text="Categoría:"
                                FontSize="14"
-                               TextColor="#666666"
+                               TextColor="{StaticResource Gray}"
                                VerticalOptions="Center"/>
                         <Picker ItemsSource="{Binding Categories}"
                                 SelectedItem="{Binding SelectedCategory}"
-                                BackgroundColor="#F5F5F5"
+                                BackgroundColor="{StaticResource Light}"
                                 HorizontalOptions="FillAndExpand"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
@@ -61,7 +61,7 @@
             <Label Text="Recompensas Disponibles"
                    FontSize="20"
                    FontAttributes="Bold"
-                   TextColor="#333333"/>
+                   TextColor="{StaticResource Dark}"/>
 
             <CollectionView ItemsSource="{Binding FilteredRewards}"
                           SelectionMode="None">
@@ -74,7 +74,7 @@
                                    HorizontalOptions="Center"/>
                             <Label Text="No hay recompensas disponibles"
                                    FontSize="16"
-                                   TextColor="#666666"
+                                   TextColor="{StaticResource Gray}"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Border>
@@ -104,17 +104,17 @@
                                     <Label Text="{Binding Name}"
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#333333"/>
+                                           TextColor="{StaticResource Dark}"/>
                                     <Label Text="{Binding Description}"
                                            FontSize="14"
-                                           TextColor="#666666"
+                                           TextColor="{StaticResource Gray}"
                                            LineBreakMode="TailTruncation"
                                            MaxLines="2"/>
                                 </VerticalStackLayout>
 
                                 <!-- Costo en puntos -->
                                 <Border Grid.Row="0" Grid.Column="2"
-                                       BackgroundColor="#2ECC71"
+                                       BackgroundColor="{StaticResource Primary}"
                                        Padding="10,5"
                                        StrokeShape="RoundRectangle 15"
                                        VerticalOptions="Start">
@@ -144,7 +144,7 @@
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RedeemRewardCommand}"
                                         CommandParameter="{Binding .}"
                                         IsEnabled="{Binding CanRedeem}"
-                                        BackgroundColor="#2ECC71"
+                                        BackgroundColor="{StaticResource Primary}"
                                         TextColor="White"
                                         FontAttributes="Bold"
                                         HeightRequest="45"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BasePage
-    BackgroundColor="#F5F5F5"
+    BackgroundColor="{StaticResource Light}"
     Shell.NavBarIsVisible="True"
     Shell.TabBarIsVisible="False"
     Title="{Binding Title}"
@@ -30,7 +30,7 @@
                         HorizontalOptions="Center"
                         HorizontalTextAlignment="Center"
                         Text="{Binding Reward.Name}"
-                        TextColor="#333333" />
+                        TextColor="{StaticResource Dark}" />
 
                     <!--  Categoría  -->
                     <Border
@@ -47,7 +47,7 @@
 
                     <!--  Costo  -->
                     <Border
-                        BackgroundColor="#2ECC71"
+                        BackgroundColor="{StaticResource Primary}"
                         HorizontalOptions="Center"
                         Padding="15,10"
                         StrokeShape="RoundRectangle 20">
@@ -75,13 +75,13 @@
                         FontAttributes="Bold"
                         FontSize="16"
                         Text="Descripción"
-                        TextColor="#666666" />
+                        TextColor="{StaticResource Gray}" />
 
                     <Label
                         FontSize="15"
                         LineBreakMode="WordWrap"
                         Text="{Binding Reward.Description}"
-                        TextColor="#333333" />
+                        TextColor="{StaticResource Dark}" />
 
                     <!--  Información adicional  -->
                     <BoxView
@@ -99,12 +99,12 @@
                             <Label
                                 FontSize="12"
                                 Text="Válido hasta:"
-                                TextColor="#666666" />
+                                TextColor="{StaticResource Gray}" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="14"
                                 Text="{Binding Reward.ExpiryDate, StringFormat='{0:dd/MM/yyyy}'}"
-                                TextColor="#333333" />
+                                TextColor="{StaticResource Dark}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
@@ -118,12 +118,12 @@
                             <Label
                                 FontSize="12"
                                 Text="Límite por usuario:"
-                                TextColor="#666666" />
+                                TextColor="{StaticResource Gray}" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="14"
                                 Text="{Binding Reward.MaxRedemptionsPerUser, StringFormat='{0} canjes'}"
-                                TextColor="#333333" />
+                                TextColor="{StaticResource Dark}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
@@ -132,13 +132,13 @@
 
             <!--  Estado del usuario  -->
             <Border
-                BackgroundColor="#E8F8F5"
+                BackgroundColor="{StaticResource Gray100}"
                 Padding="20"
                 Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="10">
                         <Border
-                            BackgroundColor="#E0E0E0"
+                            BackgroundColor="{StaticResource Gray200}"
                             HeightRequest="40"
                             StrokeShape="RoundRectangle 20"
                             StrokeThickness="2"
@@ -152,12 +152,12 @@
                             <Label
                                 FontSize="14"
                                 Text="Tus puntos:"
-                                TextColor="#666666" />
+                                TextColor="{StaticResource Gray}" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="18"
                                 Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
-                                TextColor="#2ECC71" />
+                                TextColor="{StaticResource Primary}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
@@ -166,13 +166,13 @@
                         HorizontalTextAlignment="Center"
                         Margin="0,10,0,0"
                         Text="{Binding StatusMessage}"
-                        TextColor="#666666" />
+                        TextColor="{StaticResource Gray}" />
                 </VerticalStackLayout>
             </Border>
 
             <!--  Botón de canje  -->
             <Button
-                BackgroundColor="#2ECC71"
+                BackgroundColor="{StaticResource Primary}"
                 Command="{Binding RedeemRewardCommand}"
                 CornerRadius="27"
                 FontAttributes="Bold"
