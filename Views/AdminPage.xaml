@@ -226,6 +226,16 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
+            <!-- Botón de inicializar badges -->
+            <Button Text="🎖️ Inicializar Badges del Sistema"
+                    Command="{Binding InitializeBadgesCommand}"
+                    BackgroundColor="#9B59B6"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    Margin="0,10,0,0"/>
+
             <!-- Botón de refrescar -->
             <Button Text="🔄 Actualizar Todo"
                     Command="{Binding RefreshDataCommand}"

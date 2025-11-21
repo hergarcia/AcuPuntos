@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using AcuPuntos.Models;
 using AcuPuntos.Services;
 using AcuPuntos.Views;
+using AcuPuntos.Helpers;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -182,6 +183,39 @@ namespace AcuPuntos.ViewModels
                 await Shell.Current.DisplayAlert("Rechazado", "El canje ha sido rechazado y los puntos devueltos", "OK");
                 await LoadData();
             }, "Rechazando canje...");
+        }
+
+        [RelayCommand]
+        private async Task InitializeBadges()
+        {
+            var confirm = await Shell.Current.DisplayAlert(
+                "Inicializar Badges",
+                "¿Deseas crear los 16 badges predefinidos del sistema?\n\nEsto solo debe hacerse UNA VEZ. Si los badges ya existen, se ignorarán.",
+                "Sí, crear",
+                "Cancelar");
+
+            if (!confirm)
+                return;
+
+            await ExecuteAsync(async () =>
+            {
+                try
+                {
+                    await BadgeSeeder.SeedBadgesAsync(_firestoreService);
+
+                    await Shell.Current.DisplayAlert(
+                        "¡Éxito!",
+                        "Los badges han sido creados correctamente en Firestore.\n\nLos usuarios recibirán badges automáticamente según sus logros.",
+                        "OK");
+                }
+                catch (Exception ex)
+                {
+                    await Shell.Current.DisplayAlert(
+                        "Error",
+                        $"No se pudieron crear los badges:\n{ex.Message}\n\nAsegúrate de que las reglas de Firestore permitan escribir en la colección 'badges'.",
+                        "OK");
+                }
+            }, "Creando badges...");
         }
 
         [RelayCommand]
