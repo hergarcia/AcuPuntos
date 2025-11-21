@@ -82,21 +82,13 @@ public class MainActivity : MauiAppCompatActivity
 
     private async Task ShowExitMessage()
     {
-        // Mostrar snackbar usando CommunityToolkit.Maui
-        var snackbarOptions = new SnackbarOptions
-        {
-            BackgroundColor = Microsoft.Maui.Graphics.Color.FromArgb("#1F2937"),
-            TextColor = Microsoft.Maui.Graphics.Colors.White,
-            CornerRadius = new CornerRadius(10),
-            Font = Microsoft.Maui.Font.SystemFontOfSize(14),
-        };
+        // Mostrar toast usando CommunityToolkit.Maui
+        var toast = Toast.Make(
+            "Presiona nuevamente para salir",
+            ToastDuration.Short,
+            14);
 
-        var snackbar = Snackbar.Make(
-            "Presiona nuevamente para salir de la app",
-            duration: TimeSpan.FromSeconds(2),
-            visualOptions: snackbarOptions);
-
-        await snackbar.Show();
+        await toast.Show();
     }
 }
 
