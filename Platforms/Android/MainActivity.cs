@@ -93,10 +93,8 @@ public class MainActivity : MauiAppCompatActivity
 
         var snackbar = Snackbar.Make(
             "Presiona nuevamente para salir de la app",
-            null,
-            null,
-            TimeSpan.FromSeconds(2),
-            snackbarOptions);
+            duration: TimeSpan.FromSeconds(2),
+            visualOptions: snackbarOptions);
 
         await snackbar.Show();
     }
