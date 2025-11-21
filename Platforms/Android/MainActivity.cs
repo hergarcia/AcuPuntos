@@ -36,51 +36,60 @@ public class MainActivity : MauiAppCompatActivity
 
     private async Task HandleBackPressed()
     {
-        // Obtener el Shell actual
-        if (Shell.Current == null)
+        try
         {
-            Finish();
-            return;
+
+            // Obtener el Shell actual
+            if (Shell.Current == null)
+            {
+                Finish();
+                return;
+            }
+
+            // Verificar si hay stack de navegación
+            var navigationStack = Shell.Current.Navigation.NavigationStack;
+
+            // Si hay más de una página en el stack, navegar hacia atrás
+            if (navigationStack.Count > 1)
+            {
+                await Shell.Current.Navigation.PopAsync();
+                return;
+            }
+
+            // Verificar si estamos en una página que no está en el TabBar principal
+            var currentRoute = Shell.Current.CurrentState.Location.ToString();
+
+            if (!currentRoute.Contains("//main"))
+            {
+                // Si no estamos en el main, navegar al home
+                await Shell.Current.GoToAsync("//main");
+                return;
+            }
+
+            // Si estamos en el TabBar principal, implementar patrón "presiona dos veces para salir"
+            var currentTime = DateTime.Now;
+            var timeSinceLastBack = currentTime - _lastBackPress;
+
+            if (timeSinceLastBack > _exitTimeThreshold)
+            {
+                // Primera presión: mostrar mensaje
+                _lastBackPress = currentTime;
+                await ShowExitMessage();
+            }
+            else
+            {
+                // Segunda presión dentro del tiempo límite: cerrar la app
+                Finish();
+            }
+    
         }
-
-        // Verificar si hay stack de navegación
-        var navigationStack = Shell.Current.Navigation.NavigationStack;
-
-        // Si hay más de una página en el stack, navegar hacia atrás
-        if (navigationStack.Count > 1)
+        catch (Exception e)
         {
-            await Shell.Current.Navigation.PopAsync();
-            return;
-        }
+            Console.WriteLine(e);
+            throw;
+        }}
 
-        // Verificar si estamos en una página que no está en el TabBar principal
-        var currentRoute = Shell.Current.CurrentState.Location.ToString();
-
-        if (!currentRoute.Contains("//main"))
-        {
-            // Si no estamos en el main, navegar al home
-            await Shell.Current.GoToAsync("//main");
-            return;
-        }
-
-        // Si estamos en el TabBar principal, implementar patrón "presiona dos veces para salir"
-        var currentTime = DateTime.Now;
-        var timeSinceLastBack = currentTime - _lastBackPress;
-
-        if (timeSinceLastBack > _exitTimeThreshold)
-        {
-            // Primera presión: mostrar mensaje
-            _lastBackPress = currentTime;
-            await ShowExitMessage();
-        }
-        else
-        {
-            // Segunda presión dentro del tiempo límite: cerrar la app
-            Finish();
-        }
-    }
-
-    private async Task ShowExitMessage()
+    private static async Task ShowExitMessage()
     {
         // Mostrar toast usando CommunityToolkit.Maui
         var toast = Toast.Make(
@@ -88,7 +97,7 @@ public class MainActivity : MauiAppCompatActivity
             ToastDuration.Short,
             14);
 
-        await toast.Show();
+        await MainThread.InvokeOnMainThreadAsync(async () => await toast.Show());
     }
 }
 
