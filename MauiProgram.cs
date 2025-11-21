@@ -92,6 +92,7 @@ public static class MauiProgram
 
     private static void RegisterViews(IServiceCollection services)
     {
+        services.AddTransient<SplashPage>();
         services.AddTransient<LoginPage>();
         services.AddTransient<HomePage>();
         services.AddTransient<TransferPage>();

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AcuPuntos.Views.SplashPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Primary}">
+
+    <Grid>
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Spacing="20">
+
+            <!-- Logo o nombre de la app -->
+            <Label
+                Text="AcuPuntos"
+                FontSize="48"
+                FontAttributes="Bold"
+                TextColor="White"
+                HorizontalOptions="Center" />
+
+            <!-- Indicador de carga -->
+            <ActivityIndicator
+                IsRunning="True"
+                Color="White"
+                HeightRequest="40"
+                WidthRequest="40"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Cargando..."
+                FontSize="16"
+                TextColor="White"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </Grid>
+
+</ContentPage>
