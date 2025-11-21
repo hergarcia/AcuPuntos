@@ -1,240 +1,280 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:AcuPuntos.Views"
-             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
-             xmlns:models="clr-namespace:AcuPuntos.Models"
-             x:Class="AcuPuntos.Views.HomePage"
-             x:DataType="viewmodels:HomeViewModel"
-             Title="{Binding Title}"
-             BackgroundColor="#F5F5F5">
+<views:BasePage
+    BackgroundColor="#F5F5F5"
+    Title="{Binding Title}"
+    x:Class="AcuPuntos.Views.HomePage"
+    x:DataType="viewmodels:HomeViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:AcuPuntos.Models"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <RefreshView Command="{Binding RefreshDataCommand}"
-                 IsRefreshing="{Binding IsBusy}"
-                 RefreshColor="#2ECC71">
-        
+    <RefreshView
+        Command="{Binding RefreshDataCommand}"
+        IsRefreshing="{Binding IsBusy}"
+        RefreshColor="#2ECC71">
+
         <ScrollView>
-            <VerticalStackLayout Spacing="20" Padding="20">
-                
-                <!-- Saludo y nombre de usuario -->
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!--  Saludo y nombre de usuario  -->
                 <VerticalStackLayout Spacing="5">
-                    <Label Text="{Binding GreetingMessage}"
-                           FontSize="24"
-                           TextColor="#666666"/>
-                    <Label Text="{Binding CurrentUser.DisplayName}"
-                           FontSize="28"
-                           FontAttributes="Bold"
-                           TextColor="#333333"/>
+                    <Label
+                        FontSize="24"
+                        Text="{Binding GreetingMessage}"
+                        TextColor="#666666" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="28"
+                        Text="{Binding CurrentUser.DisplayName}"
+                        TextColor="#333333" />
                 </VerticalStackLayout>
 
-                <!-- Card de Puntos -->
-                <Border Style="{StaticResource CardFrame}"
-                       BackgroundColor="#2ECC71"
-                       Padding="25">
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
-                        <Label Text="Tus Puntos"
-                               TextColor="White"
-                               FontSize="18"
-                               Opacity="0.9"/>
-                        <Label Grid.Row="1" 
-                               Text="{Binding PointsDisplay}"
-                               TextColor="White"
-                               FontSize="48"
-                               FontAttributes="Bold"/>
-                        <Label Grid.Row="2"
-                               Text="puntos disponibles"
-                               TextColor="White"
-                               FontSize="14"
-                               Opacity="0.8"/>
-                        <Label Grid.Column="1"
-                               Grid.RowSpan="3"
-                               Text="🌿"
-                               FontSize="80"
-                               VerticalOptions="Center"/>
+                <!--  Card de Puntos  -->
+                <Border
+                    BackgroundColor="#2ECC71"
+                    Padding="25"
+                    Style="{StaticResource CardFrame}">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                        <Label
+                            FontSize="18"
+                            Opacity="0.9"
+                            Text="Tus Puntos"
+                            TextColor="White" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="48"
+                            Grid.Row="1"
+                            Text="{Binding PointsDisplay}"
+                            TextColor="White" />
+                        <Label
+                            FontSize="14"
+                            Grid.Row="2"
+                            Opacity="0.8"
+                            Text="puntos disponibles"
+                            TextColor="White" />
+                        <Label
+                            FontSize="80"
+                            Grid.Column="1"
+                            Grid.RowSpan="3"
+                            Text="🌿"
+                            VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
-                <!-- Card de Gamificación -->
+                <!--  Card de Gamificación  -->
                 <Border Style="{StaticResource CardFrame}">
                     <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#3498DB" Offset="0.0"/>
-                            <GradientStop Color="#2ECC71" Offset="1.0"/>
+                        <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                            <GradientStop Color="#3498DB" Offset="0.0" />
+                            <GradientStop Color="#2ECC71" Offset="1.0" />
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid RowDefinitions="Auto,Auto,Auto" Padding="10">
-                        <!-- Nivel y Progreso -->
+                    <Grid Padding="10" RowDefinitions="Auto,Auto,Auto">
+                        <!--  Nivel y Progreso  -->
                         <Grid ColumnDefinitions="Auto,*,Auto">
-                            <Label Text="{Binding CurrentUser.Level, StringFormat='Nivel {0}'}"
-                                   FontSize="20"
-                                   FontAttributes="Bold"
-                                   TextColor="White"/>
-                            <Label Grid.Column="2"
-                                   Text="{Binding CurrentUser.Experience, StringFormat='{0} XP'}"
-                                   FontSize="16"
-                                   TextColor="White"
-                                   Opacity="0.9"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="{Binding CurrentUser.Level, StringFormat='Nivel {0}'}"
+                                TextColor="White" />
+                            <Label
+                                FontSize="16"
+                                Grid.Column="2"
+                                Opacity="0.9"
+                                Text="{Binding CurrentUser.Experience, StringFormat='{0} XP'}"
+                                TextColor="White" />
                         </Grid>
 
-                        <!-- Barra de progreso -->
-                        <ProgressBar Grid.Row="1"
-                                    Progress="{Binding LevelProgress}"
-                                    ProgressColor="White"
-                                    BackgroundColor="#FFFFFF40"
-                                    Margin="0,10"
-                                    HeightRequest="8"
-                                    CornerRadius="4"/>
+                        <!--  Barra de progreso  -->
+                        <ProgressBar
+                            BackgroundColor="#FFFFFF40"
+                            Grid.Row="1"
+                            HeightRequest="8"
+                            Margin="0,10"
+                            Progress="{Binding LevelProgress}"
+                            ProgressColor="White" />
 
-                        <!-- Check-in diario -->
-                        <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                            <Label Text="🔥"
-                                   FontSize="24"
-                                   VerticalOptions="Center"/>
+                        <!--  Check-in diario  -->
+                        <Grid
+                            ColumnDefinitions="Auto,*,Auto"
+                            ColumnSpacing="10"
+                            Grid.Row="2">
+                            <Label
+                                FontSize="24"
+                                Text="🔥"
+                                VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                <Label Text="{Binding ConsecutiveDays, StringFormat='Racha: {0} días'}"
-                                       TextColor="White"
-                                       FontSize="14"
-                                       FontAttributes="Bold"/>
-                                <Label Text="Haz check-in diario para ganar puntos"
-                                       TextColor="White"
-                                       FontSize="12"
-                                       Opacity="0.8"/>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    Text="{Binding ConsecutiveDays, StringFormat='Racha: {0} días'}"
+                                    TextColor="White" />
+                                <Label
+                                    FontSize="12"
+                                    Opacity="0.8"
+                                    Text="Haz check-in diario para ganar puntos"
+                                    TextColor="White" />
                             </VerticalStackLayout>
-                            <Button Grid.Column="2"
-                                   Text="Check-in"
-                                   Command="{Binding DailyCheckInCommand}"
-                                   BackgroundColor="White"
-                                   TextColor="#2ECC71"
-                                   FontSize="14"
-                                   Padding="15,8"
-                                   CornerRadius="20"
-                                   HeightRequest="40"
-                                   IsEnabled="{Binding CanCheckIn}"/>
+                            <Button
+                                BackgroundColor="White"
+                                Command="{Binding DailyCheckInCommand}"
+                                CornerRadius="20"
+                                FontSize="14"
+                                Grid.Column="2"
+                                HeightRequest="40"
+                                IsEnabled="{Binding CanCheckIn}"
+                                Padding="15,8"
+                                Text="Check-in"
+                                TextColor="#2ECC71" />
                         </Grid>
                     </Grid>
                 </Border>
 
-                <!-- Botones de acciones rápidas -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowSpacing="10">
-                    <!-- Botón Transferir -->
-                    <Border Grid.Column="0"
-                           Style="{StaticResource CardFrame}"
-                           Padding="15">
+                <!--  Botones de acciones rápidas  -->
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10"
+                    RowSpacing="10">
+                    <!--  Botón Transferir  -->
+                    <Border
+                        Grid.Column="0"
+                        Padding="15"
+                        Style="{StaticResource CardFrame}">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToTransferCommand}"/>
+                            <TapGestureRecognizer Command="{Binding GoToTransferCommand}" />
                         </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-                            <Label Text="➡️"
-                                   FontSize="40"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Transferir"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="#333333"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Envía puntos"
-                                   FontSize="12"
-                                   TextColor="#666666"
-                                   HorizontalOptions="Center"/>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
+                            <Label
+                                FontSize="40"
+                                HorizontalOptions="Center"
+                                Text="➡️" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="Transferir"
+                                TextColor="#333333" />
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Envía puntos"
+                                TextColor="#666666" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Botón Recompensas -->
-                    <Border Grid.Column="1"
-                           Style="{StaticResource CardFrame}"
-                           Padding="15">
+                    <!--  Botón Recompensas  -->
+                    <Border
+                        Grid.Column="1"
+                        Padding="15"
+                        Style="{StaticResource CardFrame}">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToRewardsCommand}"/>
+                            <TapGestureRecognizer Command="{Binding GoToRewardsCommand}" />
                         </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-                            <Label Text="🎁"
-                                   FontSize="40"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Recompensas"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="#333333"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Canjea puntos"
-                                   FontSize="12"
-                                   TextColor="#666666"
-                                   HorizontalOptions="Center"/>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
+                            <Label
+                                FontSize="40"
+                                HorizontalOptions="Center"
+                                Text="🎁" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="Recompensas"
+                                TextColor="#333333" />
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Canjea puntos"
+                                TextColor="#666666" />
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
 
-                <!-- Transacciones recientes -->
+                <!--  Transacciones recientes  -->
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
-                        <Label Text="Actividad Reciente"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               TextColor="#333333"/>
-                        <Label Grid.Column="1"
-                               Text="Ver todo"
-                               TextColor="#2ECC71"
-                               FontSize="14"
-                               VerticalOptions="Center">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="Actividad Reciente"
+                            TextColor="#333333" />
+                        <Label
+                            FontSize="14"
+                            Grid.Column="1"
+                            Text="Ver todo"
+                            TextColor="#2ECC71"
+                            VerticalOptions="Center">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding GoToHistoryCommand}"/>
+                                <TapGestureRecognizer Command="{Binding GoToHistoryCommand}" />
                             </Label.GestureRecognizers>
                         </Label>
                     </Grid>
 
-                    <!-- Lista de transacciones -->
+                    <!--  Lista de transacciones  -->
                     <VerticalStackLayout IsVisible="{Binding HasTransactions}">
-                        <CollectionView ItemsSource="{Binding RecentTransactions}"
-                                      SelectionMode="None">
+                        <CollectionView ItemsSource="{Binding RecentTransactions}" SelectionMode="None">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Transaction">
-                                    <Border Style="{StaticResource ListItemCard}"
-                                           Padding="15"
-                                           Margin="0,5">
+                                    <Border
+                                        Margin="0,5"
+                                        Padding="15"
+                                        Style="{StaticResource CardFrame}">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                                            <!-- Icono -->
-                                            <Label Text="{Binding Icon}"
-                                                   FontSize="30"
-                                                   VerticalOptions="Center"/>
+                                            <!--  Icono  -->
+                                            <Label
+                                                FontSize="30"
+                                                Text="{Binding Icon}"
+                                                VerticalOptions="Center" />
 
-                                            <!-- Información -->
-                                            <VerticalStackLayout Grid.Column="1"
-                                                               VerticalOptions="Center"
-                                                               Spacing="3">
-                                                <Label Text="{Binding Description}"
-                                                       FontSize="16"
-                                                       TextColor="#333333"
-                                                       FontAttributes="Bold"/>
-                                                <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                                                       FontSize="12"
-                                                       TextColor="#666666"/>
+                                            <!--  Información  -->
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="3"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding Description}"
+                                                    TextColor="#333333" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                                    TextColor="#666666" />
                                             </VerticalStackLayout>
 
-                                            <!-- Monto -->
-                                            <Label Grid.Column="2"
-                                                   Text="{Binding FormattedAmount}"
-                                                   FontSize="18"
-                                                   FontAttributes="Bold"
-                                                   VerticalOptions="Center">
+                                            <!--  Monto  -->
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="18"
+                                                Grid.Column="2"
+                                                Text="{Binding FormattedAmount}"
+                                                VerticalOptions="Center">
                                                 <Label.Triggers>
-                                                    <DataTrigger TargetType="Label"
-                                                               Binding="{Binding Type}"
-                                                               Value="Reward">
-                                                        <Setter Property="TextColor" Value="#2ECC71"/>
+                                                    <DataTrigger
+                                                        Binding="{Binding Type}"
+                                                        TargetType="Label"
+                                                        Value="Reward">
+                                                        <Setter Property="TextColor" Value="#2ECC71" />
                                                     </DataTrigger>
-                                                    <DataTrigger TargetType="Label"
-                                                               Binding="{Binding Type}"
-                                                               Value="Received">
-                                                        <Setter Property="TextColor" Value="#2ECC71"/>
+                                                    <DataTrigger
+                                                        Binding="{Binding Type}"
+                                                        TargetType="Label"
+                                                        Value="Received">
+                                                        <Setter Property="TextColor" Value="#2ECC71" />
                                                     </DataTrigger>
-                                                    <DataTrigger TargetType="Label"
-                                                               Binding="{Binding Type}"
-                                                               Value="Redemption">
-                                                        <Setter Property="TextColor" Value="#E74C3C"/>
+                                                    <DataTrigger
+                                                        Binding="{Binding Type}"
+                                                        TargetType="Label"
+                                                        Value="Redemption">
+                                                        <Setter Property="TextColor" Value="#E74C3C" />
                                                     </DataTrigger>
-                                                    <DataTrigger TargetType="Label"
-                                                               Binding="{Binding Type}"
-                                                               Value="Sent">
-                                                        <Setter Property="TextColor" Value="#E74C3C"/>
+                                                    <DataTrigger
+                                                        Binding="{Binding Type}"
+                                                        TargetType="Label"
+                                                        Value="Sent">
+                                                        <Setter Property="TextColor" Value="#E74C3C" />
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
@@ -245,49 +285,57 @@
                         </CollectionView>
                     </VerticalStackLayout>
 
-                    <!-- Sin transacciones -->
-                    <Border Style="{StaticResource CardFrame}"
-                           IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}"
-                           Padding="30">
+                    <!--  Sin transacciones  -->
+                    <Border
+                        IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}"
+                        Padding="30"
+                        Style="{StaticResource CardFrame}">
                         <VerticalStackLayout Spacing="10">
-                            <Label Text="📊"
-                                   FontSize="50"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="No hay actividad reciente"
-                                   FontSize="16"
-                                   TextColor="#666666"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Tus transacciones aparecerán aquí"
-                                   FontSize="14"
-                                   TextColor="#999999"
-                                   HorizontalOptions="Center"/>
+                            <Label
+                                FontSize="50"
+                                HorizontalOptions="Center"
+                                Text="📊" />
+                            <Label
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="No hay actividad reciente"
+                                TextColor="#666666" />
+                            <Label
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Text="Tus transacciones aparecerán aquí"
+                                TextColor="#999999" />
                         </VerticalStackLayout>
                     </Border>
                 </VerticalStackLayout>
 
-                <!-- Panel de Admin (si es admin) -->
-                <Border Style="{StaticResource CardFrame}"
-                       BackgroundColor="#F39C12"
-                       IsVisible="{Binding CurrentUser.IsAdmin}"
-                       Padding="20">
+                <!--  Panel de Admin (si es admin)  -->
+                <Border
+                    BackgroundColor="#F39C12"
+                    IsVisible="{Binding CurrentUser.IsAdmin}"
+                    Padding="20"
+                    Style="{StaticResource CardFrame}">
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToAdminCommand}"/>
+                        <TapGestureRecognizer Command="{Binding GoToAdminCommand}" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*,Auto">
                         <VerticalStackLayout>
-                            <Label Text="Panel de Administración"
-                                   TextColor="White"
-                                   FontSize="18"
-                                   FontAttributes="Bold"/>
-                            <Label Text="Gestiona usuarios y recompensas"
-                                   TextColor="White"
-                                   FontSize="14"
-                                   Opacity="0.9"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="Panel de Administración"
+                                TextColor="White" />
+                            <Label
+                                FontSize="14"
+                                Opacity="0.9"
+                                Text="Gestiona usuarios y recompensas"
+                                TextColor="White" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="1"
-                               Text="⚙️"
-                               FontSize="40"
-                               VerticalOptions="Center"/>
+                        <Label
+                            FontSize="40"
+                            Grid.Column="1"
+                            Text="⚙️"
+                            VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
