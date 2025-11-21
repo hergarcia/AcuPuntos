@@ -219,6 +219,30 @@ namespace AcuPuntos.ViewModels
         }
 
         [RelayCommand]
+        private async Task InitializeRewards()
+        {
+            await ExecuteAsync(async () =>
+            {
+                try
+                {
+                    await RewardSeeder.SeedRewardsAsync(_firestoreService);
+
+                    await Shell.Current.DisplayAlert(
+                        "¡Éxito!",
+                        "Las recompensas han sido creadas correctamente en Firestore.\n\nLos usuarios podrán canjear estas recompensas con sus puntos.",
+                        "OK");
+                }
+                catch (Exception ex)
+                {
+                    await Shell.Current.DisplayAlert(
+                        "Error",
+                        $"No se pudieron crear las recompensas:\n{ex.Message}\n\nAsegúrate de que las reglas de Firestore permitan escribir en la colección 'rewards'.",
+                        "OK");
+                }
+            }, "Creando recompensas...");
+        }
+
+        [RelayCommand]
         private async Task RefreshData()
         {
             await LoadData();

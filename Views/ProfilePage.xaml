@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BasePage
-    BackgroundColor="#F5F5F5"
+    BackgroundColor="{StaticResource Light}"
     Title="{Binding Title}"
     x:Class="AcuPuntos.Views.ProfilePage"
     x:DataType="viewmodels:ProfileViewModel"
@@ -15,15 +15,23 @@
 
             <!--  Foto de perfil y nombre  -->
             <Border
-                BackgroundColor="#3498DB"
+                BackgroundColor="{StaticResource Primary}"
                 Padding="30"
                 Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="15">
 
-                    <Label
-                        FontSize="80"
+                    <!--  Foto de perfil circular  -->
+                    <Border
+                        BackgroundColor="White"
+                        HeightRequest="100"
                         HorizontalOptions="Center"
-                        Text="👤" />
+                        StrokeShape="RoundRectangle 50"
+                        StrokeThickness="3"
+                        WidthRequest="100">
+                        <Image
+                            Aspect="AspectFill"
+                            Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
+                    </Border>
 
                     <Label
                         FontAttributes="Bold"
@@ -51,7 +59,7 @@
                             FontAttributes="Bold"
                             FontSize="14"
                             Text="{Binding CurrentUser.Role}"
-                            TextColor="#3498DB" />
+                            TextColor="{StaticResource Primary}" />
                     </Border>
 
                 </VerticalStackLayout>
@@ -59,7 +67,7 @@
 
             <!--  Puntos actuales  -->
             <Border
-                BackgroundColor="#2ECC71"
+                BackgroundColor="{StaticResource PrimaryDark}"
                 Padding="20"
                 Style="{StaticResource CardFrame}">
                 <Grid ColumnDefinitions="*,Auto">
@@ -87,8 +95,8 @@
             <Border Style="{StaticResource CardFrame}">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                        <GradientStop Color="#9B59B6" Offset="0.0" />
-                        <GradientStop Color="#8E44AD" Offset="1.0" />
+                        <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
+                        <GradientStop Color="{StaticResource PrimaryDark}" Offset="1.0" />
                     </LinearGradientBrush>
                 </Border.Background>
                 <VerticalStackLayout Padding="10" Spacing="15">
@@ -164,12 +172,12 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         Text="🎖️ Mis Badges"
-                        TextColor="#333333" />
+                        TextColor="{StaticResource Dark}" />
                     <Label
                         FontSize="14"
                         Grid.Column="1"
                         Text="{Binding BadgesCount, StringFormat='{0} ganados'}"
-                        TextColor="#666666"
+                        TextColor="{StaticResource Gray}"
                         VerticalOptions="Center" />
                 </Grid>
 
@@ -189,7 +197,7 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:UserBadge">
                                 <Border
-                                    BackgroundColor="#F5F5F5"
+                                    BackgroundColor="{StaticResource Gray100}"
                                     Padding="10"
                                     StrokeShape="RoundRectangle 10">
                                     <VerticalStackLayout Spacing="5">
@@ -205,7 +213,7 @@
                                             LineBreakMode="WordWrap"
                                             MaxLines="2"
                                             Text="{Binding Badge.Name}"
-                                            TextColor="#333333" />
+                                            TextColor="{StaticResource Dark}" />
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>
@@ -228,13 +236,13 @@
                             FontSize="16"
                             HorizontalOptions="Center"
                             Text="Aún no tienes badges"
-                            TextColor="#666666" />
+                            TextColor="{StaticResource Gray}" />
                         <Label
                             FontSize="14"
                             HorizontalOptions="Center"
                             HorizontalTextAlignment="Center"
                             Text="Completa acciones para ganar insignias"
-                            TextColor="#999999" />
+                            TextColor="{StaticResource Gray400}" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
@@ -247,7 +255,7 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         Text="📊 Estadísticas"
-                        TextColor="#333333" />
+                        TextColor="{StaticResource Dark}" />
 
                     <Grid
                         ColumnDefinitions="*,*"
@@ -257,7 +265,7 @@
 
                         <!--  Transacciones  -->
                         <Border
-                            BackgroundColor="#E8F5E9"
+                            BackgroundColor="{StaticResource Gray100}"
                             Grid.Column="0"
                             Grid.Row="0"
                             Padding="15"
@@ -271,19 +279,19 @@
                                     FontSize="12"
                                     HorizontalOptions="Center"
                                     Text="Transacciones"
-                                    TextColor="#666666" />
+                                    TextColor="{StaticResource Gray}" />
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="24"
                                     HorizontalOptions="Center"
                                     Text="{Binding TotalTransactions}"
-                                    TextColor="#2ECC71" />
+                                    TextColor="{StaticResource Primary}" />
                             </VerticalStackLayout>
                         </Border>
 
                         <!--  Canjes  -->
                         <Border
-                            BackgroundColor="#FFF3E0"
+                            BackgroundColor="{StaticResource Gray100}"
                             Grid.Column="1"
                             Grid.Row="0"
                             Padding="15"
@@ -297,19 +305,19 @@
                                     FontSize="12"
                                     HorizontalOptions="Center"
                                     Text="Canjes"
-                                    TextColor="#666666" />
+                                    TextColor="{StaticResource Gray}" />
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="24"
                                     HorizontalOptions="Center"
                                     Text="{Binding TotalRedemptions}"
-                                    TextColor="#F39C12" />
+                                    TextColor="{StaticResource Warning}" />
                             </VerticalStackLayout>
                         </Border>
 
                         <!--  Puntos ganados  -->
                         <Border
-                            BackgroundColor="#E3F2FD"
+                            BackgroundColor="{StaticResource Gray100}"
                             Grid.Column="0"
                             Grid.Row="1"
                             Padding="15"
@@ -323,19 +331,19 @@
                                     FontSize="12"
                                     HorizontalOptions="Center"
                                     Text="Ganados"
-                                    TextColor="#666666" />
+                                    TextColor="{StaticResource Gray}" />
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="24"
                                     HorizontalOptions="Center"
                                     Text="{Binding TotalPointsEarned, StringFormat='{0:N0}'}"
-                                    TextColor="#3498DB" />
+                                    TextColor="{StaticResource Success}" />
                             </VerticalStackLayout>
                         </Border>
 
                         <!--  Puntos gastados  -->
                         <Border
-                            BackgroundColor="#FFEBEE"
+                            BackgroundColor="{StaticResource Gray100}"
                             Grid.Column="1"
                             Grid.Row="1"
                             Padding="15"
@@ -349,13 +357,13 @@
                                     FontSize="12"
                                     HorizontalOptions="Center"
                                     Text="Gastados"
-                                    TextColor="#666666" />
+                                    TextColor="{StaticResource Gray}" />
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="24"
                                     HorizontalOptions="Center"
                                     Text="{Binding TotalPointsSpent, StringFormat='{0:N0}'}"
-                                    TextColor="#E74C3C" />
+                                    TextColor="{StaticResource Danger}" />
                             </VerticalStackLayout>
                         </Border>
 
@@ -372,19 +380,19 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         Text="ℹ️ Información de Cuenta"
-                        TextColor="#333333" />
+                        TextColor="{StaticResource Dark}" />
 
                     <HorizontalStackLayout Spacing="10">
                         <Label
                             FontSize="14"
                             Text="Miembro desde:"
-                            TextColor="#666666"
+                            TextColor="{StaticResource Gray}"
                             VerticalOptions="Center" />
                         <Label
                             FontAttributes="Bold"
                             FontSize="14"
                             Text="{Binding CurrentUser.CreatedAt, StringFormat='{0:dd/MM/yyyy}'}"
-                            TextColor="#333333"
+                            TextColor="{StaticResource Dark}"
                             VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
@@ -392,14 +400,14 @@
                         <Label
                             FontSize="12"
                             Text="UID:"
-                            TextColor="#999999"
+                            TextColor="{StaticResource Gray400}"
                             VerticalOptions="Center" />
                         <Label
                             FontSize="12"
                             HorizontalOptions="FillAndExpand"
                             LineBreakMode="TailTruncation"
                             Text="{Binding CurrentUser.Uid}"
-                            TextColor="#999999"
+                            TextColor="{StaticResource Gray400}"
                             VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
@@ -408,7 +416,7 @@
 
             <!--  Botones de acción  -->
             <Button
-                BackgroundColor="#3498DB"
+                BackgroundColor="{StaticResource Secondary}"
                 Command="{Binding EditProfileCommand}"
                 CornerRadius="25"
                 FontAttributes="Bold"
@@ -417,16 +425,7 @@
                 TextColor="White" />
 
             <Button
-                BackgroundColor="#95A5A6"
-                Command="{Binding RefreshProfileCommand}"
-                CornerRadius="25"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Text="🔄 Actualizar"
-                TextColor="White" />
-
-            <Button
-                BackgroundColor="#E74C3C"
+                BackgroundColor="{StaticResource Danger}"
                 Command="{Binding LogoutCommand}"
                 CornerRadius="25"
                 FontAttributes="Bold"

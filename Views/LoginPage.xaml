@@ -7,7 +7,7 @@
              x:DataType="viewmodels:LoginViewModel"
              Title="Login"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{StaticResource Light}">
 
     <Grid>
         <!-- Fondo con gradiente -->
@@ -79,25 +79,25 @@
                         <Label Text="{Binding WelcomeMessage}"
                                FontSize="20"
                                FontAttributes="Bold"
-                               TextColor="#333333"
+                               TextColor="{StaticResource Dark}"
                                HorizontalOptions="Center"/>
 
                         <Label Text="Inicia sesión para comenzar a acumular y canjear tus puntos"
                                FontSize="14"
-                               TextColor="#666666"
+                               TextColor="{StaticResource Gray}"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"/>
 
                         <!-- Separador -->
                         <BoxView HeightRequest="1"
-                                 BackgroundColor="#E0E0E0"
+                                 BackgroundColor="{StaticResource Gray200}"
                                  Margin="0,10"/>
 
                         <!-- Botón de Google Sign In -->
                         <Button Text="Iniciar sesión con Google"
                                 Command="{Binding SignInWithGoogleCommand}"
                                 BackgroundColor="White"
-                                TextColor="#333333"
+                                TextColor="{StaticResource Dark}"
                                 BorderColor="#E0E0E0"
                                 BorderWidth="1"
                                 CornerRadius="25"
