@@ -52,10 +52,6 @@ namespace AcuPuntos.ViewModels
         {
             await base.OnAppearingAsync();
 
-            // Pequeño delay para evitar conflictos con App.CheckAuthentication() en el inicio
-            // Esto solo afectará cuando el usuario vuelva a la página de login durante el uso normal
-            await Task.Delay(200);
-
             // Si ya está autenticado, ir directo a la página principal
             if (_authService.IsAuthenticated)
             {
