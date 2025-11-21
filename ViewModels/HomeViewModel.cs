@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly IGamificationService _gamificationService;
         private readonly INavigationService _navigationService;
         private IDisposable? _userListener;
         private IDisposable? _transactionsListener;
@@ -31,10 +32,17 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private bool hasTransactions;
 
-        public HomeViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
+        [ObservableProperty]
+        private bool canCheckIn = false;
+
+        [ObservableProperty]
+        private int consecutiveDays = 0;
+
+        public HomeViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _gamificationService = gamificationService;
             _navigationService = navigationService;
             Title = "Inicio";
             RecentTransactions = new ObservableCollection<Transaction>();
@@ -76,7 +84,26 @@ namespace AcuPuntos.ViewModels
                 });
                 
                 await LoadTransactions();
+                await CheckDailyCheckInStatus();
             }
+        }
+
+        private async Task CheckDailyCheckInStatus()
+        {
+            if (CurrentUser == null) return;
+
+            // Verificar si puede hacer check-in hoy
+            if (CurrentUser.LastCheckIn.HasValue)
+            {
+                var timeSinceLastCheckIn = DateTimeOffset.UtcNow - CurrentUser.LastCheckIn.Value;
+                CanCheckIn = timeSinceLastCheckIn.TotalHours >= 20; // Puede hacer check-in después de 20 horas
+            }
+            else
+            {
+                CanCheckIn = true; // Primera vez
+            }
+
+            ConsecutiveDays = CurrentUser.ConsecutiveDays;
         }
 
         protected override async Task OnDisappearingAsync()
@@ -154,6 +181,37 @@ namespace AcuPuntos.ViewModels
         private async Task RefreshData()
         {
             await LoadTransactions();
+        }
+
+        [RelayCommand(CanExecute = nameof(CanCheckIn))]
+        private async Task DailyCheckIn()
+        {
+            if (CurrentUser == null) return;
+
+            await ExecuteAsync(async () =>
+            {
+                var (success, bonus, streak) = await _gamificationService.DailyCheckInAsync(CurrentUser.Uid!);
+
+                if (success)
+                {
+                    await Shell.Current.DisplayAlert(
+                        "¡Check-in Completado! 🎉",
+                        $"Has ganado {bonus} puntos\nRacha actual: {streak} días consecutivos",
+                        "¡Genial!");
+
+                    // Actualizar usuario
+                    CurrentUser = await _firestoreService.GetUserAsync(CurrentUser.Uid!);
+                    UpdatePointsDisplay();
+                    await CheckDailyCheckInStatus();
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert(
+                        "Ya hiciste check-in hoy",
+                        "Vuelve mañana para continuar tu racha",
+                        "OK");
+                }
+            }, "Procesando check-in...");
         }
     }
 }

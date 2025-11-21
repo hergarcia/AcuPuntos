@@ -32,6 +32,25 @@ namespace AcuPuntos.Models
         [FirestoreProperty("fcmToken")]
         public string? FcmToken { get; set; }
 
+        // Campos de Gamificación
+        [FirestoreProperty("experience")]
+        public int Experience { get; set; } = 0;
+
+        [FirestoreProperty("level")]
+        public int Level { get; set; } = 1;
+
+        [FirestoreProperty("totalPointsEarned")]
+        public int TotalPointsEarned { get; set; } = 0;
+
+        [FirestoreProperty("totalPointsSpent")]
+        public int TotalPointsSpent { get; set; } = 0;
+
+        [FirestoreProperty("consecutiveDays")]
+        public int ConsecutiveDays { get; set; } = 0;
+
+        [FirestoreProperty("lastCheckIn")]
+        public DateTimeOffset? LastCheckIn { get; set; }
+
         // Propiedades no mapeadas a Firestore
         public bool IsAdmin => Role == "admin";
 

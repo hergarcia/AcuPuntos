@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly IGamificationService _gamificationService;
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
@@ -32,10 +33,11 @@ namespace AcuPuntos.ViewModels
         private List<string> _categories = new List<string> { "Todas", "Servicios", "Productos", "Descuentos", "Especial" };
         public List<string> Categories => _categories;
 
-        public RewardsViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
+        public RewardsViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _gamificationService = gamificationService;
             _navigationService = navigationService;
             Title = "Recompensas";
             Rewards = new ObservableCollection<Reward>();
@@ -153,9 +155,13 @@ namespace AcuPuntos.ViewModels
 
                 if (redemption != null)
                 {
+                    // Dar experiencia por el canje (10% del costo de la recompensa)
+                    int xpGained = Math.Max(1, reward.PointsCost / 10);
+                    await _gamificationService.AddExperienceAsync(CurrentUser.Uid!, xpGained, $"Canje de '{reward.Name}'");
+
                     await Shell.Current.DisplayAlert(
                         "¡Éxito!",
-                        $"Has canjeado '{reward.Name}'. Un administrador procesará tu solicitud pronto.",
+                        $"Has canjeado '{reward.Name}'. Un administrador procesará tu solicitud pronto.\n+{xpGained} XP ganada",
                         "OK");
 
                     // Actualizar usuario y recargar recompensas
