@@ -11,6 +11,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly IGamificationService _gamificationService;
 
         [ObservableProperty]
         private User? currentUser;
@@ -39,10 +40,11 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private string errorMessage = "";
 
-        public TransferViewModel(IAuthService authService, IFirestoreService firestoreService)
+        public TransferViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _gamificationService = gamificationService;
             Title = "Transferir Puntos";
             Users = new ObservableCollection<User>();
             FilteredUsers = new ObservableCollection<User>();
@@ -183,17 +185,21 @@ namespace AcuPuntos.ViewModels
                 
                 if (success)
                 {
+                    // Dar experiencia por la transferencia (5% de los puntos transferidos)
+                    int xpGained = Math.Max(1, points / 20);
+                    await _gamificationService.AddExperienceAsync(CurrentUser.Uid!, xpGained, $"Transferencia de {points} puntos");
+
                     await Shell.Current.DisplayAlert(
                         "¡Éxito!",
-                        $"Se han transferido {points} puntos a {SelectedUser.DisplayName}",
+                        $"Se han transferido {points} puntos a {SelectedUser.DisplayName}\n+{xpGained} XP ganada",
                         "OK");
-                    
+
                     // Limpiar formulario
                     SelectedUser = null;
                     PointsToTransfer = "";
                     Description = "";
                     SearchText = "";
-                    
+
                     // Actualizar usuario actual
                     CurrentUser = await _firestoreService.GetUserAsync(CurrentUser.Uid!);
                 }

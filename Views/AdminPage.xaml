@@ -84,7 +84,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Redemption">
-                        <Border Style="{StaticResource CardFrame}"
+                        <Border Style="{StaticResource ListItemCard}"
                                Padding="15"
                                Margin="0,0,0,10">
                             <Grid RowDefinitions="Auto,Auto,Auto"
@@ -170,7 +170,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:User">
-                        <Border Style="{StaticResource CardFrame}"
+                        <Border Style="{StaticResource ListItemCard}"
                                Padding="15"
                                Margin="0,0,0,10">
                             <Border.GestureRecognizers>

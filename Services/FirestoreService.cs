@@ -14,6 +14,8 @@ namespace AcuPuntos.Services
         private const string TransactionsCollection = "transactions";
         private const string RewardsCollection = "rewards";
         private const string RedemptionsCollection = "redemptions";
+        private const string BadgesCollection = "badges";
+        private const string UserBadgesCollection = "userBadges";
 
         public FirestoreService()
         {
@@ -175,6 +177,9 @@ namespace AcuPuntos.Services
                 // Actualizar puntos del usuario
                 await UpdateUserPointsAsync(userId, points);
 
+                // Rastrear puntos ganados
+                await UpdateUserPointsTracking(userId, points, true);
+
                 // Crear transacción de recompensa
                 var transaction = new Transaction
                 {
@@ -305,6 +310,10 @@ namespace AcuPuntos.Services
                 // Actualizar puntos
                 await UpdateUserPointsAsync(fromUserId, -points);
                 await UpdateUserPointsAsync(toUserId, points);
+
+                // Rastrear puntos gastados y ganados
+                await UpdateUserPointsTracking(fromUserId, points, false);
+                await UpdateUserPointsTracking(toUserId, points, true);
 
                 // Crear transacción de envío
                 var sendTransaction = new Transaction
@@ -568,6 +577,9 @@ namespace AcuPuntos.Services
                 // Actualizar puntos del usuario
                 await UpdateUserPointsAsync(userId, -reward.PointsCost);
 
+                // Rastrear puntos gastados
+                await UpdateUserPointsTracking(userId, reward.PointsCost, false);
+
                 // Crear canje
                 var redemption = new Redemption
                 {
@@ -669,6 +681,183 @@ namespace AcuPuntos.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Error getting statistics: {ex.Message}");
                 return new Dictionary<string, object>();
+            }
+        }
+
+        #endregion
+
+        #region Gamificación
+
+        public async Task UpdateUserGamificationAsync(string userId, int experience, int level)
+        {
+            try
+            {
+                var updates = new Dictionary<object, object>
+                {
+                    { "experience", experience },
+                    { "level", level }
+                };
+
+                await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(userId)
+                    .UpdateDataAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating user gamification: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task UpdateUserCheckInAsync(string userId, DateTimeOffset lastCheckIn, int consecutiveDays)
+        {
+            try
+            {
+                var updates = new Dictionary<object, object>
+                {
+                    { "lastCheckIn", lastCheckIn },
+                    { "consecutiveDays", consecutiveDays }
+                };
+
+                await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(userId)
+                    .UpdateDataAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating user check-in: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task UpdateUserPointsTracking(string userId, int pointsDelta, bool isEarned)
+        {
+            try
+            {
+                var user = await GetUserAsync(userId);
+                if (user == null)
+                    return;
+
+                var updates = new Dictionary<object, object>();
+
+                if (isEarned)
+                {
+                    updates["totalPointsEarned"] = user.TotalPointsEarned + pointsDelta;
+                }
+                else
+                {
+                    updates["totalPointsSpent"] = user.TotalPointsSpent + Math.Abs(pointsDelta);
+                }
+
+                await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(userId)
+                    .UpdateDataAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating user points tracking: {ex.Message}");
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Badges
+
+        public async Task<List<Badge>> GetAllBadgesAsync()
+        {
+            try
+            {
+                var badges = await _firestore.GetCollection(BadgesCollection)
+                    .OrderBy("order")
+                    .GetDocumentsAsync<Badge>();
+
+                return badges?.Documents.Select(x => x.Data).ToList() ?? new List<Badge>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting all badges: {ex.Message}");
+                return new List<Badge>();
+            }
+        }
+
+        public async Task<Badge?> GetBadgeAsync(string badgeId)
+        {
+            try
+            {
+                var snapshot = await _firestore.GetCollection(BadgesCollection)
+                    .GetDocument(badgeId)
+                    .GetDocumentSnapshotAsync<Badge>();
+
+                return snapshot?.Data;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting badge: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task CreateBadgeAsync(Badge badge)
+        {
+            try
+            {
+                var docRef = await _firestore.GetCollection(BadgesCollection)
+                    .AddDocumentAsync(badge);
+                badge.Id = docRef.Id;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating badge: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<UserBadge>> GetUserBadgesAsync(string userId)
+        {
+            try
+            {
+                var userBadges = await _firestore.GetCollection(UserBadgesCollection)
+                    .WhereEqualsTo("userId", userId)
+                    .GetDocumentsAsync<UserBadge>();
+
+                if (userBadges != null)
+                {
+                    var userBadgesList = userBadges.Documents.Select(x => x.Data).OrderByDescending(x => x.EarnedAt).ToList();
+
+                    // Cargar los badges completos
+                    foreach (var userBadge in userBadgesList)
+                    {
+                        if (!string.IsNullOrEmpty(userBadge.BadgeId))
+                        {
+                            userBadge.Badge = await GetBadgeAsync(userBadge.BadgeId);
+                        }
+                    }
+
+                    return userBadgesList;
+                }
+
+                return new List<UserBadge>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting user badges: {ex.Message}");
+                return new List<UserBadge>();
+            }
+        }
+
+        public async Task CreateUserBadgeAsync(UserBadge userBadge)
+        {
+            try
+            {
+                var docRef = await _firestore.GetCollection(UserBadgesCollection)
+                    .AddDocumentAsync(userBadge);
+                userBadge.Id = docRef.Id;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating user badge: {ex.Message}");
+                throw;
             }
         }
 

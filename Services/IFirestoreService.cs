@@ -39,7 +39,19 @@ namespace AcuPuntos.Services
         
         // Estadísticas (para admin)
         Task<Dictionary<string, object>> GetStatisticsAsync();
-        
+
+        // Gamificación
+        Task UpdateUserGamificationAsync(string userId, int experience, int level);
+        Task UpdateUserCheckInAsync(string userId, DateTimeOffset lastCheckIn, int consecutiveDays);
+        Task UpdateUserPointsTracking(string userId, int pointsDelta, bool isEarned);
+
+        // Badges
+        Task<List<Badge>> GetAllBadgesAsync();
+        Task<Badge?> GetBadgeAsync(string badgeId);
+        Task CreateBadgeAsync(Badge badge);
+        Task<List<UserBadge>> GetUserBadgesAsync(string userId);
+        Task CreateUserBadgeAsync(UserBadge userBadge);
+
         // Listeners en tiempo real
         IDisposable ListenToUserChanges(string uid, Action<User> onUpdate);
         IDisposable ListenToTransactions(string userId, Action<List<Transaction>> onUpdate);
