@@ -58,6 +58,13 @@ namespace AcuPuntos.ViewModels
             await base.OnAppearingAsync();
 
             CurrentUser = _authService.CurrentUser;
+
+            if (CurrentUser != null)
+            {
+                // Recargar datos actualizados del usuario desde Firestore
+                CurrentUser = await _firestoreService.GetUserAsync(CurrentUser.Uid!);
+            }
+
             await LoadUserStats();
             await LoadUserBadges();
         }
@@ -101,7 +108,10 @@ namespace AcuPuntos.ViewModels
                 if (CurrentUser == null)
                     return;
 
-                // Cargar badges del usuario
+                // Verificar y otorgar badges automáticamente según nivel/puntos actuales
+                await _gamificationService.CheckAndAwardBadgesAsync(CurrentUser.Uid!);
+
+                // Cargar badges del usuario (incluyendo los recién otorgados)
                 var badges = await _gamificationService.GetUserBadgesAsync(CurrentUser.Uid!);
 
                 UserBadges.Clear();
