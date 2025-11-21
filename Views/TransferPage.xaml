@@ -1,80 +1,86 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:AcuPuntos.Views"
-             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
-             xmlns:models="clr-namespace:AcuPuntos.Models"
-             x:Class="AcuPuntos.Views.TransferPage"
-             x:DataType="viewmodels:TransferViewModel"
-             Title="{Binding Title}"
-             BackgroundColor="{StaticResource Light}">
+<views:BasePage
+    BackgroundColor="{StaticResource Light}"
+    Title="{Binding Title}"
+    x:Class="AcuPuntos.Views.TransferPage"
+    x:DataType="viewmodels:TransferViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:AcuPuntos.Models"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="20">
-            
-            <!-- Card de saldo actual -->
-            <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="{StaticResource Primary}"
-                   Padding="20">
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!--  Card de saldo actual  -->
+            <Border
+                BackgroundColor="{StaticResource Primary}"
+                Padding="20"
+                Style="{StaticResource CardFrame}">
                 <Grid ColumnDefinitions="*,Auto">
                     <VerticalStackLayout>
-                        <Label Text="Tu saldo actual"
-                               TextColor="White"
-                               FontSize="14"
-                               Opacity="0.9"/>
-                        <Label Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
-                               TextColor="White"
-                               FontSize="32"
-                               FontAttributes="Bold"/>
+                        <Label
+                            FontSize="14"
+                            Opacity="0.9"
+                            Text="Tu saldo actual"
+                            TextColor="White" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="32"
+                            Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
+                            TextColor="White" />
                     </VerticalStackLayout>
-                    <Label Grid.Column="1"
-                           Text="💰"
-                           FontSize="50"
-                           VerticalOptions="Center"/>
+                    <Label
+                        FontSize="50"
+                        Grid.Column="1"
+                        Text="💰"
+                        VerticalOptions="Center" />
                 </Grid>
             </Border>
 
-            <!-- Formulario de transferencia -->
-            <Border Style="{StaticResource CardFrame}"
-                   Padding="20">
+            <!--  Formulario de transferencia  -->
+            <Border Padding="20" Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="20">
-                    
-                    <Label Text="Transferir Puntos"
-                           FontSize="22"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource Dark}"/>
-                    
-                    <!-- Campo de búsqueda -->
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="22"
+                        Text="Transferir Puntos"
+                        TextColor="{StaticResource Dark}" />
+
+                    <!--  Campo de búsqueda  -->
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="Buscar usuario"
-                               FontSize="14"
-                               TextColor="{StaticResource Gray}"/>
-                        <SearchBar Placeholder="Nombre o email..."
-                                   Text="{Binding SearchText}"
-                                   BackgroundColor="{StaticResource Light}"
-                                   PlaceholderColor="#999999"/>
+                        <Label
+                            FontSize="14"
+                            Text="Buscar usuario"
+                            TextColor="{StaticResource Gray}" />
+                        <SearchBar
+                            BackgroundColor="{StaticResource Light}"
+                            Placeholder="Nombre o email..."
+                            PlaceholderColor="#999999"
+                            Text="{Binding SearchText}" />
                     </VerticalStackLayout>
 
-                    <!-- Lista de usuarios -->
-                    <Border BackgroundColor="{StaticResource Light}"
-                           Padding="5"
-                           HeightRequest="200"
-                           StrokeShape="RoundRectangle 10"
-                           Stroke="#E0E0E0">
+                    <!--  Lista de usuarios  -->
+                    <Border
+                        BackgroundColor="{StaticResource Light}"
+                        HeightRequest="200"
+                        Padding="5"
+                        Stroke="#E0E0E0"
+                        StrokeShape="RoundRectangle 10">
                         <ScrollView>
-                            <CollectionView ItemsSource="{Binding FilteredUsers}"
-                                          SelectionMode="None">
+                            <CollectionView ItemsSource="{Binding FilteredUsers}" SelectionMode="None">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="models:User">
-                                        <Border Margin="5"
-                                               Padding="15"
-                                               BackgroundColor="White"
-                                               StrokeShape="RoundRectangle 10"
-                                               Stroke="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}">
+                                        <Border
+                                            BackgroundColor="White"
+                                            Margin="5"
+                                            Padding="15"
+                                            Stroke="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
+                                            StrokeShape="RoundRectangle 10">
                                             <Border.GestureRecognizers>
-                                                <TapGestureRecognizer 
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectUserCommand}"
-                                                    CommandParameter="{Binding .}"/>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectUserCommand}" CommandParameter="{Binding .}" />
                                             </Border.GestureRecognizers>
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <Border
@@ -84,19 +90,18 @@
                                                     StrokeThickness="2"
                                                     VerticalOptions="Center"
                                                     WidthRequest="50">
-                                                    <Image
-                                                        Aspect="AspectFill"
-                                                        Source="{Binding PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
+                                                    <Image Aspect="AspectFill" Source="{Binding PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
                                                 </Border>
-                                                <VerticalStackLayout Grid.Column="1"
-                                                                   Margin="10,0,0,0">
-                                                    <Label Text="{Binding DisplayName}"
-                                                           FontSize="16"
-                                                           FontAttributes="Bold"
-                                                           TextColor="{StaticResource Dark}"/>
-                                                    <Label Text="{Binding Email}"
-                                                           FontSize="12"
-                                                           TextColor="{StaticResource Gray}"/>
+                                                <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0">
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="16"
+                                                        Text="{Binding DisplayName}"
+                                                        TextColor="{StaticResource Dark}" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        Text="{Binding Email}"
+                                                        TextColor="{StaticResource Gray}" />
                                                 </VerticalStackLayout>
                                             </Grid>
                                         </Border>
@@ -106,81 +111,93 @@
                         </ScrollView>
                     </Border>
 
-                    <!-- Usuario seleccionado -->
-                    <Border IsVisible="{Binding SelectedUser, Converter={StaticResource NullToBoolConverter}}"
-                           BackgroundColor="{StaticResource Gray100}"
-                           Padding="15"
-                           StrokeShape="RoundRectangle 10"
-                           Stroke="#2ECC71">
+                    <!--  Usuario seleccionado  -->
+                    <Border
+                        BackgroundColor="{StaticResource Gray100}"
+                        IsVisible="{Binding SelectedUser, Converter={StaticResource NullToBoolConverter}}"
+                        Padding="15"
+                        Stroke="#2ECC71"
+                        StrokeShape="RoundRectangle 10">
                         <Grid ColumnDefinitions="Auto,*,Auto">
-                            <Label Text="✅"
-                                   FontSize="25"
-                                   VerticalOptions="Center"/>
-                            <VerticalStackLayout Grid.Column="1"
-                                               Margin="10,0">
-                                <Label Text="Enviar a:"
-                                       FontSize="12"
-                                       TextColor="{StaticResource Gray}"/>
-                                <Label Text="{Binding SelectedUser.DisplayName}"
-                                       FontSize="16"
-                                       FontAttributes="Bold"
-                                       TextColor="{StaticResource Primary}"/>
+                            <Label
+                                FontSize="25"
+                                Text="✅"
+                                VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Margin="10,0">
+                                <Label
+                                    FontSize="12"
+                                    Text="Enviar a:"
+                                    TextColor="{StaticResource Gray}" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding SelectedUser.DisplayName}"
+                                    TextColor="{StaticResource Primary}" />
                             </VerticalStackLayout>
-                            <Button Grid.Column="2"
-                                    Text="✕"
-                                    BackgroundColor="Transparent"
-                                    TextColor="{StaticResource Danger}"
-                                    FontSize="20"
-                                    Command="{Binding SelectUserCommand}"
-                                    CommandParameter="{x:Null}"
-                                    WidthRequest="40"
-                                    HeightRequest="40"/>
+                            <Button
+                                BackgroundColor="Transparent"
+                                Command="{Binding SelectUserCommand}"
+                                CommandParameter="{x:Null}"
+                                FontSize="20"
+                                Grid.Column="2"
+                                HeightRequest="40"
+                                Padding="0"
+                                Text="✕"
+                                TextColor="{StaticResource Danger}"
+                                WidthRequest="40" />
                         </Grid>
                     </Border>
 
-                    <!-- Cantidad de puntos -->
+                    <!--  Cantidad de puntos  -->
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="Cantidad de puntos"
-                               FontSize="14"
-                               TextColor="{StaticResource Gray}"/>
-                        <Entry Placeholder="Ingresa la cantidad..."
-                               Text="{Binding PointsToTransfer}"
-                               Keyboard="Numeric"
-                               BackgroundColor="{StaticResource Light}"/>
+                        <Label
+                            FontSize="14"
+                            Text="Cantidad de puntos"
+                            TextColor="{StaticResource Gray}" />
+                        <Entry
+                            BackgroundColor="{StaticResource Light}"
+                            Keyboard="Numeric"
+                            Placeholder="Ingresa la cantidad..."
+                            Text="{Binding PointsToTransfer}" />
                     </VerticalStackLayout>
 
-                    <!-- Descripción (opcional) -->
+                    <!--  Descripción (opcional)  -->
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="Mensaje (opcional)"
-                               FontSize="14"
-                               TextColor="{StaticResource Gray}"/>
-                        <Editor Placeholder="Añade un mensaje..."
-                                Text="{Binding Description}"
-                                BackgroundColor="{StaticResource Light}"
-                                HeightRequest="80"/>
+                        <Label
+                            FontSize="14"
+                            Text="Mensaje (opcional)"
+                            TextColor="{StaticResource Gray}" />
+                        <Editor
+                            BackgroundColor="{StaticResource Light}"
+                            HeightRequest="80"
+                            Placeholder="Añade un mensaje..."
+                            Text="{Binding Description}" />
                     </VerticalStackLayout>
 
-                    <!-- Mensaje de error -->
-                    <Label Text="{Binding ErrorMessage}"
-                           TextColor="{StaticResource Danger}"
-                           FontSize="14"
-                           IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
-                           HorizontalOptions="Center"/>
+                    <!--  Mensaje de error  -->
+                    <Label
+                        FontSize="14"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
+                        Text="{Binding ErrorMessage}"
+                        TextColor="{StaticResource Danger}" />
 
-                    <!-- Botón de transferir -->
-                    <Button Text="Transferir Puntos"
-                            Command="{Binding TransferPointsCommand}"
-                            IsEnabled="{Binding CanTransfer}"
-                            BackgroundColor="{StaticResource Primary}"
-                            TextColor="White"
-                            FontAttributes="Bold"
-                            HeightRequest="50"
-                            CornerRadius="25">
+                    <!--  Botón de transferir  -->
+                    <Button
+                        BackgroundColor="{StaticResource Primary}"
+                        Command="{Binding TransferPointsCommand}"
+                        CornerRadius="25"
+                        FontAttributes="Bold"
+                        HeightRequest="50"
+                        IsEnabled="{Binding CanTransfer}"
+                        Text="Transferir Puntos"
+                        TextColor="White">
                         <Button.Triggers>
-                            <DataTrigger TargetType="Button"
-                                       Binding="{Binding CanTransfer}"
-                                       Value="False">
-                                <Setter Property="BackgroundColor" Value="#95A5A6"/>
+                            <DataTrigger
+                                Binding="{Binding CanTransfer}"
+                                TargetType="Button"
+                                Value="False">
+                                <Setter Property="BackgroundColor" Value="#95A5A6" />
                             </DataTrigger>
                         </Button.Triggers>
                     </Button>
@@ -188,22 +205,23 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Información adicional -->
-            <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="#FFF9E6"
-                   Padding="15">
+            <!--  Información adicional  -->
+            <Border
+                BackgroundColor="#FFF9E6"
+                Padding="15"
+                Style="{StaticResource CardFrame}">
                 <Grid ColumnDefinitions="Auto,*">
-                    <Label Text="💡"
-                           FontSize="25"/>
-                    <VerticalStackLayout Grid.Column="1"
-                                       Margin="10,0,0,0">
-                        <Label Text="Información"
-                               FontSize="14"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource Warning}"/>
-                        <Label Text="Las transferencias son instantáneas y no se pueden revertir. Asegúrate de seleccionar el usuario correcto."
-                               FontSize="12"
-                               TextColor="{StaticResource Gray}"/>
+                    <Label FontSize="25" Text="💡" />
+                    <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            Text="Información"
+                            TextColor="{StaticResource Warning}" />
+                        <Label
+                            FontSize="12"
+                            Text="Las transferencias son instantáneas y no se pueden revertir. Asegúrate de seleccionar el usuario correcto."
+                            TextColor="{StaticResource Gray}" />
                     </VerticalStackLayout>
                 </Grid>
             </Border>
