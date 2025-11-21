@@ -140,7 +140,7 @@
 
                                 <!-- Botón de canje -->
                                 <Button Grid.Row="3" Grid.ColumnSpan="3"
-                                        Text="{Binding DisabledReason, FallbackValue='Canjear'}"
+                                        Text="Canjear"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RedeemRewardCommand}"
                                         CommandParameter="{Binding .}"
                                         IsEnabled="{Binding CanRedeem}"
@@ -154,8 +154,9 @@
                                         <DataTrigger TargetType="Button"
                                                    Binding="{Binding CanRedeem}"
                                                    Value="False">
-                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
-                                            <Setter Property="TextColor" Value="#999999"/>
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
+                                            <Setter Property="TextColor" Value="{StaticResource Gray}"/>
+                                            <Setter Property="Text" Value="{Binding DisabledReason}"/>
                                         </DataTrigger>
                                     </Button.Triggers>
                                 </Button>
