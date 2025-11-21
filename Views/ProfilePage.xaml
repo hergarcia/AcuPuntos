@@ -136,6 +136,78 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Badges Ganados -->
+            <VerticalStackLayout Spacing="10">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="🎖️ Mis Badges"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#333333"/>
+                    <Label Grid.Column="1"
+                           Text="{Binding BadgesCount, StringFormat='{0} ganados'}"
+                           FontSize="14"
+                           TextColor="#666666"
+                           VerticalOptions="Center"/>
+                </Grid>
+
+                <!-- Lista de badges -->
+                <Border Style="{StaticResource CardFrame}"
+                       IsVisible="{Binding HasBadges}"
+                       Padding="10">
+                    <CollectionView ItemsSource="{Binding UserBadges}"
+                                  SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical"
+                                           Span="3"
+                                           HorizontalItemSpacing="10"
+                                           VerticalItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:UserBadge">
+                                <Border BackgroundColor="#F5F5F5"
+                                       Padding="10"
+                                       StrokeShape="RoundRectangle 10">
+                                    <VerticalStackLayout Spacing="5">
+                                        <Label Text="{Binding Badge.Icon}"
+                                               FontSize="40"
+                                               HorizontalOptions="Center"/>
+                                        <Label Text="{Binding Badge.Name}"
+                                               FontSize="10"
+                                               FontAttributes="Bold"
+                                               TextColor="#333333"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               MaxLines="2"/>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Border>
+
+                <!-- Sin badges -->
+                <Border Style="{StaticResource CardFrame}"
+                       IsVisible="{Binding HasBadges, Converter={StaticResource InvertedBoolConverter}}"
+                       Padding="30">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="🎖️"
+                               FontSize="50"
+                               HorizontalOptions="Center"
+                               Opacity="0.5"/>
+                        <Label Text="Aún no tienes badges"
+                               FontSize="16"
+                               TextColor="#666666"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Completa acciones para ganar insignias"
+                               FontSize="14"
+                               TextColor="#999999"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
             <!-- Estadísticas -->
             <Border Style="{StaticResource CardFrame}"
                    Padding="20">
