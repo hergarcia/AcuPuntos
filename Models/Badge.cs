@@ -27,7 +27,7 @@ namespace AcuPuntos.Models
         public int RequiredLevel { get; set; }
 
         [FirestoreProperty("rarity")]
-        public BadgeRarity Rarity { get; set; } = BadgeRarity.Common;
+        public int Rarity { get; set; } = 0; // 0=Common, 1=Uncommon, 2=Rare, 3=Epic, 4=Legendary
 
         [FirestoreProperty("isActive")]
         public bool IsActive { get; set; } = true;
