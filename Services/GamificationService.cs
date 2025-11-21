@@ -165,11 +165,17 @@ namespace AcuPuntos.Services
             {
                 var user = await _firestoreService.GetUserAsync(userId);
                 if (user == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Gamification] Usuario {userId} no encontrado");
                     return new List<Badge>();
+                }
 
                 var allBadges = await GetAllBadgesAsync();
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Total badges en sistema: {allBadges.Count}");
+
                 var userBadges = await GetUserBadgesAsync(userId);
                 var userBadgeIds = userBadges.Select(ub => ub.BadgeId).ToHashSet();
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Usuario ya tiene {userBadges.Count} badges");
 
                 var newlyAwardedBadges = new List<Badge>();
 
@@ -179,24 +185,58 @@ namespace AcuPuntos.Services
                     if (userBadgeIds.Contains(badge.Id))
                         continue;
 
-                    // Verificar si cumple los requisitos
-                    bool meetsRequirements = true;
+                    bool meetsRequirements = false;
 
-                    if (badge.RequiredLevel > 0 && user.Level < badge.RequiredLevel)
-                        meetsRequirements = false;
-
-                    if (badge.RequiredPoints > 0 && user.TotalPointsEarned < badge.RequiredPoints)
-                        meetsRequirements = false;
-
-                    // Requisitos especiales por categoría
-                    if (meetsRequirements)
+                    // Verificar requisitos según la categoría del badge
+                    switch (badge.Category.ToLower())
                     {
-                        meetsRequirements = await CheckSpecialBadgeRequirements(userId, badge, user);
+                        case "nivel":
+                            // Badges de nivel verifican el nivel del usuario
+                            meetsRequirements = user.Level >= badge.RequiredLevel;
+                            System.Diagnostics.Debug.WriteLine($"[Gamification] Badge '{badge.Name}' (Nivel): Usuario nivel {user.Level} vs requerido {badge.RequiredLevel} = {meetsRequirements}");
+                            break;
+
+                        case "puntos":
+                            // Badges de puntos verifican puntos totales ganados
+                            meetsRequirements = user.TotalPointsEarned >= badge.RequiredPoints;
+                            System.Diagnostics.Debug.WriteLine($"[Gamification] Badge '{badge.Name}' (Puntos): Usuario {user.TotalPointsEarned} vs requerido {badge.RequiredPoints} = {meetsRequirements}");
+                            break;
+
+                        case "generoso":
+                            // Badges generosos verifican transferencias enviadas
+                            meetsRequirements = await CheckGenerousBadgeRequirements(userId, badge, user);
+                            break;
+
+                        case "coleccionista":
+                            // Badges coleccionistas verifican canjes completados
+                            meetsRequirements = await CheckCollectorBadgeRequirements(userId, badge, user);
+                            break;
+
+                        case "dedicado":
+                            // Badges dedicados verifican racha de días consecutivos
+                            meetsRequirements = user.ConsecutiveDays >= badge.RequiredLevel;
+                            System.Diagnostics.Debug.WriteLine($"[Gamification] Badge '{badge.Name}' (Dedicado): Usuario {user.ConsecutiveDays} días vs requerido {badge.RequiredLevel} = {meetsRequirements}");
+                            break;
+
+                        case "especial":
+                            // Badges especiales tienen lógica propia
+                            meetsRequirements = await CheckSpecialBadgeRequirements(userId, badge, user);
+                            break;
+
+                        default:
+                            // Por defecto, verificar nivel y puntos si están definidos
+                            meetsRequirements = true;
+                            if (badge.RequiredLevel > 0)
+                                meetsRequirements = meetsRequirements && user.Level >= badge.RequiredLevel;
+                            if (badge.RequiredPoints > 0)
+                                meetsRequirements = meetsRequirements && user.TotalPointsEarned >= badge.RequiredPoints;
+                            break;
                     }
 
                     // Otorgar badge si cumple requisitos
                     if (meetsRequirements)
                     {
+                        System.Diagnostics.Debug.WriteLine($"[Gamification] ¡Otorgando badge '{badge.Name}' a usuario {userId}!");
                         var awarded = await AwardBadgeAsync(userId, badge.Id!);
                         if (awarded != null)
                         {
@@ -205,12 +245,53 @@ namespace AcuPuntos.Services
                     }
                 }
 
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Otorgados {newlyAwardedBadges.Count} badges nuevos");
                 return newlyAwardedBadges;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error checking and awarding badges: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Error checking and awarding badges: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Stack trace: {ex.StackTrace}");
                 return new List<Badge>();
+            }
+        }
+
+        private async Task<bool> CheckGenerousBadgeRequirements(string userId, Badge badge, User user)
+        {
+            try
+            {
+                // Badges generosos requieren haber transferido cierta cantidad de puntos
+                var transactions = await _firestoreService.GetUserTransactionsAsync(userId, 1000);
+                var totalSent = transactions.Where(t => t.Type == TransactionType.Sent).Sum(t => t.Amount);
+
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Badge '{badge.Name}' (Generoso): Usuario envió {totalSent} puntos vs requerido {badge.RequiredPoints}");
+                return totalSent >= badge.RequiredPoints;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking generous badge requirements: {ex.Message}");
+                return false;
+            }
+        }
+
+        private async Task<bool> CheckCollectorBadgeRequirements(string userId, Badge badge, User user)
+        {
+            try
+            {
+                // Badges coleccionistas requieren haber completado ciertos canjes
+                var redemptions = await _firestoreService.GetUserRedemptionsAsync(userId);
+                var completedCount = redemptions.Count(r => r.Status == RedemptionStatus.Completed);
+
+                // Calculamos el número de canjes requeridos (1 canje por cada 50 puntos del requisito)
+                int requiredRedemptions = badge.RequiredPoints / 50;
+                System.Diagnostics.Debug.WriteLine($"[Gamification] Badge '{badge.Name}' (Coleccionista): Usuario {completedCount} canjes vs requerido {requiredRedemptions}");
+
+                return completedCount >= requiredRedemptions;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking collector badge requirements: {ex.Message}");
+                return false;
             }
         }
 
@@ -218,28 +299,28 @@ namespace AcuPuntos.Services
         {
             try
             {
-                // Requisitos especiales según la categoría del badge
-                switch (badge.Category.ToLower())
+                // Badges especiales como "Pionero" o "Bienvenido"
+                if (badge.Name.ToLower().Contains("bienvenido"))
                 {
-                    case "generoso":
-                        // Requiere X transferencias enviadas
-                        var transactions = await _firestoreService.GetUserTransactionsAsync(userId, 1000);
-                        var sentCount = transactions.Count(t => t.Type == TransactionType.Sent);
-                        return sentCount >= badge.RequiredPoints / 10; // Por ejemplo, 1 transferencia por cada 10 puntos requeridos
-
-                    case "coleccionista":
-                        // Requiere X canjes completados
-                        var redemptions = await _firestoreService.GetUserRedemptionsAsync(userId);
-                        var completedCount = redemptions.Count(r => r.Status == RedemptionStatus.Completed);
-                        return completedCount >= badge.RequiredPoints / 50; // 1 canje por cada 50 puntos
-
-                    case "dedicado":
-                        // Requiere racha de días consecutivos
-                        return user.ConsecutiveDays >= badge.RequiredLevel;
-
-                    default:
-                        return true; // Sin requisitos especiales
+                    // El badge de bienvenida se otorga siempre (nivel >= 1)
+                    return user.Level >= 1;
                 }
+
+                if (badge.Name.ToLower().Contains("pionero"))
+                {
+                    // Pionero es uno de los primeros usuarios (podríamos verificar fecha de registro)
+                    // Por ahora, lo otorgamos si el usuario existe
+                    return true;
+                }
+
+                // Por defecto, verificar nivel y puntos
+                bool meets = true;
+                if (badge.RequiredLevel > 0)
+                    meets = meets && user.Level >= badge.RequiredLevel;
+                if (badge.RequiredPoints > 0)
+                    meets = meets && user.TotalPointsEarned >= badge.RequiredPoints;
+
+                return meets;
             }
             catch (Exception ex)
             {

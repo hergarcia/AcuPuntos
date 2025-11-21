@@ -56,13 +56,18 @@ namespace AcuPuntos.ViewModels
         protected override async Task OnAppearingAsync()
         {
             await base.OnAppearingAsync();
-            
+
             CurrentUser = _authService.CurrentUser;
-            
+
             if (CurrentUser != null)
             {
+                // Recargar datos actualizados del usuario desde Firestore
+                CurrentUser = await _firestoreService.GetUserAsync(CurrentUser.Uid!);
                 UpdatePointsDisplay();
-                
+
+                // Verificar y otorgar badges automáticamente según nivel/puntos actuales
+                await _gamificationService.CheckAndAwardBadgesAsync(CurrentUser.Uid!);
+
                 // Suscribirse a cambios en tiempo real
                 _userListener = _firestoreService.ListenToUserChanges(CurrentUser.Uid, user =>
                 {
@@ -72,7 +77,7 @@ namespace AcuPuntos.ViewModels
                         UpdatePointsDisplay();
                     });
                 });
-                
+
                 _transactionsListener = _firestoreService.ListenToTransactions(CurrentUser.Uid, transactions =>
                 {
                     MainThread.BeginInvokeOnMainThread(() =>
@@ -85,7 +90,7 @@ namespace AcuPuntos.ViewModels
                         HasTransactions = RecentTransactions.Any();
                     });
                 });
-                
+
                 await LoadTransactions();
                 await CheckDailyCheckInStatus();
             }

@@ -4,6 +4,7 @@ using AcuPuntos.Models;
 using AcuPuntos.Services;
 using AcuPuntos.Views;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace AcuPuntos.ViewModels
@@ -12,6 +13,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly IGamificationService _gamificationService;
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
@@ -32,12 +34,23 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private int totalPointsSpent;
 
-        public ProfileViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
+        [ObservableProperty]
+        private ObservableCollection<UserBadge> userBadges;
+
+        [ObservableProperty]
+        private int badgesCount;
+
+        [ObservableProperty]
+        private bool hasBadges;
+
+        public ProfileViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _gamificationService = gamificationService;
             _navigationService = navigationService;
             Title = "Mi Perfil";
+            UserBadges = new ObservableCollection<UserBadge>();
         }
 
         protected override async Task OnAppearingAsync()
@@ -45,7 +58,15 @@ namespace AcuPuntos.ViewModels
             await base.OnAppearingAsync();
 
             CurrentUser = _authService.CurrentUser;
+
+            if (CurrentUser != null)
+            {
+                // Recargar datos actualizados del usuario desde Firestore
+                CurrentUser = await _firestoreService.GetUserAsync(CurrentUser.Uid!);
+            }
+
             await LoadUserStats();
+            await LoadUserBadges();
         }
 
         private async Task LoadUserStats()
@@ -80,6 +101,30 @@ namespace AcuPuntos.ViewModels
             }, "Cargando estadísticas...");
         }
 
+        private async Task LoadUserBadges()
+        {
+            await ExecuteAsync(async () =>
+            {
+                if (CurrentUser == null)
+                    return;
+
+                // Verificar y otorgar badges automáticamente según nivel/puntos actuales
+                await _gamificationService.CheckAndAwardBadgesAsync(CurrentUser.Uid!);
+
+                // Cargar badges del usuario (incluyendo los recién otorgados)
+                var badges = await _gamificationService.GetUserBadgesAsync(CurrentUser.Uid!);
+
+                UserBadges.Clear();
+                foreach (var badge in badges)
+                {
+                    UserBadges.Add(badge);
+                }
+
+                BadgesCount = badges.Count;
+                HasBadges = badges.Count > 0;
+            });
+        }
+
         [RelayCommand]
         private async Task RefreshProfile()
         {
@@ -88,6 +133,7 @@ namespace AcuPuntos.ViewModels
 
             CurrentUser = await _firestoreService.GetUserAsync(CurrentUser.Uid!);
             await LoadUserStats();
+            await LoadUserBadges();
         }
 
         [RelayCommand]

@@ -768,15 +768,41 @@ namespace AcuPuntos.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"[FirestoreService] Obteniendo badges de colección '{BadgesCollection}'...");
+
                 var badges = await _firestore.GetCollection(BadgesCollection)
                     .OrderBy("order")
                     .GetDocumentsAsync<Badge>();
 
-                return badges?.Documents.Select(x => x.Data).ToList() ?? new List<Badge>();
+                if (badges == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[FirestoreService] Query retornó null");
+                    return new List<Badge>();
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[FirestoreService] Documentos encontrados: {badges.Documents.Count()}");
+
+                var badgesList = new List<Badge>();
+                foreach (var doc in badges.Documents)
+                {
+                    if (doc.Data != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[FirestoreService] Badge: {doc.Data.Name} - ID: {doc.Data.Id} - Active: {doc.Data.IsActive}");
+                        badgesList.Add(doc.Data);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[FirestoreService] Documento con data null, ID: {doc.Reference.Id}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[FirestoreService] Total badges cargados: {badgesList.Count}");
+                return badgesList;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error getting all badges: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[FirestoreService] Error getting all badges: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[FirestoreService] Stack trace: {ex.StackTrace}");
                 return new List<Badge>();
             }
         }

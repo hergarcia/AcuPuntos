@@ -1,168 +1,200 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:AcuPuntos.Views"
-             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
-             xmlns:models="clr-namespace:AcuPuntos.Models"
-             x:Class="AcuPuntos.Views.UserDetailPage"
-             x:DataType="viewmodels:UserDetailViewModel"
-             Title="{Binding Title}"
-             BackgroundColor="#F5F5F5"
-             Shell.TabBarIsVisible="False"
-             Shell.NavBarIsVisible="True">
+<views:BasePage
+    BackgroundColor="#F5F5F5"
+    Shell.NavBarIsVisible="True"
+    Shell.TabBarIsVisible="False"
+    Title="{Binding Title}"
+    x:Class="AcuPuntos.Views.UserDetailPage"
+    x:DataType="viewmodels:UserDetailViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:AcuPuntos.Models"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="20">
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Perfil del usuario -->
-            <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="#3498DB"
-                   Padding="25">
+            <!--  Perfil del usuario  -->
+            <Border
+                BackgroundColor="#3498DB"
+                Padding="25"
+                Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="15">
-                    
-                    <Label Text="👤"
-                           FontSize="70"
-                           HorizontalOptions="Center"/>
 
-                    <Label Text="{Binding User.DisplayName}"
-                           TextColor="White"
-                           FontSize="22"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"/>
+                    <Label
+                        FontSize="70"
+                        HorizontalOptions="Center"
+                        Text="👤" />
 
-                    <Label Text="{Binding User.Email}"
-                           TextColor="White"
-                           FontSize="14"
-                           Opacity="0.9"
-                           HorizontalOptions="Center"/>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="22"
+                        HorizontalOptions="Center"
+                        Text="{Binding User.DisplayName}"
+                        TextColor="White" />
 
-                    <Border Padding="8,4"
-                           CornerRadius="12"
-                           BackgroundColor="White"
-                           HorizontalOptions="Center">
-                        <Label Text="{Binding User.Role}"
-                               TextColor="#3498DB"
-                               FontSize="12"
-                               FontAttributes="Bold"/>
+                    <Label
+                        FontSize="14"
+                        HorizontalOptions="Center"
+                        Opacity="0.9"
+                        Text="{Binding User.Email}"
+                        TextColor="White" />
+
+                    <Border
+                        BackgroundColor="White"
+                        HorizontalOptions="Center"
+                        Padding="8,4"
+                        StrokeShape="RoundRectangle 12">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="{Binding User.Role}"
+                            TextColor="#3498DB" />
                     </Border>
 
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Puntos actuales -->
-            <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="#2ECC71"
-                   Padding="20">
+            <!--  Puntos actuales  -->
+            <Border
+                BackgroundColor="#2ECC71"
+                Padding="20"
+                Style="{StaticResource CardFrame}">
                 <Grid ColumnDefinitions="*,Auto">
                     <VerticalStackLayout>
-                        <Label Text="Puntos Actuales"
-                               TextColor="White"
-                               FontSize="16"
-                               Opacity="0.9"/>
-                        <Label Text="{Binding User.Points, StringFormat='{0:N0}'}"
-                               TextColor="White"
-                               FontSize="34"
-                               FontAttributes="Bold"/>
+                        <Label
+                            FontSize="16"
+                            Opacity="0.9"
+                            Text="Puntos Actuales"
+                            TextColor="White" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="34"
+                            Text="{Binding User.Points, StringFormat='{0:N0}'}"
+                            TextColor="White" />
                     </VerticalStackLayout>
-                    <Label Grid.Column="1"
-                           Text="💰"
-                           FontSize="55"
-                           VerticalOptions="Center"/>
+                    <Label
+                        FontSize="55"
+                        Grid.Column="1"
+                        Text="💰"
+                        VerticalOptions="Center" />
                 </Grid>
             </Border>
 
-            <!-- Estadísticas -->
-            <Border Style="{StaticResource CardFrame}"
-                   Padding="20">
+            <!--  Estadísticas  -->
+            <Border Padding="20" Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="15">
-                    
-                    <Label Text="📊 Estadísticas"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="#333333"/>
 
-                    <Grid RowDefinitions="Auto,Auto"
-                          ColumnDefinitions="*,*"
-                          RowSpacing="12"
-                          ColumnSpacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Text="📊 Estadísticas"
+                        TextColor="#333333" />
 
-                        <Border Grid.Row="0" Grid.Column="0"
-                               BackgroundColor="#E8F5E9"
-                               Padding="15"
-                               CornerRadius="12">
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="12"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="12">
+
+                        <Border
+                            BackgroundColor="#E8F5E9"
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            Padding="15"
+                            StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="5">
-                                <Label Text="📝"
-                                       FontSize="28"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="Transacciones"
-                                       FontSize="11"
-                                       TextColor="#666666"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="{Binding TotalTransactions}"
-                                       FontSize="22"
-                                       FontAttributes="Bold"
-                                       TextColor="#2ECC71"
-                                       HorizontalOptions="Center"/>
+                                <Label
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    Text="📝" />
+                                <Label
+                                    FontSize="11"
+                                    HorizontalOptions="Center"
+                                    Text="Transacciones"
+                                    TextColor="#666666" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="22"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding TotalTransactions}"
+                                    TextColor="#2ECC71" />
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Row="0" Grid.Column="1"
-                               BackgroundColor="#FFF3E0"
-                               Padding="15"
-                               CornerRadius="12">
+                        <Border
+                            BackgroundColor="#FFF3E0"
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            Padding="15"
+                            StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="5">
-                                <Label Text="🎁"
-                                       FontSize="28"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="Canjes"
-                                       FontSize="11"
-                                       TextColor="#666666"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="{Binding TotalRedemptions}"
-                                       FontSize="22"
-                                       FontAttributes="Bold"
-                                       TextColor="#F39C12"
-                                       HorizontalOptions="Center"/>
+                                <Label
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    Text="🎁" />
+                                <Label
+                                    FontSize="11"
+                                    HorizontalOptions="Center"
+                                    Text="Canjes"
+                                    TextColor="#666666" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="22"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding TotalRedemptions}"
+                                    TextColor="#F39C12" />
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Row="1" Grid.Column="0"
-                               BackgroundColor="#E3F2FD"
-                               Padding="15"
-                               CornerRadius="12">
+                        <Border
+                            BackgroundColor="#E3F2FD"
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Padding="15"
+                            StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="5">
-                                <Label Text="📈"
-                                       FontSize="28"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="Ganados"
-                                       FontSize="11"
-                                       TextColor="#666666"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="{Binding TotalPointsEarned, StringFormat='{0:N0}'}"
-                                       FontSize="22"
-                                       FontAttributes="Bold"
-                                       TextColor="#3498DB"
-                                       HorizontalOptions="Center"/>
+                                <Label
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    Text="📈" />
+                                <Label
+                                    FontSize="11"
+                                    HorizontalOptions="Center"
+                                    Text="Ganados"
+                                    TextColor="#666666" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="22"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding TotalPointsEarned, StringFormat='{0:N0}'}"
+                                    TextColor="#3498DB" />
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Row="1" Grid.Column="1"
-                               BackgroundColor="#FFEBEE"
-                               Padding="15"
-                               CornerRadius="12">
+                        <Border
+                            BackgroundColor="#FFEBEE"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            Padding="15"
+                            StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="5">
-                                <Label Text="📉"
-                                       FontSize="28"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="Gastados"
-                                       FontSize="11"
-                                       TextColor="#666666"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="{Binding TotalPointsSpent, StringFormat='{0:N0}'}"
-                                       FontSize="22"
-                                       FontAttributes="Bold"
-                                       TextColor="#E74C3C"
-                                       HorizontalOptions="Center"/>
+                                <Label
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    Text="📉" />
+                                <Label
+                                    FontSize="11"
+                                    HorizontalOptions="Center"
+                                    Text="Gastados"
+                                    TextColor="#666666" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="22"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding TotalPointsSpent, StringFormat='{0:N0}'}"
+                                    TextColor="#E74C3C" />
                             </VerticalStackLayout>
                         </Border>
 
@@ -171,91 +203,101 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Información de cuenta -->
-            <Border Style="{StaticResource CardFrame}"
-                   Padding="20">
+            <!--  Información de cuenta  -->
+            <Border Padding="20" Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="12">
-                    
-                    <Label Text="ℹ️ Información de Cuenta"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="#333333"/>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="ℹ️ Información de Cuenta"
+                        TextColor="#333333" />
 
                     <HorizontalStackLayout Spacing="10">
-                        <Label Text="Miembro desde:"
-                               FontSize="14"
-                               TextColor="#666666"
-                               VerticalOptions="Center"/>
-                        <Label Text="{Binding User.CreatedAt, StringFormat='{0:dd/MM/yyyy}'}"
-                               FontSize="14"
-                               FontAttributes="Bold"
-                               TextColor="#333333"
-                               VerticalOptions="Center"/>
+                        <Label
+                            FontSize="14"
+                            Text="Miembro desde:"
+                            TextColor="#666666"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            Text="{Binding User.CreatedAt, StringFormat='{0:dd/MM/yyyy}'}"
+                            TextColor="#333333"
+                            VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout Spacing="10">
-                        <Label Text="UID:"
-                               FontSize="12"
-                               TextColor="#999999"
-                               VerticalOptions="Center"/>
-                        <Label Text="{Binding User.Uid}"
-                               FontSize="11"
-                               TextColor="#999999"
-                               VerticalOptions="Center"
-                               LineBreakMode="TailTruncation"
-                               HorizontalOptions="FillAndExpand"/>
+                        <Label
+                            FontSize="12"
+                            Text="UID:"
+                            TextColor="#999999"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontSize="11"
+                            HorizontalOptions="FillAndExpand"
+                            LineBreakMode="TailTruncation"
+                            Text="{Binding User.Uid}"
+                            TextColor="#999999"
+                            VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Transacciones recientes -->
-            <Label Text="📝 Transacciones Recientes"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   TextColor="#333333"/>
+            <!--  Transacciones recientes  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="📝 Transacciones Recientes"
+                TextColor="#333333" />
 
-            <CollectionView ItemsSource="{Binding RecentTransactions}"
-                          SelectionMode="None"
-                          HeightRequest="300">
+            <CollectionView
+                HeightRequest="300"
+                ItemsSource="{Binding RecentTransactions}"
+                SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Border Style="{StaticResource CardFrame}"
-                           Padding="30">
-                        <Label Text="No hay transacciones"
-                               FontSize="14"
-                               TextColor="#666666"
-                               HorizontalOptions="Center"/>
+                    <Border Padding="30" Style="{StaticResource CardFrame}">
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="No hay transacciones"
+                            TextColor="#666666" />
                     </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Transaction">
-                        <Border Style="{StaticResource CardFrame}"
-                               Padding="12"
-                               Margin="0,0,0,8">
+                        <Border
+                            Margin="0,0,0,8"
+                            Padding="12"
+                            Style="{StaticResource CardFrame}">
                             <Grid ColumnDefinitions="Auto,*,Auto">
 
-                                <Label Text="{Binding Type, Converter={StaticResource TransactionIconConverter}}"
-                                       FontSize="32"
-                                       VerticalOptions="Center"/>
+                                <Label
+                                    FontSize="32"
+                                    Text="{Binding Type, Converter={StaticResource TransactionIconConverter}}"
+                                    VerticalOptions="Center" />
 
-                                <VerticalStackLayout Grid.Column="1"
-                                                   Margin="12,0,0,0">
-                                    <Label Text="{Binding Description}"
-                                           FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="#333333"
-                                           LineBreakMode="TailTruncation"/>
-                                    <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                                           FontSize="11"
-                                           TextColor="#999999"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding Description}"
+                                        TextColor="#333333" />
+                                    <Label
+                                        FontSize="11"
+                                        Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                        TextColor="#999999" />
                                 </VerticalStackLayout>
 
-                                <Label Grid.Column="2"
-                                       Text="{Binding Amount, StringFormat='{0:+#,0;-#,0;0}'}"
-                                       FontSize="16"
-                                       FontAttributes="Bold"
-                                       TextColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}"
-                                       VerticalOptions="Center"/>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Grid.Column="2"
+                                    Text="{Binding Amount, StringFormat='{0:+#,0;-#,0;0}'}"
+                                    TextColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}"
+                                    VerticalOptions="Center" />
 
                             </Grid>
                         </Border>
@@ -263,23 +305,25 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- Botones de acción -->
-            <Button Text="💰 Asignar Puntos"
-                    Command="{Binding AssignPointsCommand}"
-                    BackgroundColor="#2ECC71"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    HeightRequest="50"
-                    CornerRadius="25"/>
+            <!--  Botones de acción  -->
+            <Button
+                BackgroundColor="#2ECC71"
+                Command="{Binding AssignPointsCommand}"
+                CornerRadius="25"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Text="💰 Asignar Puntos"
+                TextColor="White" />
 
-            <Button Text="🔄 Actualizar"
-                    Command="{Binding RefreshUserDetailCommand}"
-                    BackgroundColor="#95A5A6"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Margin="0,0,0,20"/>
+            <Button
+                BackgroundColor="#95A5A6"
+                Command="{Binding RefreshUserDetailCommand}"
+                CornerRadius="25"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Margin="0,0,0,20"
+                Text="🔄 Actualizar"
+                TextColor="White" />
 
         </VerticalStackLayout>
     </ScrollView>

@@ -44,7 +44,7 @@ namespace AcuPuntos.Helpers
                     Category = "Nivel",
                     RequiredLevel = 2,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Common,
+                    Rarity = 0, // Common
                     Order = 1
                 },
                 new Badge
@@ -55,7 +55,7 @@ namespace AcuPuntos.Helpers
                     Category = "Nivel",
                     RequiredLevel = 5,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Common,
+                    Rarity = 0, // Common
                     Order = 2
                 },
                 new Badge
@@ -66,7 +66,7 @@ namespace AcuPuntos.Helpers
                     Category = "Nivel",
                     RequiredLevel = 10,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Uncommon,
+                    Rarity = 1, // Uncommon
                     Order = 3
                 },
                 new Badge
@@ -77,7 +77,7 @@ namespace AcuPuntos.Helpers
                     Category = "Nivel",
                     RequiredLevel = 20,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Rare,
+                    Rarity = 2, // Rare
                     Order = 4
                 },
                 new Badge
@@ -88,7 +88,7 @@ namespace AcuPuntos.Helpers
                     Category = "Nivel",
                     RequiredLevel = 50,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Legendary,
+                    Rarity = 4, // Legendary
                     Order = 5
                 },
 
@@ -101,7 +101,7 @@ namespace AcuPuntos.Helpers
                     Category = "Puntos",
                     RequiredLevel = 0,
                     RequiredPoints = 500,
-                    Rarity = BadgeRarity.Common,
+                    Rarity = 0, // Common
                     Order = 10
                 },
                 new Badge
@@ -112,7 +112,7 @@ namespace AcuPuntos.Helpers
                     Category = "Puntos",
                     RequiredLevel = 0,
                     RequiredPoints = 1000,
-                    Rarity = BadgeRarity.Uncommon,
+                    Rarity = 1, // Uncommon
                     Order = 11
                 },
                 new Badge
@@ -123,7 +123,7 @@ namespace AcuPuntos.Helpers
                     Category = "Puntos",
                     RequiredLevel = 0,
                     RequiredPoints = 5000,
-                    Rarity = BadgeRarity.Epic,
+                    Rarity = 3, // Epic
                     Order = 12
                 },
 
@@ -136,7 +136,7 @@ namespace AcuPuntos.Helpers
                     Category = "Generoso",
                     RequiredLevel = 0,
                     RequiredPoints = 100,
-                    Rarity = BadgeRarity.Uncommon,
+                    Rarity = 1, // Uncommon
                     Order = 20
                 },
                 new Badge
@@ -147,7 +147,7 @@ namespace AcuPuntos.Helpers
                     Category = "Generoso",
                     RequiredLevel = 0,
                     RequiredPoints = 500,
-                    Rarity = BadgeRarity.Rare,
+                    Rarity = 2, // Rare
                     Order = 21
                 },
 
@@ -160,7 +160,7 @@ namespace AcuPuntos.Helpers
                     Category = "Coleccionista",
                     RequiredLevel = 0,
                     RequiredPoints = 250,
-                    Rarity = BadgeRarity.Uncommon,
+                    Rarity = 1, // Uncommon
                     Order = 30
                 },
                 new Badge
@@ -171,7 +171,7 @@ namespace AcuPuntos.Helpers
                     Category = "Coleccionista",
                     RequiredLevel = 0,
                     RequiredPoints = 1000,
-                    Rarity = BadgeRarity.Epic,
+                    Rarity = 3, // Epic
                     Order = 31
                 },
 
@@ -184,7 +184,7 @@ namespace AcuPuntos.Helpers
                     Category = "Dedicado",
                     RequiredLevel = 7,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Uncommon,
+                    Rarity = 1, // Uncommon
                     Order = 40
                 },
                 new Badge
@@ -195,7 +195,7 @@ namespace AcuPuntos.Helpers
                     Category = "Dedicado",
                     RequiredLevel = 30,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Epic,
+                    Rarity = 3, // Epic
                     Order = 41
                 },
 
@@ -208,7 +208,7 @@ namespace AcuPuntos.Helpers
                     Category = "Especial",
                     RequiredLevel = 1,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Rare,
+                    Rarity = 2, // Rare
                     Order = 50
                 },
                 new Badge
@@ -219,7 +219,7 @@ namespace AcuPuntos.Helpers
                     Category = "Especial",
                     RequiredLevel = 1,
                     RequiredPoints = 0,
-                    Rarity = BadgeRarity.Common,
+                    Rarity = 0, // Common
                     Order = 51
                 }
             };
