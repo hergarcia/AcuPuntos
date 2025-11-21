@@ -1,166 +1,188 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:AcuPuntos.Views"
-             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
-             x:Class="AcuPuntos.Views.RewardDetailPage"
-             x:DataType="viewmodels:RewardDetailViewModel"
-             Title="{Binding Title}"
-             BackgroundColor="#F5F5F5"
-             Shell.TabBarIsVisible="False"
-             Shell.NavBarIsVisible="True">
+<views:BasePage
+    BackgroundColor="#F5F5F5"
+    Shell.NavBarIsVisible="True"
+    Shell.TabBarIsVisible="False"
+    Title="{Binding Title}"
+    x:Class="AcuPuntos.Views.RewardDetailPage"
+    x:DataType="viewmodels:RewardDetailViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="20">
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Icono grande -->
-            <Label Text="{Binding Reward.Icon, FallbackValue='🎁'}"
-                   FontSize="100"
-                   HorizontalOptions="Center"/>
+            <!--  Icono grande  -->
+            <Label
+                FontSize="100"
+                HorizontalOptions="Center"
+                Text="{Binding Reward.Icon, FallbackValue='🎁'}" />
 
-            <!-- Información principal -->
-            <Border Style="{StaticResource CardFrame}"
-                   Padding="20">
+            <!--  Información principal  -->
+            <Border Padding="20" Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="15">
-                    
-                    <Label Text="{Binding Reward.Name}"
-                           FontSize="24"
-                           FontAttributes="Bold"
-                           TextColor="#333333"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
 
-                    <!-- Categoría -->
-                    <Border Padding="10,5"
-                           CornerRadius="15"
-                           BackgroundColor="LightBlue"
-                           HorizontalOptions="Center">
-                        <Label Text="{Binding Reward.Category}"
-                               TextColor="White"
-                               FontSize="14"
-                               FontAttributes="Bold"/>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="24"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding Reward.Name}"
+                        TextColor="#333333" />
+
+                    <!--  Categoría  -->
+                    <Border
+                        BackgroundColor="LightBlue"
+                        HorizontalOptions="Center"
+                        Padding="10,5"
+                        StrokeShape="RoundRectangle 15">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            Text="{Binding Reward.Category}"
+                            TextColor="White" />
                     </Border>
 
-                    <!-- Costo -->
-                    <Border BackgroundColor="#2ECC71"
-                           Padding="15,10"
-                           CornerRadius="20"
-                           HorizontalOptions="Center">
+                    <!--  Costo  -->
+                    <Border
+                        BackgroundColor="#2ECC71"
+                        HorizontalOptions="Center"
+                        Padding="15,10"
+                        StrokeShape="RoundRectangle 20">
                         <HorizontalStackLayout Spacing="5">
-                            <Label Text="💰"
-                                   FontSize="20"
-                                   VerticalOptions="Center"/>
-                            <Label Text="{Binding Reward.PointsCost, StringFormat='{0:N0} puntos'}"
-                                   TextColor="White"
-                                   FontSize="22"
-                                   FontAttributes="Bold"
-                                   VerticalOptions="Center"/>
+                            <Label
+                                FontSize="20"
+                                Text="💰"
+                                VerticalOptions="Center" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="22"
+                                Text="{Binding Reward.PointsCost, StringFormat='{0:N0} puntos'}"
+                                TextColor="White"
+                                VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </Border>
 
-                    <!-- Descripción -->
-                    <BoxView HeightRequest="1"
-                             Color="#E0E0E0"
-                             Margin="0,10"/>
+                    <!--  Descripción  -->
+                    <BoxView
+                        Color="#E0E0E0"
+                        HeightRequest="1"
+                        Margin="0,10" />
 
-                    <Label Text="Descripción"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="#666666"/>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="Descripción"
+                        TextColor="#666666" />
 
-                    <Label Text="{Binding Reward.Description}"
-                           FontSize="15"
-                           TextColor="#333333"
-                           LineBreakMode="WordWrap"/>
+                    <Label
+                        FontSize="15"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Reward.Description}"
+                        TextColor="#333333" />
 
-                    <!-- Información adicional -->
-                    <BoxView HeightRequest="1"
-                             Color="#E0E0E0"
-                             Margin="0,10"/>
+                    <!--  Información adicional  -->
+                    <BoxView
+                        Color="#E0E0E0"
+                        HeightRequest="1"
+                        Margin="0,10" />
 
-                    <!-- Fecha de expiración -->
-                    <HorizontalStackLayout Spacing="10"
-                                         IsVisible="{Binding Reward.ExpiryDate, Converter={StaticResource NullToBoolConverter}}">
-                        <Label Text="⏰"
-                               FontSize="20"
-                               VerticalOptions="Center"/>
+                    <!--  Fecha de expiración  -->
+                    <HorizontalStackLayout IsVisible="{Binding Reward.ExpiryDate, Converter={StaticResource NullToBoolConverter}}" Spacing="10">
+                        <Label
+                            FontSize="20"
+                            Text="⏰"
+                            VerticalOptions="Center" />
                         <VerticalStackLayout>
-                            <Label Text="Válido hasta:"
-                                   FontSize="12"
-                                   TextColor="#666666"/>
-                            <Label Text="{Binding Reward.ExpiryDate, StringFormat='{0:dd/MM/yyyy}'}"
-                                   FontSize="14"
-                                   FontAttributes="Bold"
-                                   TextColor="#333333"/>
+                            <Label
+                                FontSize="12"
+                                Text="Válido hasta:"
+                                TextColor="#666666" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="{Binding Reward.ExpiryDate, StringFormat='{0:dd/MM/yyyy}'}"
+                                TextColor="#333333" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
-                    <!-- Límite de canjes -->
-                    <HorizontalStackLayout Spacing="10"
-                                         IsVisible="{Binding Reward.MaxRedemptionsPerUser, Converter={StaticResource NullToBoolConverter}}">
-                        <Label Text="🎯"
-                               FontSize="20"
-                               VerticalOptions="Center"/>
+                    <!--  Límite de canjes  -->
+                    <HorizontalStackLayout IsVisible="{Binding Reward.MaxRedemptionsPerUser, Converter={StaticResource NullToBoolConverter}}" Spacing="10">
+                        <Label
+                            FontSize="20"
+                            Text="🎯"
+                            VerticalOptions="Center" />
                         <VerticalStackLayout>
-                            <Label Text="Límite por usuario:"
-                                   FontSize="12"
-                                   TextColor="#666666"/>
-                            <Label Text="{Binding Reward.MaxRedemptionsPerUser, StringFormat='{0} canjes'}"
-                                   FontSize="14"
-                                   FontAttributes="Bold"
-                                   TextColor="#333333"/>
+                            <Label
+                                FontSize="12"
+                                Text="Límite por usuario:"
+                                TextColor="#666666" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="{Binding Reward.MaxRedemptionsPerUser, StringFormat='{0} canjes'}"
+                                TextColor="#333333" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Estado del usuario -->
-            <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="#E8F8F5"
-                   Padding="20">
+            <!--  Estado del usuario  -->
+            <Border
+                BackgroundColor="#E8F8F5"
+                Padding="20"
+                Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="10">
-                        <Label Text="👤"
-                               FontSize="24"
-                               VerticalOptions="Center"/>
+                        <Label
+                            FontSize="24"
+                            Text="👤"
+                            VerticalOptions="Center" />
                         <VerticalStackLayout>
-                            <Label Text="Tus puntos:"
-                                   FontSize="14"
-                                   TextColor="#666666"/>
-                            <Label Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="#2ECC71"/>
+                            <Label
+                                FontSize="14"
+                                Text="Tus puntos:"
+                                TextColor="#666666" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
+                                TextColor="#2ECC71" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
-                    <Label Text="{Binding StatusMessage}"
-                           FontSize="14"
-                           TextColor="#666666"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,10,0,0"/>
+                    <Label
+                        FontSize="14"
+                        HorizontalTextAlignment="Center"
+                        Margin="0,10,0,0"
+                        Text="{Binding StatusMessage}"
+                        TextColor="#666666" />
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Botón de canje -->
-            <Button Text="Canjear Recompensa"
-                    Command="{Binding RedeemRewardCommand}"
-                    IsEnabled="{Binding CanRedeem}"
-                    BackgroundColor="#2ECC71"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    FontSize="18"
-                    HeightRequest="55"
-                    CornerRadius="27"
-                    Margin="0,10,0,20">
+            <!--  Botón de canje  -->
+            <Button
+                BackgroundColor="#2ECC71"
+                Command="{Binding RedeemRewardCommand}"
+                CornerRadius="27"
+                FontAttributes="Bold"
+                FontSize="18"
+                HeightRequest="55"
+                IsEnabled="{Binding CanRedeem}"
+                Margin="0,10,0,20"
+                Text="Canjear Recompensa"
+                TextColor="White">
                 <Button.Triggers>
-                    <DataTrigger TargetType="Button"
-                               Binding="{Binding CanRedeem}"
-                               Value="False">
-                        <Setter Property="BackgroundColor" Value="#E0E0E0"/>
-                        <Setter Property="TextColor" Value="#999999"/>
-                        <Setter Property="Text" Value="No disponible"/>
+                    <DataTrigger
+                        Binding="{Binding CanRedeem}"
+                        TargetType="Button"
+                        Value="False">
+                        <Setter Property="BackgroundColor" Value="#E0E0E0" />
+                        <Setter Property="TextColor" Value="#999999" />
+                        <Setter Property="Text" Value="No disponible" />
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
