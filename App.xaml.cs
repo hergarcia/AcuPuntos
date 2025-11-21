@@ -35,14 +35,19 @@ public partial class App : Application
     {
         try
         {
+            // Pequeño delay para asegurar que el Shell esté completamente inicializado
+            await Task.Delay(100);
+
             var currentUser = await _authService.GetCurrentUserAsync();
-            
+
             if (currentUser != null)
             {
+                // Usuario autenticado - ir a la pantalla principal
                 await Shell.Current.GoToAsync("//main");
             }
             else
             {
+                // Sin autenticación - ir a login
                 await Shell.Current.GoToAsync("//login");
             }
         }

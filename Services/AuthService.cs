@@ -104,6 +104,17 @@ namespace AcuPuntos.Services
             try
             {
 #if ANDROID || IOS
+                // Primero cerrar sesión en Google para limpiar credenciales
+                try
+                {
+                    await _firebaseAuthGoogle.SignOutAsync();
+                }
+                catch (Exception googleEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error cerrando sesión de Google: {googleEx.Message}");
+                }
+
+                // Luego cerrar sesión en Firebase
                 await _firebaseAuth.SignOutAsync();
 #endif
                 _currentUser = null;
