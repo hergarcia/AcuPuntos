@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private User? currentUser;
@@ -31,10 +32,11 @@ namespace AcuPuntos.ViewModels
         private List<string> _categories = new List<string> { "Todas", "Servicios", "Productos", "Descuentos", "Especial" };
         public List<string> Categories => _categories;
 
-        public RewardsViewModel(IAuthService authService, IFirestoreService firestoreService)
+        public RewardsViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _navigationService = navigationService;
             Title = "Recompensas";
             Rewards = new ObservableCollection<Reward>();
             FilteredRewards = new ObservableCollection<Reward>();
@@ -181,7 +183,7 @@ namespace AcuPuntos.ViewModels
                 { "Reward", reward }
             };
 
-            await Shell.Current.GoToAsync(nameof(RewardDetailPage), parameters);
+            await _navigationService.NavigateToAsync(nameof(RewardDetailPage), parameters);
         }
 
         [RelayCommand]

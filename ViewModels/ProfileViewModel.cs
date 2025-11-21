@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private User? currentUser;
@@ -31,10 +32,11 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private int totalPointsSpent;
 
-        public ProfileViewModel(IAuthService authService, IFirestoreService firestoreService)
+        public ProfileViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _navigationService = navigationService;
             Title = "Mi Perfil";
         }
 
@@ -103,7 +105,7 @@ namespace AcuPuntos.ViewModels
             await _authService.SignOutAsync();
 
             // Navegar a la pantalla de login
-            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+            await _navigationService.NavigateToRootAsync("login");
         }
 
         [RelayCommand]

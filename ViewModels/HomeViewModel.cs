@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private readonly INavigationService _navigationService;
         private IDisposable? _userListener;
         private IDisposable? _transactionsListener;
 
@@ -30,13 +31,14 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private bool hasTransactions;
 
-        public HomeViewModel(IAuthService authService, IFirestoreService firestoreService)
+        public HomeViewModel(IAuthService authService, IFirestoreService firestoreService, INavigationService navigationService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
+            _navigationService = navigationService;
             Title = "Inicio";
             RecentTransactions = new ObservableCollection<Transaction>();
-            
+
             UpdateGreeting();
         }
 
@@ -127,53 +129,31 @@ namespace AcuPuntos.ViewModels
         [RelayCommand]
         private async Task GoToTransfer()
         {
-            await Shell.Current.GoToAsync(nameof(TransferPage));
+            await _navigationService.NavigateToAsync(nameof(TransferPage));
         }
 
         [RelayCommand]
         private async Task GoToRewards()
         {
-            await Shell.Current.GoToAsync(nameof(RewardsPage));
+            await _navigationService.NavigateToAsync(nameof(RewardsPage));
         }
 
         [RelayCommand]
         private async Task GoToHistory()
         {
-            await Shell.Current.GoToAsync(nameof(HistoryPage));
-        }
-
-        [RelayCommand]
-        private async Task GoToProfile()
-        {
-            await Shell.Current.GoToAsync(nameof(ProfilePage));
+            await _navigationService.NavigateToAsync(nameof(HistoryPage));
         }
 
         [RelayCommand]
         private async Task GoToAdmin()
         {
-            await Shell.Current.GoToAsync(nameof(AdminPage));
+            await _navigationService.NavigateToAsync(nameof(AdminPage));
         }
 
         [RelayCommand]
         private async Task RefreshData()
         {
             await LoadTransactions();
-        }
-
-        [RelayCommand]
-        private async Task SignOut()
-        {
-            var confirm = await Shell.Current.DisplayAlert(
-                "Cerrar sesión",
-                "¿Estás seguro de que deseas cerrar sesión?",
-                "Sí",
-                "Cancelar");
-            
-            if (confirm)
-            {
-                await _authService.SignOutAsync();
-                await Shell.Current.GoToAsync("//login");
-            }
         }
     }
 }

@@ -8,6 +8,7 @@ namespace AcuPuntos.ViewModels
     public partial class LoginViewModel : BaseViewModel
     {
         private readonly IAuthService _authService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private string welcomeMessage = "¡Bienvenido a AcuPuntos!";
@@ -18,9 +19,10 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private bool isLoading;
 
-        public LoginViewModel(IAuthService authService)
+        public LoginViewModel(IAuthService authService, INavigationService navigationService)
         {
             _authService = authService;
+            _navigationService = navigationService;
             Title = "AcuPuntos";
         }
 
@@ -30,11 +32,11 @@ namespace AcuPuntos.ViewModels
             await ExecuteAsync(async () =>
             {
                 var user = await _authService.SignInWithGoogleAsync();
-                
+
                 if (user != null)
                 {
                     // Navegar a la página principal
-                    await Shell.Current.GoToAsync("//main");
+                    await _navigationService.NavigateToRootAsync("main");
                 }
                 else
                 {
@@ -49,11 +51,11 @@ namespace AcuPuntos.ViewModels
         protected override async Task OnAppearingAsync()
         {
             await base.OnAppearingAsync();
-            
+
             // Si ya está autenticado, ir directo a la página principal
             if (_authService.IsAuthenticated)
             {
-                await Shell.Current.GoToAsync("//main");
+                await _navigationService.NavigateToRootAsync("main");
             }
         }
     }

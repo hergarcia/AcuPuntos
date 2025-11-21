@@ -9,11 +9,6 @@
              Title="{Binding Title}"
              BackgroundColor="#F5F5F5">
 
-    <views:BasePage.ToolbarItems>
-        <ToolbarItem Text="Perfil" Command="{Binding GoToProfileCommand}" />
-        <ToolbarItem Text="Salir" Command="{Binding SignOutCommand}" />
-    </views:BasePage.ToolbarItems>
-
     <RefreshView Command="{Binding RefreshDataCommand}"
                  IsRefreshing="{Binding IsBusy}"
                  RefreshColor="#2ECC71">
