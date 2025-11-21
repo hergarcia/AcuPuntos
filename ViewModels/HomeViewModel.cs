@@ -38,6 +38,9 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private int consecutiveDays = 0;
 
+        [ObservableProperty]
+        private double levelProgress = 0.0;
+
         public HomeViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService, INavigationService navigationService)
         {
             _authService = authService;
@@ -104,6 +107,9 @@ namespace AcuPuntos.ViewModels
             }
 
             ConsecutiveDays = CurrentUser.ConsecutiveDays;
+
+            // Calcular progreso del nivel
+            LevelProgress = _gamificationService.GetLevelProgress(CurrentUser.Experience);
         }
 
         protected override async Task OnDisappearingAsync()

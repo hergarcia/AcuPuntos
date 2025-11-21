@@ -71,6 +71,71 @@
                 </Grid>
             </Border>
 
+            <!-- Gamificación -->
+            <Border Style="{StaticResource CardFrame}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#9B59B6" Offset="0.0"/>
+                        <GradientStop Color="#8E44AD" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <VerticalStackLayout Spacing="15" Padding="10">
+
+                    <Label Text="🏆 Tu Progreso"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <!-- Nivel -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Nivel"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   Opacity="0.9"/>
+                            <Label Text="{Binding CurrentUser.Level}"
+                                   TextColor="White"
+                                   FontSize="36"
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+
+                        <!-- Experiencia -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Experiencia"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   Opacity="0.9"/>
+                            <Label Text="{Binding CurrentUser.Experience, StringFormat='{0} XP'}"
+                                   TextColor="White"
+                                   FontSize="36"
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Racha -->
+                    <Border BackgroundColor="#FFFFFF20"
+                           Padding="15"
+                           StrokeShape="RoundRectangle 12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🔥"
+                                   FontSize="28"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding CurrentUser.ConsecutiveDays, StringFormat='{0} días consecutivos'}"
+                                       TextColor="White"
+                                       FontSize="16"
+                                       FontAttributes="Bold"/>
+                                <Label Text="Sigue tu racha diaria"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       Opacity="0.8"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Estadísticas -->
             <Border Style="{StaticResource CardFrame}"
                    Padding="20">
