@@ -56,10 +56,10 @@ public class MainActivity : MauiAppCompatActivity
         // Verificar si estamos en una página que no está en el TabBar principal
         var currentRoute = Shell.Current.CurrentState.Location.ToString();
 
-        if (!currentRoute.Contains("///main"))
+        if (!currentRoute.Contains("//main"))
         {
             // Si no estamos en el main, navegar al home
-            await Shell.Current.GoToAsync("///main");
+            await Shell.Current.GoToAsync("//main");
             return;
         }
 

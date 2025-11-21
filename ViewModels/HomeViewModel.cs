@@ -168,14 +168,14 @@ namespace AcuPuntos.ViewModels
         private async Task GoToTransfer()
         {
             // Cambiar a la pestaña de Transferir en lugar de navegar a una nueva página
-            await Shell.Current.GoToAsync("///main/transfer");
+            await Shell.Current.GoToAsync("//main/transfer");
         }
 
         [RelayCommand]
         private async Task GoToRewards()
         {
             // Cambiar a la pestaña de Recompensas en lugar de navegar a una nueva página
-            await Shell.Current.GoToAsync("///main/rewards");
+            await Shell.Current.GoToAsync("//main/rewards");
         }
 
         [RelayCommand]
