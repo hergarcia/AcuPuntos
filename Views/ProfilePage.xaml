@@ -20,10 +20,18 @@
                 Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="15">
 
-                    <Label
-                        FontSize="80"
+                    <!--  Foto de perfil circular  -->
+                    <Border
+                        BackgroundColor="White"
+                        HeightRequest="100"
                         HorizontalOptions="Center"
-                        Text="👤" />
+                        StrokeShape="RoundRectangle 50"
+                        StrokeThickness="3"
+                        WidthRequest="100">
+                        <Image
+                            Aspect="AspectFill"
+                            Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.png', FallbackValue='user_placeholder.png'}" />
+                    </Border>
 
                     <Label
                         FontAttributes="Bold"
@@ -414,15 +422,6 @@
                 FontAttributes="Bold"
                 HeightRequest="50"
                 Text="✏️ Editar Perfil"
-                TextColor="White" />
-
-            <Button
-                BackgroundColor="#95A5A6"
-                Command="{Binding RefreshProfileCommand}"
-                CornerRadius="25"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Text="🔄 Actualizar"
                 TextColor="White" />
 
             <Button

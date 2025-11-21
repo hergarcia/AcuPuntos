@@ -137,10 +137,17 @@
                 Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="10">
-                        <Label
-                            FontSize="24"
-                            Text="👤"
-                            VerticalOptions="Center" />
+                        <Border
+                            BackgroundColor="#E0E0E0"
+                            HeightRequest="40"
+                            StrokeShape="RoundRectangle 20"
+                            StrokeThickness="2"
+                            VerticalOptions="Center"
+                            WidthRequest="40">
+                            <Image
+                                Aspect="AspectFill"
+                                Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.png', FallbackValue='user_placeholder.png'}" />
+                        </Border>
                         <VerticalStackLayout>
                             <Label
                                 FontSize="14"

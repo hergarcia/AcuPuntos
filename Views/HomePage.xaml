@@ -10,12 +10,7 @@
     xmlns:views="clr-namespace:AcuPuntos.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <RefreshView
-        Command="{Binding RefreshDataCommand}"
-        IsRefreshing="{Binding IsBusy}"
-        RefreshColor="#2ECC71">
-
-        <ScrollView>
+    <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
 
                 <!--  Saludo y nombre de usuario  -->
@@ -341,5 +336,4 @@
 
             </VerticalStackLayout>
         </ScrollView>
-    </RefreshView>
 </views:BasePage>

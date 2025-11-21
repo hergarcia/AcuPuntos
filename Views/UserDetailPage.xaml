@@ -22,10 +22,18 @@
                 Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="15">
 
-                    <Label
-                        FontSize="70"
+                    <!--  Foto de perfil circular  -->
+                    <Border
+                        BackgroundColor="White"
+                        HeightRequest="90"
                         HorizontalOptions="Center"
-                        Text="👤" />
+                        StrokeShape="RoundRectangle 45"
+                        StrokeThickness="3"
+                        WidthRequest="90">
+                        <Image
+                            Aspect="AspectFill"
+                            Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.png', FallbackValue='user_placeholder.png'}" />
+                    </Border>
 
                     <Label
                         FontAttributes="Bold"
@@ -313,17 +321,8 @@
                 FontAttributes="Bold"
                 HeightRequest="50"
                 Text="💰 Asignar Puntos"
-                TextColor="White" />
-
-            <Button
-                BackgroundColor="#95A5A6"
-                Command="{Binding RefreshUserDetailCommand}"
-                CornerRadius="25"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Margin="0,0,0,20"
-                Text="🔄 Actualizar"
-                TextColor="White" />
+                TextColor="White"
+                Margin="0,0,0,20" />
 
         </VerticalStackLayout>
     </ScrollView>

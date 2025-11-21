@@ -29,17 +29,17 @@
         <Setter Property="FontAttributes" Value="Bold" />
     </Style>
 
-    <!--  Estilos para Borders (Cards)  -->
+    <!--  Estilos para Borders (Cards) - Radio aumentado para diseño más moderno  -->
     <Style TargetType="Border" x:Key="CardFrame">
         <Setter Property="BackgroundColor" Value="White" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 15" />
-        <Setter Property="Stroke" Value="#E0E0E0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="Stroke" Value="{StaticResource Gray200}" />
         <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="Padding" Value="15" />
-        <Setter Property="Margin" Value="5" />
-        <!-- Sombra reducida para evitar errores de bitmap en Android -->
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Margin" Value="6" />
+        <!-- Sombra más moderna y sutil -->
         <Setter Property="Shadow">
-            <Shadow Brush="Black" Offset="0,1" Radius="2" Opacity="0.1" />
+            <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.08" />
         </Setter>
     </Style>
 
@@ -53,11 +53,11 @@
     <!--  Card sin sombra para listas (mejor performance en Android)  -->
     <Style TargetType="Border" x:Key="ListItemCard">
         <Setter Property="BackgroundColor" Value="White" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-        <Setter Property="Stroke" Value="#E0E0E0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+        <Setter Property="Stroke" Value="{StaticResource Gray200}" />
         <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="Padding" Value="15" />
-        <Setter Property="Margin" Value="5,5,5,5" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Margin" Value="6,4,6,4" />
     </Style>
 
     <!--  Estilos para Entry  -->
