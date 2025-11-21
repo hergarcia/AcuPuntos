@@ -252,12 +252,17 @@ namespace AcuPuntos.Services
                 var sentTransactions = await sentQuery.GetDocumentsAsync<Transaction>();
                 var receivedTransactions = await receivedQuery.GetDocumentsAsync<Transaction>();
 
+                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query fromUserId=={userId}: {sentTransactions?.Documents.Count() ?? 0} transacciones encontradas");
+                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query toUserId=={userId}: {receivedTransactions?.Documents.Count() ?? 0} transacciones encontradas");
+
                 // Procesar transacciones donde el usuario es el origen (fromUserId)
                 if (sentTransactions != null)
                 {
                     foreach (var doc in sentTransactions.Documents)
                     {
                         var transaction = doc.Data;
+                        System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query fromUserId - Transacción {transaction.Id}: Type={transaction.Type}, From={transaction.FromUserId}, To={transaction.ToUserId}");
+
                         // Solo agregar si el tipo corresponde a acciones del remitente
                         if (transaction.Type == TransactionType.Sent || transaction.Type == TransactionType.Redemption)
                         {
@@ -265,8 +270,12 @@ namespace AcuPuntos.Services
                             {
                                 transactions.Add(transaction);
                                 transactionIds.Add(transaction.Id!);
-                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Agregada transacción Sent/Redemption: {transaction.Id} - Type: {transaction.Type}");
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✓ Agregada transacción Sent/Redemption: {transaction.Id}");
                             }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✗ Filtrada (tipo {transaction.Type} no es Sent/Redemption)");
                         }
                     }
                 }
@@ -277,6 +286,8 @@ namespace AcuPuntos.Services
                     foreach (var doc in receivedTransactions.Documents)
                     {
                         var transaction = doc.Data;
+                        System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Query toUserId - Transacción {transaction.Id}: Type={transaction.Type}, From={transaction.FromUserId}, To={transaction.ToUserId}");
+
                         // Solo agregar si el tipo corresponde a acciones del destinatario
                         if (transaction.Type == TransactionType.Received || transaction.Type == TransactionType.Reward)
                         {
@@ -284,8 +295,16 @@ namespace AcuPuntos.Services
                             {
                                 transactions.Add(transaction);
                                 transactionIds.Add(transaction.Id!);
-                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] Agregada transacción Received/Reward: {transaction.Id} - Type: {transaction.Type}");
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✓ Agregada transacción Received/Reward: {transaction.Id}");
                             }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✗ Duplicada (ID ya existe)");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[GetUserTransactions] ✗ Filtrada (tipo {transaction.Type} no es Received/Reward)");
                         }
                     }
                 }
@@ -369,8 +388,13 @@ namespace AcuPuntos.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Creando transacción Sent: Type={sendTransaction.Type}, From={sendTransaction.FromUserId}, To={sendTransaction.ToUserId}");
                 await CreateTransactionAsync(sendTransaction);
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Transacción Sent creada con ID: {sendTransaction.Id}");
+
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Creando transacción Received: Type={receiveTransaction.Type}, From={receiveTransaction.FromUserId}, To={receiveTransaction.ToUserId}");
                 await CreateTransactionAsync(receiveTransaction);
+                System.Diagnostics.Debug.WriteLine($"[TransferPoints] Transacción Received creada con ID: {receiveTransaction.Id}");
 
                 System.Diagnostics.Debug.WriteLine($"Transferencia completada exitosamente");
                 return true;
