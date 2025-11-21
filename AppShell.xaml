@@ -31,19 +31,19 @@
 
     <!--  Páginas principales con tabs  -->
     <TabBar Route="main">
-        <Tab Icon="home.png" Title="Inicio">
+        <Tab Title="Inicio">
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
 
-        <Tab Icon="transfer.png" Title="Transferir">
+        <Tab Title="Transferir">
             <ShellContent ContentTemplate="{DataTemplate local:TransferPage}" />
         </Tab>
 
-        <Tab Icon="reward.png" Title="Recompensas">
+        <Tab Title="Recompensas">
             <ShellContent ContentTemplate="{DataTemplate local:RewardsPage}" />
         </Tab>
 
-        <Tab Icon="profile.png" Title="Perfil">
+        <Tab Title="Perfil">
             <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
         </Tab>
     </TabBar>
