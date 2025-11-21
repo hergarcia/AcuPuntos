@@ -77,83 +77,78 @@ Sistema de gestión de puntos y recompensas para un emprendimiento de acupuntura
 
 #### Reglas de Seguridad
 
-**IMPORTANTE**: Estas reglas de seguridad requieren el uso de Cloud Functions para transferencias de puntos entre usuarios no-admin. Ver sección "4. Configurar Cloud Functions" más abajo.
+**IMPORTANTE**: Estas reglas permiten que cualquier usuario autenticado pueda transferir puntos a otros usuarios. Las validaciones de seguridad se realizan en el código de la aplicación. Ver [SOLUCION_PERMISOS_FIRESTORE.md](SOLUCION_PERMISOS_FIRESTORE.md) para más detalles.
 
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Usuarios pueden leer su propio documento
-    match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && 
-        (request.auth.uid == userId || 
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
     }
-    
-    // Todos los usuarios autenticados pueden leer usuarios (para transferencias)
-    match /users/{userId} {
-      allow read: if request.auth != null;
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
     }
-    
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Usuarios - cualquier usuario autenticado puede leer y actualizar
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow update: if isAuthenticated();  // Necesario para transferencias
+      allow create: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
     // Transacciones
     match /transactions/{transactionId} {
-      allow read: if request.auth != null && 
-        (resource.data.fromUserId == request.auth.uid || 
+      allow read: if isAuthenticated() &&
+        (resource.data.fromUserId == request.auth.uid ||
          resource.data.toUserId == request.auth.uid ||
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
-      allow create: if request.auth != null;
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
     }
-    
-    // Recompensas - todos pueden leer, solo admin puede escribir
+
+    // Recompensas
     match /rewards/{rewardId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
-    
+
     // Canjes
     match /redemptions/{redemptionId} {
-      allow read: if request.auth != null && 
-        (resource.data.userId == request.auth.uid ||
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
-      allow create: if request.auth != null && 
+      allow read: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() &&
         request.resource.data.userId == request.auth.uid;
-      allow update: if request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Badges
+    match /badges/{badgeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // User Badges
+    match /userBadges/{userBadgeId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
     }
   }
 }
 ```
 
-### 4. Configurar Cloud Functions
-
-**REQUERIDO para transferencias de puntos**
-
-Las Cloud Functions permiten que usuarios no-admin transfieran puntos de manera segura, evitando problemas de permisos con las reglas de Firestore.
-
-1. **Instalar Firebase CLI**
-   ```bash
-   npm install -g firebase-tools
-   firebase login
-   ```
-
-2. **Instalar dependencias**
-   ```bash
-   cd functions
-   npm install
-   ```
-
-3. **Desplegar las funciones**
-   ```bash
-   npm run deploy
-   ```
-
-Para instrucciones detalladas, ver [functions/README.md](functions/README.md).
-
-**Nota**: Sin las Cloud Functions desplegadas, los usuarios no-admin recibirán errores de permisos al intentar transferir puntos.
-
-### 5. Configurar primer Admin
+### 4. Configurar primer Admin
 
 1. Registra el primer usuario con Google Sign-In
 2. Ve a Firebase Console → Firestore

@@ -4,14 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AcuPuntos.Models;
 using Plugin.Firebase.Firestore;
-using Plugin.Firebase.CloudFunctions;
 
 namespace AcuPuntos.Services
 {
     public class FirestoreService : IFirestoreService
     {
         private readonly IFirebaseFirestore _firestore;
-        private readonly IFirebaseCloudFunctions _cloudFunctions;
         private const string UsersCollection = "users";
         private const string TransactionsCollection = "transactions";
         private const string RewardsCollection = "rewards";
@@ -22,7 +20,6 @@ namespace AcuPuntos.Services
         public FirestoreService()
         {
             _firestore = CrossFirebaseFirestore.Current;
-            _cloudFunctions = CrossFirebaseCloudFunctions.Current;
         }
 
         #region Usuarios
@@ -302,18 +299,54 @@ namespace AcuPuntos.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Iniciando transferencia de {points} puntos de {fromUserId} a {toUserId}");
 
-                // Usar Cloud Function para transferir puntos de manera segura
-                // Esto evita problemas de permisos con las reglas de seguridad de Firestore
-                var data = new Dictionary<string, object>
+                // Verificar que el usuario origen tiene suficientes puntos
+                var fromUser = await GetUserAsync(fromUserId);
+                var toUser = await GetUserAsync(toUserId);
+
+                if (fromUser == null || toUser == null)
                 {
-                    { "fromUserId", fromUserId },
-                    { "toUserId", toUserId },
-                    { "points", points },
-                    { "description", description ?? "" }
+                    System.Diagnostics.Debug.WriteLine("Usuario origen o destino no existe");
+                    return false;
+                }
+
+                if (fromUser.Points < points)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Puntos insuficientes: tiene {fromUser.Points}, necesita {points}");
+                    return false;
+                }
+
+                // Actualizar puntos (esto funcionará con las nuevas reglas de seguridad)
+                await UpdateUserPointsAsync(fromUserId, -points);
+                await UpdateUserPointsAsync(toUserId, points);
+
+                // Rastrear puntos gastados y ganados
+                await UpdateUserPointsTracking(fromUserId, points, false);
+                await UpdateUserPointsTracking(toUserId, points, true);
+
+                // Crear transacción de envío
+                var sendTransaction = new Transaction
+                {
+                    Type = TransactionType.Sent,
+                    Amount = points,
+                    FromUserId = fromUserId,
+                    ToUserId = toUserId,
+                    Description = description ?? $"Transferencia a {toUser.DisplayName}",
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                var function = _cloudFunctions.GetHttpsCallable("transferPoints");
-                var result = await function.CallAsync(data);
+                // Crear transacción de recepción
+                var receiveTransaction = new Transaction
+                {
+                    Type = TransactionType.Received,
+                    Amount = points,
+                    FromUserId = fromUserId,
+                    ToUserId = toUserId,
+                    Description = description ?? $"Transferencia de {fromUser.DisplayName}",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await CreateTransactionAsync(sendTransaction);
+                await CreateTransactionAsync(receiveTransaction);
 
                 System.Diagnostics.Debug.WriteLine($"Transferencia completada exitosamente");
                 return true;
@@ -322,15 +355,6 @@ namespace AcuPuntos.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Error transferring points: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-
-                // Extraer el mensaje de error más útil si es una excepción de Cloud Functions
-                if (ex.Message.Contains("Puntos insuficientes") ||
-                    ex.Message.Contains("No puedes transferir") ||
-                    ex.Message.Contains("no existe"))
-                {
-                    throw new Exception(ex.Message);
-                }
-
                 return false;
             }
         }
