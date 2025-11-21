@@ -5,6 +5,7 @@ using Android.OS;
 using Plugin.Firebase.Auth.Google;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using AndroidX.Activity;
 
 namespace AcuPuntos;
 
@@ -16,18 +17,29 @@ public class MainActivity : MauiAppCompatActivity
     private static DateTime _lastBackPress = DateTime.MinValue;
     private static readonly TimeSpan _exitTimeThreshold = TimeSpan.FromSeconds(2);
 
+    protected override void OnCreate(Bundle? savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+
+        // Configurar el callback para el botón de atrás (Android 13+)
+        OnBackPressedDispatcher.AddCallback(this, new BackPressedCallback(async () =>
+        {
+            await HandleBackPressed();
+        }));
+    }
+
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
     {
         FirebaseAuthGoogleImplementation.HandleActivityResultAsync(requestCode, resultCode, data);
         base.OnActivityResult(requestCode, resultCode, data);
     }
 
-    public override void OnBackPressed()
+    private async Task HandleBackPressed()
     {
         // Obtener el Shell actual
         if (Shell.Current == null)
         {
-            base.OnBackPressed();
+            Finish();
             return;
         }
 
@@ -37,7 +49,7 @@ public class MainActivity : MauiAppCompatActivity
         // Si hay más de una página en el stack, navegar hacia atrás
         if (navigationStack.Count > 1)
         {
-            Shell.Current.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopAsync();
             return;
         }
 
@@ -47,7 +59,7 @@ public class MainActivity : MauiAppCompatActivity
         if (!currentRoute.Contains("///main"))
         {
             // Si no estamos en el main, navegar al home
-            Shell.Current.GoToAsync("///main");
+            await Shell.Current.GoToAsync("///main");
             return;
         }
 
@@ -59,16 +71,16 @@ public class MainActivity : MauiAppCompatActivity
         {
             // Primera presión: mostrar mensaje
             _lastBackPress = currentTime;
-            ShowExitMessage();
+            await ShowExitMessage();
         }
         else
         {
             // Segunda presión dentro del tiempo límite: cerrar la app
-            base.OnBackPressed();
+            Finish();
         }
     }
 
-    private async void ShowExitMessage()
+    private async Task ShowExitMessage()
     {
         // Mostrar snackbar usando CommunityToolkit.Maui
         var snackbarOptions = new SnackbarOptions
@@ -87,5 +99,22 @@ public class MainActivity : MauiAppCompatActivity
             snackbarOptions);
 
         await snackbar.Show();
+    }
+}
+
+// Callback personalizado para manejar el botón de atrás
+public class BackPressedCallback : OnBackPressedCallback
+{
+    private readonly Func<Task> _handleBackPressed;
+
+    public BackPressedCallback(Func<Task> handleBackPressed) : base(true)
+    {
+        _handleBackPressed = handleBackPressed;
+    }
+
+    public override void HandleOnBackPressed()
+    {
+        // Ejecutar la lógica de forma asíncrona
+        Task.Run(async () => await _handleBackPressed());
     }
 }
