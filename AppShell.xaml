@@ -23,6 +23,12 @@
         </ResourceDictionary>
     </Shell.Resources>
 
+    <!--  Página de Splash (inicial)  -->
+    <ShellContent
+        ContentTemplate="{DataTemplate local:SplashPage}"
+        Route="splash"
+        Title="Splash" />
+
     <!--  Página de Login (sin tabs)  -->
     <ShellContent
         ContentTemplate="{DataTemplate local:LoginPage}"

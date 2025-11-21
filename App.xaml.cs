@@ -14,10 +14,11 @@ public partial class App : Application
         MainPage = new AppShell();
     }
 
-    protected override void OnStart()
+    protected override async void OnStart()
     {
         base.OnStart();
-        CheckAuthentication();
+        // Navegar a splash que verificará la autenticación
+        await Shell.Current.GoToAsync("//splash");
     }
 
     protected override void OnSleep()
@@ -25,19 +26,17 @@ public partial class App : Application
         base.OnSleep();
     }
 
-    protected override void OnResume()
+    protected override async void OnResume()
     {
         base.OnResume();
-        CheckAuthentication();
+        // Al reanudar, verificar autenticación nuevamente
+        await CheckAuthenticationAsync();
     }
 
-    private async void CheckAuthentication()
+    private async Task CheckAuthenticationAsync()
     {
         try
         {
-            // Pequeño delay para asegurar que el Shell esté completamente inicializado
-            await Task.Delay(100);
-
             var currentUser = await _authService.GetCurrentUserAsync();
 
             if (currentUser != null)
