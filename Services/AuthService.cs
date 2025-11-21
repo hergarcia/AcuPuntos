@@ -54,9 +54,11 @@ namespace AcuPuntos.Services
                             LastLogin = DateTime.UtcNow
                         };
 
+                        // Crear el usuario en Firestore PRIMERO
                         await _firestoreService.CreateUserAsync(user);
 
-                        // Crear transacción de bienvenida
+                        // Luego crear la transacción de bienvenida
+                        // Esto asegura que no se duplique si hay múltiples llamadas
                         var welcomeTransaction = new Transaction
                         {
                             Type = TransactionType.Reward,
@@ -68,12 +70,16 @@ namespace AcuPuntos.Services
                         };
 
                         await _firestoreService.CreateTransactionAsync(welcomeTransaction);
+
+                        System.Diagnostics.Debug.WriteLine($"Usuario nuevo creado con puntos de bienvenida: {user.Uid}");
                     }
                     else
                     {
-                        // Actualizar último login
+                        // Usuario existente - solo actualizar último login
+                        // NO otorgar puntos de bienvenida nuevamente
                         user.LastLogin = DateTime.UtcNow;
                         await _firestoreService.UpdateUserAsync(user);
+                        System.Diagnostics.Debug.WriteLine($"Usuario existente logueado: {user.Uid}");
                     }
 
                     _currentUser = user;

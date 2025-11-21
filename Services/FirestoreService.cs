@@ -138,12 +138,28 @@ namespace AcuPuntos.Services
         {
             try
             {
+                // Primero obtener el usuario para verificar que existe
                 var user = await GetUserAsync(uid);
-                if (user != null)
+                if (user == null)
                 {
-                    user.Points += pointsDelta;
-                    await UpdateUserAsync(user);
+                    throw new ArgumentException($"Usuario con UID {uid} no existe");
                 }
+
+                // Calcular nuevos puntos
+                int newPoints = user.Points + pointsDelta;
+
+                // Actualizar solo el campo points de forma atómica
+                // Esto evita race conditions con listeners de tiempo real
+                var updates = new Dictionary<object, object>
+                {
+                    { "points", newPoints }
+                };
+
+                await _firestore.GetCollection(UsersCollection)
+                    .GetDocument(uid)
+                    .UpdateDataAsync(updates);
+
+                System.Diagnostics.Debug.WriteLine($"Puntos actualizados para {uid}: {user.Points} + {pointsDelta} = {newPoints}");
             }
             catch (Exception ex)
             {
