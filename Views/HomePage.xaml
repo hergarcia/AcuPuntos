@@ -187,7 +187,7 @@
                                       SelectionMode="None">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Transaction">
-                                    <Border Style="{StaticResource CardFrame}"
+                                    <Border Style="{StaticResource ListItemCard}"
                                            Padding="15"
                                            Margin="0,5">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">

@@ -33,11 +33,13 @@
     <Style TargetType="Border" x:Key="CardFrame">
         <Setter Property="BackgroundColor" Value="White" />
         <Setter Property="StrokeShape" Value="RoundRectangle 15" />
-        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="Stroke" Value="#E0E0E0" />
+        <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Padding" Value="15" />
         <Setter Property="Margin" Value="5" />
+        <!-- Sombra reducida para evitar errores de bitmap en Android -->
         <Setter Property="Shadow">
-            <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.2" />
+            <Shadow Brush="Black" Offset="0,1" Radius="2" Opacity="0.1" />
         </Setter>
     </Style>
 
@@ -46,6 +48,16 @@
         TargetType="Border"
         x:Key="RewardCard">
         <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <!--  Card sin sombra para listas (mejor performance en Android)  -->
+    <Style TargetType="Border" x:Key="ListItemCard">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+        <Setter Property="Stroke" Value="#E0E0E0" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Padding" Value="15" />
+        <Setter Property="Margin" Value="5,5,5,5" />
     </Style>
 
     <!--  Estilos para Entry  -->
