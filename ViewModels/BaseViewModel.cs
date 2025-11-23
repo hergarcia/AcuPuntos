@@ -18,9 +18,38 @@ namespace AcuPuntos.ViewModels
 
         public bool IsNotBusy => !IsBusy;
 
-        protected virtual async Task OnAppearingAsync()
+        /// <summary>
+        /// Indica si el ViewModel ya ha sido inicializado con datos.
+        /// Usar esto para evitar recargas innecesarias en OnAppearing.
+        /// </summary>
+        protected bool IsInitialized { get; set; }
+
+        /// <summary>
+        /// Método que se debe sobreescribir para cargar datos la primera vez.
+        /// Solo se ejecutará una vez a menos que se llame a InvalidateData().
+        /// </summary>
+        protected virtual async Task InitializeAsync()
         {
             await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Invalida los datos para forzar una recarga en el próximo OnAppearing.
+        /// Útil después de operaciones que modifiquen datos.
+        /// </summary>
+        protected void InvalidateData()
+        {
+            IsInitialized = false;
+        }
+
+        protected virtual async Task OnAppearingAsync()
+        {
+            // Solo inicializar la primera vez
+            if (!IsInitialized)
+            {
+                await InitializeAsync();
+                IsInitialized = true;
+            }
         }
 
         protected virtual async Task OnDisappearingAsync()

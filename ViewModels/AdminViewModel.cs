@@ -40,9 +40,9 @@ namespace AcuPuntos.ViewModels
             PendingRedemptions = new ObservableCollection<Redemption>();
         }
 
-        protected override async Task OnAppearingAsync()
+        protected override async Task InitializeAsync()
         {
-            await base.OnAppearingAsync();
+            await base.InitializeAsync();
             await LoadData();
         }
 

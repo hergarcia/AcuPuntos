@@ -48,9 +48,9 @@ namespace AcuPuntos.ViewModels
             FilteredTransactions = new ObservableCollection<Transaction>();
         }
 
-        protected override async Task OnAppearingAsync()
+        protected override async Task InitializeAsync()
         {
-            await base.OnAppearingAsync();
+            await base.InitializeAsync();
 
             CurrentUser = _authService.CurrentUser;
             await LoadTransactions();

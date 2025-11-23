@@ -53,9 +53,9 @@ namespace AcuPuntos.ViewModels
             UpdateGreeting();
         }
 
-        protected override async Task OnAppearingAsync()
+        protected override async Task InitializeAsync()
         {
-            await base.OnAppearingAsync();
+            await base.InitializeAsync();
 
             CurrentUser = _authService.CurrentUser;
 
