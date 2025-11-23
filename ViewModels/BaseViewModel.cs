@@ -16,6 +16,9 @@ namespace AcuPuntos.ViewModels
         [ObservableProperty]
         private string? subtitle;
 
+        [ObservableProperty]
+        private bool isRefreshing;
+
         public bool IsNotBusy => !IsBusy;
 
         /// <summary>
@@ -93,6 +96,7 @@ namespace AcuPuntos.ViewModels
             finally
             {
                 IsBusy = false;
+                IsRefreshing = false;
                 Subtitle = null;
             }
         }
@@ -122,6 +126,7 @@ namespace AcuPuntos.ViewModels
             finally
             {
                 IsBusy = false;
+                IsRefreshing = false;
                 Subtitle = null;
             }
         }

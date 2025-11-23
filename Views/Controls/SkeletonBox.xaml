@@ -7,19 +7,6 @@
          CornerRadius="8"
          Opacity="0.7">
 
-    <BoxView.Triggers>
-        <EventTrigger Event="Loaded">
-            <BeginAnimation>
-                <Animation>
-                    <DoubleAnimation TargetProperty="Opacity"
-                                   From="0.3"
-                                   To="0.7"
-                                   Duration="1000"
-                                   Easing="{x:Static Easing.SinInOut}"
-                                   RepeatForever="True"/>
-                </Animation>
-            </BeginAnimation>
-        </EventTrigger>
-    </BoxView.Triggers>
+
 
 </BoxView>

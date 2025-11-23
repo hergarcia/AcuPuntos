@@ -10,22 +10,26 @@
         <!-- Header skeleton -->
         <controls:SkeletonBox HeightRequest="20"
                              WidthRequest="120"
-                             HorizontalOptions="Start"/>
+                             HorizontalOptions="Start"
+                             IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:CardSkeleton}}}"/>
 
         <!-- Content skeleton -->
         <controls:SkeletonBox HeightRequest="16"
                              WidthRequest="200"
-                             HorizontalOptions="Start"/>
+                             HorizontalOptions="Start"
+                             IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:CardSkeleton}}}"/>
 
         <controls:SkeletonBox HeightRequest="16"
                              WidthRequest="180"
-                             HorizontalOptions="Start"/>
+                             HorizontalOptions="Start"
+                             IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:CardSkeleton}}}"/>
 
         <!-- Large value skeleton -->
         <controls:SkeletonBox HeightRequest="32"
                              WidthRequest="100"
                              Margin="0,8,0,0"
-                             HorizontalOptions="Start"/>
+                             HorizontalOptions="Start"
+                             IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:CardSkeleton}}}"/>
     </VerticalStackLayout>
 
 </Border>

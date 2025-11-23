@@ -11,31 +11,35 @@
              BackgroundColor="{StaticResource Light}">
 
     <Grid>
-        <RefreshView Command="{Binding RefreshRewardsCommand}">
+        <RefreshView Command="{Binding RefreshRewardsCommand}" IsRefreshing="{Binding IsRefreshing}">
         <ScrollView>
             <VerticalStackLayout Spacing="20" Padding="20">
 
             <!-- Saldo actual -->
-            <Border Style="{StaticResource CardFrame}"
-                   BackgroundColor="{StaticResource Primary}"
-                   Padding="20">
-                <Grid ColumnDefinitions="*,Auto">
-                    <VerticalStackLayout>
-                        <Label Text="Tus puntos disponibles"
-                               TextColor="White"
-                               FontSize="14"
-                               Opacity="0.9"/>
-                        <Label Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
-                               TextColor="White"
-                               FontSize="32"
-                               FontAttributes="Bold"/>
-                    </VerticalStackLayout>
-                    <Label Grid.Column="1"
-                           Text="🎁"
-                           FontSize="50"
-                           VerticalOptions="Center"/>
-                </Grid>
-            </Border>
+            <Grid>
+                <Border Style="{StaticResource CardFrame}"
+                       BackgroundColor="{StaticResource Primary}"
+                       Padding="20"
+                       IsVisible="{Binding IsNotBusy}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout>
+                            <Label Text="Tus puntos disponibles"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   Opacity="0.9"/>
+                            <Label Text="{Binding CurrentUser.Points, StringFormat='{0:N0} puntos'}"
+                                   TextColor="White"
+                                   FontSize="32"
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="1"
+                               Text="🎁"
+                               FontSize="50"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+                <controls:CardSkeleton IsVisible="{Binding IsBusy}" />
+            </Grid>
 
             <!-- Búsqueda -->
             <Border Style="{StaticResource CardFrame}"
@@ -66,106 +70,111 @@
                    FontAttributes="Bold"
                    TextColor="{StaticResource Dark}"/>
 
-            <CollectionView ItemsSource="{Binding FilteredRewards}"
-                          SelectionMode="None">
-                <CollectionView.EmptyView>
-                    <controls:EmptyStateView
-                        Icon="🔍"
-                        Title="No hay recompensas disponibles"/>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Reward">
-                        <Border Style="{StaticResource CardFrame}"
-                               Padding="15"
-                               Margin="0,0,0,10">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewRewardDetailCommand}"
-                                    CommandParameter="{Binding .}"/>
-                            </Border.GestureRecognizers>
-                            <Grid RowDefinitions="Auto,Auto,Auto,Auto"
-                                  ColumnDefinitions="Auto,*,Auto">
+            <VerticalStackLayout>
+                <CollectionView ItemsSource="{Binding FilteredRewards}"
+                              SelectionMode="None"
+                              IsVisible="{Binding IsNotBusy}">
+                    <CollectionView.EmptyView>
+                        <controls:EmptyStateView
+                            Icon="🔍"
+                            Title="No hay recompensas disponibles"/>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Reward">
+                            <Border Style="{StaticResource CardFrame}"
+                                   Padding="15"
+                                   Margin="0,0,0,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewRewardDetailCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                                      ColumnDefinitions="Auto,*,Auto">
 
-                                <!-- Icono -->
-                                <Label Grid.Row="0" Grid.RowSpan="2"
-                                       Text="{Binding Icon, FallbackValue='🎁'}"
-                                       FontSize="50"
-                                       VerticalOptions="Center"/>
+                                    <!-- Icono -->
+                                    <Label Grid.Row="0" Grid.RowSpan="2"
+                                           Text="{Binding Icon, FallbackValue='🎁'}"
+                                           FontSize="50"
+                                           VerticalOptions="Center"/>
 
-                                <!-- Nombre y descripción -->
-                                <VerticalStackLayout Grid.Row="0" Grid.Column="1"
-                                                   Margin="15,0,0,0">
-                                    <Label Text="{Binding Name}"
-                                           FontSize="18"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource Dark}"/>
-                                    <Label Text="{Binding Description}"
-                                           FontSize="14"
-                                           TextColor="{StaticResource Gray}"
-                                           LineBreakMode="TailTruncation"
-                                           MaxLines="2"/>
-                                </VerticalStackLayout>
+                                    <!-- Nombre y descripción -->
+                                    <VerticalStackLayout Grid.Row="0" Grid.Column="1"
+                                                       Margin="15,0,0,0">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource Dark}"/>
+                                        <Label Text="{Binding Description}"
+                                               FontSize="14"
+                                               TextColor="{StaticResource Gray}"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2"/>
+                                    </VerticalStackLayout>
 
-                                <!-- Costo en puntos -->
-                                <Border Grid.Row="0" Grid.Column="2"
-                                       BackgroundColor="{StaticResource Primary}"
-                                       Padding="10,5"
-                                       StrokeShape="RoundRectangle 15"
-                                       VerticalOptions="Start">
-                                    <Label Text="{Binding PointsCost, StringFormat='{0:N0} pts'}"
-                                           TextColor="White"
-                                           FontSize="14"
-                                           FontAttributes="Bold"/>
-                                </Border>
+                                    <!-- Costo en puntos -->
+                                    <Border Grid.Row="0" Grid.Column="2"
+                                           BackgroundColor="{StaticResource Primary}"
+                                           Padding="10,5"
+                                           StrokeShape="RoundRectangle 15"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding PointsCost, StringFormat='{0:N0} pts'}"
+                                               TextColor="White"
+                                               FontSize="14"
+                                               FontAttributes="Bold"/>
+                                    </Border>
 
-                                <!-- Categoría -->
-                                <Border Grid.Row="1" Grid.Column="1"
-                                       Grid.ColumnSpan="2"
-                                       Padding="8,4"
-                                       StrokeShape="RoundRectangle 10"
-                                       BackgroundColor="LightBlue"
-                                       HorizontalOptions="Start"
-                                       Margin="15,5,0,0">
-                                    <Label Text="{Binding Category}"
-                                           TextColor="White"
-                                           FontSize="12"
-                                           FontAttributes="Bold"/>
-                                </Border>
+                                    <!-- Categoría -->
+                                    <Border Grid.Row="1" Grid.Column="1"
+                                           Grid.ColumnSpan="2"
+                                           Padding="8,4"
+                                           StrokeShape="RoundRectangle 10"
+                                           BackgroundColor="LightBlue"
+                                           HorizontalOptions="Start"
+                                           Margin="15,5,0,0">
+                                        <Label Text="{Binding Category}"
+                                               TextColor="White"
+                                               FontSize="12"
+                                               FontAttributes="Bold"/>
+                                    </Border>
 
-                                <!-- Botón de canje -->
-                                <Button Grid.Row="3" Grid.ColumnSpan="3"
-                                        Text="Canjear"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RedeemRewardCommand}"
-                                        CommandParameter="{Binding .}"
-                                        IsEnabled="{Binding CanRedeem}"
-                                        BackgroundColor="{StaticResource Primary}"
-                                        TextColor="White"
-                                        FontAttributes="Bold"
-                                        HeightRequest="45"
-                                        CornerRadius="22"
-                                        Margin="0,10,0,0">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button"
-                                                   Binding="{Binding CanRedeem}"
-                                                   Value="False">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
-                                            <Setter Property="TextColor" Value="{StaticResource Gray}"/>
-                                            <Setter Property="Text" Value="{Binding DisabledReason}"/>
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
+                                    <!-- Botón de canje -->
+                                    <Button Grid.Row="3" Grid.ColumnSpan="3"
+                                            Text="Canjear"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RedeemRewardCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IsEnabled="{Binding CanRedeem}"
+                                            BackgroundColor="{StaticResource Primary}"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            HeightRequest="45"
+                                            CornerRadius="22"
+                                            Margin="0,10,0,0">
+                                        <Button.Triggers>
+                                            <DataTrigger TargetType="Button"
+                                                       Binding="{Binding CanRedeem}"
+                                                       Value="False">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
+                                                <Setter Property="TextColor" Value="{StaticResource Gray}"/>
+                                                <Setter Property="Text" Value="{Binding DisabledReason}"/>
+                                            </DataTrigger>
+                                        </Button.Triggers>
+                                    </Button>
 
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                <!-- Skeleton Loading -->
+                <controls:SkeletonList IsVisible="{Binding IsBusy}" />
+            </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
         </RefreshView>
 
-        <!--  Loading Overlay Reutilizable  -->
-        <controls:LoadingOverlay />
+
     </Grid>
 </views:BasePage>

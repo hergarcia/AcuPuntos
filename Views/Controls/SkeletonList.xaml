@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
+             x:Class="AcuPuntos.Views.Controls.SkeletonList">
+    <VerticalStackLayout Spacing="10" 
+                        x:Name="StackContainer">
+        <!-- Items will be added dynamically or we can hardcode a few -->
+        <controls:ListItemSkeleton IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:SkeletonList}}}" />
+        <controls:ListItemSkeleton IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:SkeletonList}}}" />
+        <controls:ListItemSkeleton IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:SkeletonList}}}" />
+        <controls:ListItemSkeleton IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:SkeletonList}}}" />
+        <controls:ListItemSkeleton IsVisible="{Binding IsVisible, Source={RelativeSource AncestorType={x:Type controls:SkeletonList}}}" />
+    </VerticalStackLayout>
+</ContentView>

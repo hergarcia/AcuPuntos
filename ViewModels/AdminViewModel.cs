@@ -50,23 +50,39 @@ namespace AcuPuntos.ViewModels
         {
             await ExecuteAsync(async () =>
             {
-                // Cargar usuarios
-                var allUsers = await _firestoreService.GetAllUsersAsync();
+                // 1. Cargar datos (IO)
+                var allUsersTask = _firestoreService.GetAllUsersAsync();
+                var redemptionsTask = _firestoreService.GetPendingRedemptionsAsync();
+
+                await Task.WhenAll(allUsersTask, redemptionsTask);
+
+                var allUsers = await allUsersTask;
+                var redemptions = await redemptionsTask;
+
+                // 2. Procesar conteos en segundo plano (CPU)
+                int userCount = 0;
+                int redemptionCount = 0;
+
+                await Task.Run(() =>
+                {
+                    userCount = allUsers.Count;
+                    redemptionCount = redemptions.Count;
+                });
+
+                // 3. Actualizar UI en hilo principal
                 Users.Clear();
                 foreach (var user in allUsers)
                 {
                     Users.Add(user);
                 }
-                TotalUsers = Users.Count;
+                TotalUsers = userCount;
 
-                // Cargar canjes pendientes
-                var redemptions = await _firestoreService.GetPendingRedemptionsAsync();
                 PendingRedemptions.Clear();
                 foreach (var redemption in redemptions)
                 {
                     PendingRedemptions.Add(redemption);
                 }
-                PendingRedemptionsCount = PendingRedemptions.Count;
+                PendingRedemptionsCount = redemptionCount;
 
             }, "Cargando datos...");
         }

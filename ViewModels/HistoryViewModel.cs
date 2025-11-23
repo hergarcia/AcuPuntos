@@ -63,35 +63,44 @@ namespace AcuPuntos.ViewModels
                 if (CurrentUser == null)
                     return;
 
+                // 1. Obtener datos (IO)
                 var allTransactions = await _firestoreService.GetUserTransactionsAsync(CurrentUser.Uid!);
 
-                Transactions.Clear();
+                // 2. Procesar datos en segundo plano (CPU)
+                await Task.Run(() =>
+                {
+                    // Calcular estadísticas en background
+                    var totalCount = allTransactions.Count;
+                    
+                    var earned = allTransactions
+                        .Where(t => t.Type == TransactionType.Received || t.Type == TransactionType.Reward)
+                        .Sum(t => t.Amount);
 
+                    var spent = allTransactions
+                        .Where(t => t.Type == TransactionType.Sent || t.Type == TransactionType.Redemption)
+                        .Sum(t => t.Amount);
+
+                    // Actualizar propiedades en el hilo principal luego
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        TotalTransactions = totalCount;
+                        TotalPointsEarned = earned;
+                        TotalPointsSpent = spent;
+                    });
+                });
+
+                // 3. Actualizar colección en el hilo principal
+                Transactions.Clear();
                 foreach (var transaction in allTransactions)
                 {
                     Transactions.Add(transaction);
                 }
 
-                CalculateStatistics();
                 FilterTransactions();
             }, "Cargando historial...");
         }
 
-        private void CalculateStatistics()
-        {
-            if (CurrentUser == null)
-                return;
 
-            TotalTransactions = Transactions.Count;
-
-            TotalPointsEarned = Transactions
-                .Where(t => t.Type == TransactionType.Received || t.Type == TransactionType.Reward)
-                .Sum(t => t.Amount);
-
-            TotalPointsSpent = Transactions
-                .Where(t => t.Type == TransactionType.Sent || t.Type == TransactionType.Redemption)
-                .Sum(t => t.Amount);
-        }
 
         partial void OnSearchTextChanged(string value)
         {

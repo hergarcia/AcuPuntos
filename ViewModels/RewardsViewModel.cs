@@ -56,28 +56,40 @@ namespace AcuPuntos.ViewModels
         {
             await ExecuteAsync(async () =>
             {
+                // 1. Obtener datos (IO)
                 var allRewards = await _firestoreService.GetActiveRewardsAsync();
 
-                Rewards.Clear();
+                // Capturar valores necesarios para el procesamiento
+                var userPoints = CurrentUser?.Points ?? 0;
+                var isLoggedIn = CurrentUser != null;
 
+                // 2. Procesar datos en segundo plano (CPU)
+                await Task.Run(() =>
+                {
+                    foreach (var reward in allRewards)
+                    {
+                        // Verificar si el usuario puede canjear
+                        reward.CanRedeem = isLoggedIn && userPoints >= reward.PointsCost;
+
+                        if (!reward.CanRedeem && isLoggedIn)
+                        {
+                            var pointsNeeded = reward.PointsCost - userPoints;
+                            reward.DisabledReason = $"Te faltan {pointsNeeded} puntos";
+                        }
+
+                        // Verificar si ha expirado
+                        if (reward.ExpiryDate.HasValue && reward.ExpiryDate.Value < DateTime.UtcNow)
+                        {
+                            reward.CanRedeem = false;
+                            reward.DisabledReason = "Esta recompensa ha expirado";
+                        }
+                    }
+                });
+
+                // 3. Actualizar UI en el hilo principal
+                Rewards.Clear();
                 foreach (var reward in allRewards)
                 {
-                    // Verificar si el usuario puede canjear
-                    reward.CanRedeem = CurrentUser != null && CurrentUser.Points >= reward.PointsCost;
-
-                    if (!reward.CanRedeem && CurrentUser != null)
-                    {
-                        var pointsNeeded = reward.PointsCost - CurrentUser.Points;
-                        reward.DisabledReason = $"Te faltan {pointsNeeded} puntos";
-                    }
-
-                    // Verificar si ha expirado
-                    if (reward.ExpiryDate.HasValue && reward.ExpiryDate.Value < DateTime.UtcNow)
-                    {
-                        reward.CanRedeem = false;
-                        reward.DisabledReason = "Esta recompensa ha expirado";
-                    }
-
                     Rewards.Add(reward);
                 }
 

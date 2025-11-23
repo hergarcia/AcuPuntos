@@ -12,7 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <RefreshView Command="{Binding RefreshDataCommand}">
+        <RefreshView Command="{Binding RefreshDataCommand}" IsRefreshing="{Binding IsRefreshing}">
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
 
@@ -30,105 +30,112 @@
             </VerticalStackLayout>
 
             <!--  Card de Puntos  -->
-            <Border
-                BackgroundColor="#2ECC71"
-                Padding="25"
-                Style="{StaticResource CardFrame}">
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                    <Label
-                        FontSize="18"
-                        Opacity="0.9"
-                        Text="Tus Puntos"
-                        TextColor="White" />
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="48"
-                        Grid.Row="1"
-                        Text="{Binding PointsDisplay}"
-                        TextColor="White" />
-                    <Label
-                        FontSize="14"
-                        Grid.Row="2"
-                        Opacity="0.8"
-                        Text="puntos disponibles"
-                        TextColor="White" />
-                    <Label
-                        FontSize="80"
-                        Grid.Column="1"
-                        Grid.RowSpan="3"
-                        Text="🌿"
-                        VerticalOptions="Center" />
-                </Grid>
-            </Border>
-
-            <!--  Card de Gamificación  -->
-            <Border Style="{StaticResource CardFrame}">
-                <Border.Background>
-                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                        <GradientStop Color="#3498DB" Offset="0.0" />
-                        <GradientStop Color="#2ECC71" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Grid Padding="10" RowDefinitions="Auto,Auto,Auto">
-                    <!--  Nivel y Progreso  -->
-                    <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid>
+                <Border
+                    BackgroundColor="#2ECC71"
+                    Padding="25"
+                    Style="{StaticResource CardFrame}"
+                    IsVisible="{Binding IsNotBusy}">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                        <Label
+                            FontSize="18"
+                            Opacity="0.9"
+                            Text="Tus Puntos"
+                            TextColor="White" />
                         <Label
                             FontAttributes="Bold"
-                            FontSize="20"
-                            Text="{Binding CurrentUser.Level, StringFormat='Nivel {0}'}"
+                            FontSize="48"
+                            Grid.Row="1"
+                            Text="{Binding PointsDisplay}"
                             TextColor="White" />
                         <Label
-                            FontSize="16"
-                            Grid.Column="2"
-                            Opacity="0.9"
-                            Text="{Binding CurrentUser.Experience, StringFormat='{0} XP'}"
+                            FontSize="14"
+                            Grid.Row="2"
+                            Opacity="0.8"
+                            Text="puntos disponibles"
                             TextColor="White" />
-                    </Grid>
-
-                    <!--  Barra de progreso  -->
-                    <ProgressBar
-                        BackgroundColor="#FFFFFF40"
-                        Grid.Row="1"
-                        HeightRequest="8"
-                        Margin="0,10"
-                        Progress="{Binding LevelProgress}"
-                        ProgressColor="White" />
-
-                    <!--  Check-in diario  -->
-                    <Grid
-                        ColumnDefinitions="Auto,*,Auto"
-                        ColumnSpacing="10"
-                        Grid.Row="2">
                         <Label
-                            FontSize="24"
-                            Text="🔥"
+                            FontSize="80"
+                            Grid.Column="1"
+                            Grid.RowSpan="3"
+                            Text="🌿"
                             VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    </Grid>
+                </Border>
+                <controls:CardSkeleton IsVisible="{Binding IsBusy}" />
+            </Grid>
+
+            <!--  Card de Gamificación  -->
+            <Grid>
+                <Border Style="{StaticResource CardFrame}" IsVisible="{Binding IsNotBusy}">
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                            <GradientStop Color="#3498DB" Offset="0.0" />
+                            <GradientStop Color="#2ECC71" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid Padding="10" RowDefinitions="Auto,Auto,Auto">
+                        <!--  Nivel y Progreso  -->
+                        <Grid ColumnDefinitions="Auto,*,Auto">
                             <Label
                                 FontAttributes="Bold"
-                                FontSize="14"
-                                Text="{Binding ConsecutiveDays, StringFormat='Racha: {0} días'}"
+                                FontSize="20"
+                                Text="{Binding CurrentUser.Level, StringFormat='Nivel {0}'}"
                                 TextColor="White" />
                             <Label
-                                FontSize="12"
-                                Opacity="0.8"
-                                Text="Haz check-in diario para ganar puntos"
+                                FontSize="16"
+                                Grid.Column="2"
+                                Opacity="0.9"
+                                Text="{Binding CurrentUser.Experience, StringFormat='{0} XP'}"
                                 TextColor="White" />
-                        </VerticalStackLayout>
-                        <Button
-                            BackgroundColor="White"
-                            Command="{Binding DailyCheckInCommand}"
-                            CornerRadius="20"
-                            FontSize="14"
-                            Grid.Column="2"
-                            HeightRequest="40"
-                            IsEnabled="{Binding CanCheckIn}"
-                            Padding="15,8"
-                            Text="Check-in"
-                            TextColor="#2ECC71" />
+                        </Grid>
+
+                        <!--  Barra de progreso  -->
+                        <ProgressBar
+                            BackgroundColor="#FFFFFF40"
+                            Grid.Row="1"
+                            HeightRequest="8"
+                            Margin="0,10"
+                            Progress="{Binding LevelProgress}"
+                            ProgressColor="White" />
+
+                        <!--  Check-in diario  -->
+                        <Grid
+                            ColumnDefinitions="Auto,*,Auto"
+                            ColumnSpacing="10"
+                            Grid.Row="2">
+                            <Label
+                                FontSize="24"
+                                Text="🔥"
+                                VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    Text="{Binding ConsecutiveDays, StringFormat='Racha: {0} días'}"
+                                    TextColor="White" />
+                                <Label
+                                    FontSize="12"
+                                    Opacity="0.8"
+                                    Text="Haz check-in diario para ganar puntos"
+                                    TextColor="White" />
+                            </VerticalStackLayout>
+                            <Button
+                                BackgroundColor="White"
+                                Command="{Binding DailyCheckInCommand}"
+                                CornerRadius="20"
+                                FontSize="14"
+                                Grid.Column="2"
+                                HeightRequest="40"
+                                IsEnabled="{Binding CanCheckIn}"
+                                Padding="15,8"
+                                Text="Check-in"
+                                TextColor="#2ECC71" />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Border>
+                </Border>
+                <controls:CardSkeleton IsVisible="{Binding IsBusy}" />
+            </Grid>
 
             <!--  Botones de acciones rápidas  -->
             <Grid
@@ -211,8 +218,8 @@
                 </Grid>
 
                 <!--  Lista de transacciones  -->
-                <VerticalStackLayout IsVisible="{Binding HasTransactions}">
-                    <CollectionView ItemsSource="{Binding RecentTransactions}" SelectionMode="None">
+                <VerticalStackLayout IsVisible="{Binding IsNotBusy}">
+                    <CollectionView ItemsSource="{Binding RecentTransactions}" SelectionMode="None" IsVisible="{Binding HasTransactions}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:Transaction">
                                 <Border
@@ -281,14 +288,17 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+                    
+                    <!--  Sin transacciones  -->
+                    <controls:EmptyStateView
+                        IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}"
+                        Icon="📊"
+                        Title="No hay actividad reciente"
+                        Message="Tus transacciones aparecerán aquí"/>
                 </VerticalStackLayout>
 
-                <!--  Sin transacciones  -->
-                <controls:EmptyStateView
-                    IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}"
-                    Icon="📊"
-                    Title="No hay actividad reciente"
-                    Message="Tus transacciones aparecerán aquí"/>
+                <!-- Skeleton Loading -->
+                <controls:SkeletonList IsVisible="{Binding IsBusy}" />
             </VerticalStackLayout>
 
             <!--  Panel de Admin (si es admin)  -->
@@ -325,7 +335,6 @@
         </ScrollView>
         </RefreshView>
 
-        <!--  Loading Overlay Reutilizable  -->
-        <controls:LoadingOverlay />
+
     </Grid>
 </views:BasePage>
