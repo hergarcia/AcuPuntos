@@ -4,12 +4,14 @@
              xmlns:views="clr-namespace:AcuPuntos.Views"
              xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
              xmlns:models="clr-namespace:AcuPuntos.Models"
+             xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
              x:Class="AcuPuntos.Views.RewardsPage"
              x:DataType="viewmodels:RewardsViewModel"
              Title="{Binding Title}"
              BackgroundColor="{StaticResource Light}">
 
-    <RefreshView Command="{Binding RefreshRewardsCommand}">
+    <Grid>
+        <RefreshView Command="{Binding RefreshRewardsCommand}">
         <ScrollView>
             <VerticalStackLayout Spacing="20" Padding="20">
 
@@ -170,28 +172,9 @@
 
             </VerticalStackLayout>
         </ScrollView>
-    </RefreshView>
+        </RefreshView>
 
-    <!--  Loading Overlay  -->
-    <Grid IsVisible="{Binding IsBusy}"
-          BackgroundColor="#80000000"
-          VerticalOptions="Fill"
-          HorizontalOptions="Fill">
-        <VerticalStackLayout
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Spacing="15">
-            <ActivityIndicator
-                IsRunning="{Binding IsBusy}"
-                Color="{StaticResource Primary}"
-                WidthRequest="50"
-                HeightRequest="50"/>
-            <Label
-                Text="{Binding Subtitle}"
-                TextColor="White"
-                FontSize="16"
-                HorizontalTextAlignment="Center"
-                IsVisible="{Binding Subtitle, Converter={StaticResource StringToBoolConverter}}"/>
-        </VerticalStackLayout>
+        <!--  Loading Overlay Reutilizable  -->
+        <controls:LoadingOverlay />
     </Grid>
 </views:BasePage>

@@ -10,9 +10,11 @@
     xmlns:models="clr-namespace:AcuPuntos.Models"
     xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
     xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <ScrollView>
+    <Grid>
+        <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
             <!--  Estadísticas rápidas  -->
@@ -297,28 +299,9 @@
                 TextColor="White" />
 
         </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
 
-    <!--  Loading Overlay  -->
-    <Grid IsVisible="{Binding IsBusy}"
-          BackgroundColor="#80000000"
-          VerticalOptions="Fill"
-          HorizontalOptions="Fill">
-        <VerticalStackLayout
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Spacing="15">
-            <ActivityIndicator
-                IsRunning="{Binding IsBusy}"
-                Color="{StaticResource Primary}"
-                WidthRequest="50"
-                HeightRequest="50"/>
-            <Label
-                Text="{Binding Subtitle}"
-                TextColor="White"
-                FontSize="16"
-                HorizontalTextAlignment="Center"
-                IsVisible="{Binding Subtitle, Converter={StaticResource StringToBoolConverter}}"/>
-        </VerticalStackLayout>
+        <!--  Loading Overlay Reutilizable  -->
+        <controls:LoadingOverlay />
     </Grid>
 </views:BasePage>
