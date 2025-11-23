@@ -10,8 +10,9 @@
     xmlns:views="clr-namespace:AcuPuntos.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <RefreshView Command="{Binding RefreshProfileCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
 
             <!--  Foto de perfil y nombre  -->
             <Border
@@ -434,6 +435,30 @@
                 Text="🚪 Cerrar Sesión"
                 TextColor="White" />
 
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+    <!--  Loading Overlay  -->
+    <Grid IsVisible="{Binding IsBusy}"
+          BackgroundColor="#80000000"
+          VerticalOptions="Fill"
+          HorizontalOptions="Fill">
+        <VerticalStackLayout
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Spacing="15">
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                Color="{StaticResource Primary}"
+                WidthRequest="50"
+                HeightRequest="50"/>
+            <Label
+                Text="{Binding Subtitle}"
+                TextColor="White"
+                FontSize="16"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding Subtitle, Converter={StaticResource StringToBoolConverter}}"/>
         </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 </views:BasePage>
