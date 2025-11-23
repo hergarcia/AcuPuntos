@@ -88,7 +88,7 @@ namespace AcuPuntos.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
             }
             finally
             {
@@ -116,7 +116,7 @@ namespace AcuPuntos.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
                 return default;
             }
             finally
@@ -131,7 +131,7 @@ namespace AcuPuntos.ViewModels
         /// </summary>
         protected async Task<bool> ShowConfirmationAsync(string title, string message, string acceptButton = "Sí", string cancelButton = "No")
         {
-            return await Shell.Current.DisplayAlert(title, message, acceptButton, cancelButton);
+            return await Shell.Current.DisplayAlertAsync(title, message, acceptButton, cancelButton);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace AcuPuntos.ViewModels
         /// </summary>
         protected async Task ShowAlertAsync(string title, string message, string button = "OK")
         {
-            await Shell.Current.DisplayAlert(title, message, button);
+            await Shell.Current.DisplayAlertAsync(title, message, button);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace AcuPuntos.ViewModels
         /// </summary>
         protected async Task ShowErrorAsync(string message, string title = "Error")
         {
-            await Shell.Current.DisplayAlert(title, message, "OK");
+            await Shell.Current.DisplayAlertAsync(title, message, "OK");
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace AcuPuntos.ViewModels
         /// </summary>
         protected async Task ShowSuccessAsync(string message, string title = "¡Éxito!")
         {
-            await Shell.Current.DisplayAlert(title, message, "OK");
+            await Shell.Current.DisplayAlertAsync(title, message, "OK");
         }
     }
 }
