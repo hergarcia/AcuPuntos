@@ -284,27 +284,11 @@
                 </VerticalStackLayout>
 
                 <!--  Sin transacciones  -->
-                <Border
+                <controls:EmptyStateView
                     IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}"
-                    Padding="30"
-                    Style="{StaticResource CardFrame}">
-                    <VerticalStackLayout Spacing="10">
-                        <Label
-                            FontSize="50"
-                            HorizontalOptions="Center"
-                            Text="📊" />
-                        <Label
-                            FontSize="16"
-                            HorizontalOptions="Center"
-                            Text="No hay actividad reciente"
-                            TextColor="#666666" />
-                        <Label
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            Text="Tus transacciones aparecerán aquí"
-                            TextColor="{StaticResource Gray400}" />
-                    </VerticalStackLayout>
-                </Border>
+                    Icon="📊"
+                    Title="No hay actividad reciente"
+                    Message="Tus transacciones aparecerán aquí"/>
             </VerticalStackLayout>
 
             <!--  Panel de Admin (si es admin)  -->

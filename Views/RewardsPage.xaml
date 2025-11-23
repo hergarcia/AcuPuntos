@@ -69,18 +69,9 @@
             <CollectionView ItemsSource="{Binding FilteredRewards}"
                           SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Border Style="{StaticResource CardFrame}"
-                           Padding="40">
-                        <VerticalStackLayout Spacing="10">
-                            <Label Text="🔍"
-                                   FontSize="50"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="No hay recompensas disponibles"
-                                   FontSize="16"
-                                   TextColor="{StaticResource Gray}"
-                                   HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
+                    <controls:EmptyStateView
+                        Icon="🔍"
+                        Title="No hay recompensas disponibles"/>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Reward">

@@ -20,54 +20,26 @@
             <!--  Estadísticas rápidas  -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <!--  Total usuarios  -->
-                <Border
-                    BackgroundColor="{StaticResource Secondary}"
+                <controls:StatsCard
                     Grid.Column="0"
-                    Padding="15"
-                    Style="{StaticResource CardFrame}">
-                    <VerticalStackLayout Spacing="5">
-                        <Label
-                            FontSize="30"
-                            HorizontalOptions="Center"
-                            Text="👥" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="Usuarios"
-                            TextColor="White" />
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="26"
-                            HorizontalOptions="Center"
-                            Text="{Binding TotalUsers}"
-                            TextColor="White" />
-                    </VerticalStackLayout>
-                </Border>
+                    Value="{Binding TotalUsers}"
+                    Label="Usuarios"
+                    Icon="👥"
+                    BackgroundColor="{StaticResource Secondary}"
+                    LabelColor="White"
+                    ValueColor="White"
+                    Format="N0"/>
 
                 <!--  Canjes pendientes  -->
-                <Border
-                    BackgroundColor="{StaticResource Warning}"
+                <controls:StatsCard
                     Grid.Column="1"
-                    Padding="15"
-                    Style="{StaticResource CardFrame}">
-                    <VerticalStackLayout Spacing="5">
-                        <Label
-                            FontSize="30"
-                            HorizontalOptions="Center"
-                            Text="⏳" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="Pendientes"
-                            TextColor="White" />
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="26"
-                            HorizontalOptions="Center"
-                            Text="{Binding PendingRedemptionsCount}"
-                            TextColor="White" />
-                    </VerticalStackLayout>
-                </Border>
+                    Value="{Binding PendingRedemptionsCount}"
+                    Label="Pendientes"
+                    Icon="⏳"
+                    BackgroundColor="{StaticResource Warning}"
+                    LabelColor="White"
+                    ValueColor="White"
+                    Format="N0"/>
             </Grid>
 
             <!--  Canjes pendientes  -->
@@ -82,19 +54,9 @@
                 ItemsSource="{Binding PendingRedemptions}"
                 SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Border Padding="30" Style="{StaticResource CardFrame}">
-                        <VerticalStackLayout Spacing="10">
-                            <Label
-                                FontSize="40"
-                                HorizontalOptions="Center"
-                                Text="✅" />
-                            <Label
-                                FontSize="14"
-                                HorizontalOptions="Center"
-                                Text="No hay canjes pendientes"
-                                TextColor="{StaticResource Gray}" />
-                        </VerticalStackLayout>
-                    </Border>
+                    <controls:EmptyStateView
+                        Icon="✅"
+                        Title="No hay canjes pendientes"/>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Redemption">
@@ -188,13 +150,9 @@
 
             <CollectionView ItemsSource="{Binding Users}" SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Border Padding="30" Style="{StaticResource CardFrame}">
-                        <Label
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            Text="No hay usuarios"
-                            TextColor="{StaticResource Gray}" />
-                    </Border>
+                    <controls:EmptyStateView
+                        Icon="👥"
+                        Title="No hay usuarios"/>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:User">

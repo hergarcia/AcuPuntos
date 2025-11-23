@@ -21,54 +21,24 @@
             <!--  Estadísticas  -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <!--  Puntos ganados  -->
-                <Border
-                    BackgroundColor="#2ECC71"
+                <controls:StatsCard
                     Grid.Column="0"
-                    Padding="15"
-                    Style="{StaticResource CardFrame}">
-                    <VerticalStackLayout Spacing="5">
-                        <Label
-                            FontSize="30"
-                            HorizontalOptions="Center"
-                            Text="📈" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="Ganados"
-                            TextColor="White" />
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="22"
-                            HorizontalOptions="Center"
-                            Text="{Binding TotalPointsEarned, StringFormat='{0:N0}'}"
-                            TextColor="White" />
-                    </VerticalStackLayout>
-                </Border>
+                    Value="{Binding TotalPointsEarned}"
+                    Label="Ganados"
+                    Icon="📈"
+                    BackgroundColor="#2ECC71"
+                    LabelColor="White"
+                    ValueColor="White"/>
 
                 <!--  Puntos gastados  -->
-                <Border
-                    BackgroundColor="#E74C3C"
+                <controls:StatsCard
                     Grid.Column="1"
-                    Padding="15"
-                    Style="{StaticResource CardFrame}">
-                    <VerticalStackLayout Spacing="5">
-                        <Label
-                            FontSize="30"
-                            HorizontalOptions="Center"
-                            Text="📉" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="Gastados"
-                            TextColor="White" />
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="22"
-                            HorizontalOptions="Center"
-                            Text="{Binding TotalPointsSpent, StringFormat='{0:N0}'}"
-                            TextColor="White" />
-                    </VerticalStackLayout>
-                </Border>
+                    Value="{Binding TotalPointsSpent}"
+                    Label="Gastados"
+                    Icon="📉"
+                    BackgroundColor="#E74C3C"
+                    LabelColor="White"
+                    ValueColor="White"/>
             </Grid>
 
             <!--  Filtros  -->
@@ -104,19 +74,9 @@
 
             <CollectionView ItemsSource="{Binding FilteredTransactions}" SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <Border Padding="40" Style="{StaticResource CardFrame}">
-                        <VerticalStackLayout Spacing="10">
-                            <Label
-                                FontSize="50"
-                                HorizontalOptions="Center"
-                                Text="📊" />
-                            <Label
-                                FontSize="16"
-                                HorizontalOptions="Center"
-                                Text="No hay transacciones"
-                                TextColor="#666666" />
-                        </VerticalStackLayout>
-                    </Border>
+                    <controls:EmptyStateView
+                        Icon="📊"
+                        Title="No hay transacciones"/>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Transaction">
