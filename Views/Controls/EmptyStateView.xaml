@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        x:Class="AcuPuntos.Views.Controls.EmptyStateView"
+        x:Name="emptyState"
+        Style="{StaticResource CardFrame}"
+        Padding="40">
+
+    <VerticalStackLayout Spacing="10">
+        <Label x:Name="iconLabel"
+               Text="{Binding Source={x:Reference emptyState}, Path=Icon}"
+               FontSize="50"
+               HorizontalOptions="Center"/>
+        <Label x:Name="titleLabel"
+               Text="{Binding Source={x:Reference emptyState}, Path=Title}"
+               FontSize="16"
+               TextColor="{StaticResource Gray}"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"/>
+        <Label x:Name="messageLabel"
+               Text="{Binding Source={x:Reference emptyState}, Path=Message}"
+               FontSize="14"
+               TextColor="{StaticResource Gray400}"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               IsVisible="{Binding Source={x:Reference emptyState}, Path=Message, Converter={StaticResource StringToBoolConverter}}"/>
+    </VerticalStackLayout>
+
+</Border>

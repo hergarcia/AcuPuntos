@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<BoxView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+         x:Class="AcuPuntos.Views.Controls.SkeletonBox"
+         x:Name="skeletonBox"
+         Color="#E0E0E0"
+         CornerRadius="8"
+         Opacity="0.7">
+
+    <BoxView.Triggers>
+        <EventTrigger Event="Loaded">
+            <BeginAnimation>
+                <Animation>
+                    <DoubleAnimation TargetProperty="Opacity"
+                                   From="0.3"
+                                   To="0.7"
+                                   Duration="1000"
+                                   Easing="{x:Static Easing.SinInOut}"
+                                   RepeatForever="True"/>
+                </Animation>
+            </BeginAnimation>
+        </EventTrigger>
+    </BoxView.Triggers>
+
+</BoxView>
