@@ -1,0 +1,14 @@
+{
+  "firebase_app_id": "1:289604700066:android:bb951fab8c828cc789d4fb",
+  "firebase_token": "YOUR_FIREBASE_TOKEN_OR_USE_CLI_LOGIN",
+  "release_notes": "Nueva version de AcuPuntos con mejoras y correcciones de errores.\n\nNovedades:\n- Mejoras en la interfaz de usuario\n- Optimizaciones de rendimiento\n- Correcciones de bugs",
+  "tester_groups": [],
+  "apk_output_path": "bin\\Release\\net10.0-android\\com.hergarcia.acupuntos-Signed.apk",
+  "auto_increment_version": true,
+  "notify_testers": true,
+  "deployment_notes": {
+    "last_deployment": "",
+    "last_version": "",
+    "deployment_history": []
+  }
+}

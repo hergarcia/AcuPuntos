@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage
+    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}"
+    Title="Agenda"
+    x:Class="AcuPuntos.Views.AgendaPage"
+    x:DataType="viewmodels:AgendaViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:AcuPuntos.Models"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid Padding="15" RowDefinitions="Auto,*" RowSpacing="15">
+        <!-- Header & Date Picker -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    Text="Reserva tu turno"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                    VerticalOptions="Center" />
+                <Button
+                    Command="{Binding NavigateToAdminAgendaCommand}"
+                    CornerRadius="18"
+                    FontSize="12"
+                    Grid.Column="1"
+                    HeightRequest="36"
+                    IsVisible="{Binding IsAdmin}"
+                    Padding="12,0"
+                    Text="⚙ Admin" />
+            </Grid>
+
+            <Border Padding="12" Style="{StaticResource CardFrame}">
+                <DatePicker
+                    Date="{Binding SelectedDate}"
+                    FontSize="16"
+                    Format="D"
+                    HorizontalOptions="Center"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+            </Border>
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20">
+
+                <!-- Mis Turnos Section -->
+                <VerticalStackLayout IsVisible="{Binding MyAppointments.Count, Converter={StaticResource IntToBoolConverter}}" Spacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Mis Turnos"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                    <CollectionView ItemsSource="{Binding MyAppointments}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:AppointmentSlot">
+                                <Border Margin="0,6" Style="{StaticResource ListItemCard}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                        <VerticalStackLayout Spacing="4">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding StartTime, StringFormat='{0:dd/MM HH:mm}'}"
+                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding StatusDisplay}"
+                                                TextColor="{StaticResource Gray500}" />
+                                        </VerticalStackLayout>
+
+                                        <Button
+                                            BackgroundColor="{StaticResource Danger}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AgendaViewModel}}, Path=CancelAppointmentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            CornerRadius="18"
+                                            FontSize="12"
+                                            Grid.Column="1"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            Text="Cancelar"
+                                            TextColor="White" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Available Slots Section -->
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Turnos Disponibles"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                    <CollectionView ItemsSource="{Binding AvailableSlots}">
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout HorizontalOptions="Center" Padding="40" Spacing="12">
+                                <Label
+                                    FontSize="48"
+                                    HorizontalOptions="Center"
+                                    Text="📅" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    HorizontalOptions="Center"
+                                    Text="No hay turnos disponibles"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label
+                                    FontSize="14"
+                                    HorizontalOptions="Center"
+                                    Text="Selecciona otra fecha"
+                                    TextColor="{StaticResource Gray500}" />
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:AppointmentSlot">
+                                <Border Margin="0,6" Style="{StaticResource ListItemCard}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                        <VerticalStackLayout VerticalOptions="Center">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="18"
+                                                Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
+                                                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                        </VerticalStackLayout>
+
+                                        <Button
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AgendaViewModel}}, Path=BookSlotCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Grid.Column="1"
+                                            Text="Reservar" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator
+            Color="{StaticResource Primary}"
+            Grid.RowSpan="2"
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+    </Grid>
+</views:BasePage>

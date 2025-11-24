@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Usuarios - cualquier usuario autenticado puede leer y actualizar
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow update: if isAuthenticated();  // Necesario para transferencias
+      allow create: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Transacciones
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.fromUserId == request.auth.uid ||
+         resource.data.toUserId == request.auth.uid ||
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // Recompensas
+    match /rewards/{rewardId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Canjes
+    match /redemptions/{redemptionId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Badges
+    match /badges/{badgeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // User Badges
+    match /userBadges/{userBadgeId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // ========== NUEVO: APPOINTMENTS (Agenda) ==========
+    match /appointments/{appointmentId} {
+      // Todos los usuarios autenticados pueden leer citas
+      allow read: if isAuthenticated();
+      
+      // Solo admins pueden crear nuevos slots de citas
+      allow create: if isAdmin();
+      
+      // Los usuarios pueden actualizar citas que han reservado (para solicitar cancelación)
+      // Los admins pueden actualizar cualquier cita
+      allow update: if isAuthenticated() && 
+                       (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Solo admins pueden eliminar citas
+      allow delete: if isAdmin();
+    }
+
+    // ========== NUEVO: NOTIFICATIONS (Notificaciones) ==========
+    match /notifications/{notificationId} {
+      // Los usuarios solo pueden leer sus propias notificaciones
+      // Los admins pueden leer todas las notificaciones
+      allow read: if isAuthenticated() && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Solo admins pueden crear notificaciones (generadas por el sistema)
+      allow create: if isAdmin();
+      
+      // Los usuarios pueden actualizar sus propias notificaciones (marcar como leídas)
+      // Los admins pueden actualizar cualquier notificación
+      allow update: if isAuthenticated() && 
+                       (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Solo admins pueden eliminar notificaciones
+      allow delete: if isAdmin();
+    }
+  }
+}

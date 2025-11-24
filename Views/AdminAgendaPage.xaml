@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage
+    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100},
+                                      Dark={StaticResource Gray950}}"
+    Title="Gestión de Agenda"
+    x:Class="AcuPuntos.Views.AdminAgendaPage"
+    x:DataType="viewmodels:AdminAgendaViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
+    xmlns:models="clr-namespace:AcuPuntos.Models"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid RowDefinitions="Auto,*">
+        <!--  Date Selection & Quick Stats  -->
+        <Border
+            Margin="15"
+            Padding="12"
+            Style="{StaticResource CardFrame}">
+            <DatePicker
+                Date="{Binding SelectedDate}"
+                FontSize="16"
+                Format="D"
+                HorizontalOptions="Start"
+                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                            Dark={StaticResource White}}" />
+        </Border>
+
+        <ScrollView Grid.Row="1" Padding="15">
+            <Grid RowDefinitions="Auto,*" RowSpacing="15">
+                <!--  Create Single Slot Section  -->
+                <Border Padding="16" Style="{StaticResource CardFrame}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="Crear Turno Individual"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                        Dark={StaticResource PrimaryLight}}" />
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="12"
+                            RowDefinitions="Auto,Auto"
+                            RowSpacing="12">
+                            <!--  Time Picker  -->
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label
+                                    FontSize="12"
+                                    Text="Hora del turno"
+                                    TextColor="{StaticResource Gray500}" />
+                                <TimePicker
+                                    FontSize="16"
+                                    Format="HH:mm"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                Dark={StaticResource White}}"
+                                    Time="{Binding NewSlotTime}" />
+                            </VerticalStackLayout>
+
+                            <!--  Duration Picker  -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label
+                                    FontSize="12"
+                                    Text="{Binding SlotDurationMinutes, StringFormat='Duración: {0} min'}"
+                                    TextColor="{StaticResource Gray500}" />
+                                <Stepper
+                                    Increment="15"
+                                    Maximum="180"
+                                    Minimum="15"
+                                    Value="{Binding SlotDurationMinutes}" />
+                            </VerticalStackLayout>
+
+                            <!--  Create Button  -->
+                            <Button
+                                Command="{Binding CreateSlotCommand}"
+                                Grid.ColumnSpan="2"
+                                Grid.Row="1"
+                                Text="✓ Crear Turno" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Grid.Row="1" Spacing="20">
+
+                    <!--  Batch Creation Section (Expandable)  -->
+                    <Border Padding="16" Style="{StaticResource CardFrame}">
+                        <VerticalStackLayout Spacing="12">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Crear Múltiples Turnos"
+                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
+                                                            Dark={StaticResource SecondaryLight}}" />
+
+                            <Grid
+                                ColumnDefinitions="*,*"
+                                ColumnSpacing="12"
+                                RowDefinitions="Auto,Auto,Auto"
+                                RowSpacing="12">
+                                <!--  Start Time  -->
+                                <VerticalStackLayout
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                    Spacing="4">
+                                    <Label
+                                        FontSize="12"
+                                        Text="Hora inicio"
+                                        TextColor="{StaticResource Gray500}" />
+                                    <TimePicker
+                                        FontSize="16"
+                                        Format="HH:mm"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                    Dark={StaticResource White}}"
+                                        Time="{Binding BatchStartTime}" />
+                                </VerticalStackLayout>
+
+                                <!--  End Time  -->
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    Grid.Row="0"
+                                    Spacing="4">
+                                    <Label
+                                        FontSize="12"
+                                        Text="Hora fin"
+                                        TextColor="{StaticResource Gray500}" />
+                                    <TimePicker
+                                        FontSize="16"
+                                        Format="HH:mm"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                    Dark={StaticResource White}}"
+                                        Time="{Binding BatchEndTime}" />
+                                </VerticalStackLayout>
+
+                                <!--  Interval  -->
+                                <VerticalStackLayout
+                                    Grid.ColumnSpan="2"
+                                    Grid.Row="1"
+                                    Spacing="4">
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding BatchIntervalMinutes, StringFormat='Intervalo: {0} minutos'}"
+                                        TextColor="{StaticResource Gray500}" />
+                                    <Stepper
+                                        Increment="15"
+                                        Maximum="120"
+                                        Minimum="15"
+                                        Value="{Binding BatchIntervalMinutes}" />
+                                </VerticalStackLayout>
+
+                                <!--  Create Batch Button  -->
+                                <Button
+                                    Command="{Binding BatchCreateSlotsCommand}"
+                                    Grid.ColumnSpan="2"
+                                    Grid.Row="2"
+                                    Text="✓ Crear Todos los Turnos" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!--  Pending Requests  -->
+                    <VerticalStackLayout IsVisible="{Binding PendingRequests.Count, Converter={StaticResource IntToBoolConverter}}" Spacing="12">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Solicitudes Pendientes"
+                            TextColor="{StaticResource Warning}" />
+
+                        <CollectionView ItemsSource="{Binding PendingRequests}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:AppointmentSlot">
+                                    <Border
+                                        Margin="0,6"
+                                        Stroke="{StaticResource Warning}"
+                                        StrokeThickness="2"
+                                        Style="{StaticResource ListItemCard}">
+                                        <Grid
+                                            ColumnDefinitions="Auto,*,Auto,Auto"
+                                            ColumnSpacing="12"
+                                            RowDefinitions="Auto,Auto"
+                                            RowSpacing="8">
+
+                                            <!--  User Photo  -->
+                                            <Border
+                                                HeightRequest="40"
+                                                StrokeShape="RoundRectangle 20"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Center"
+                                                WidthRequest="40">
+                                                <Image Aspect="AspectFill" Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.png'}" />
+                                            </Border>
+                                            Text="{Binding RequestedModification, StringFormat='📝 Solicitud: {0}'}"
+                                            TextColor="{StaticResource Info}"
+                                            FontAttributes="Italic"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+                    <!--  Manage Slots  -->
+                    <VerticalStackLayout Spacing="12">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Horarios del Día"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                        Dark={StaticResource White}}"
+                            VerticalOptions="Center" />
+
+                        <CollectionView ItemsSource="{Binding Slots}">
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout
+                                    HorizontalOptions="Center"
+                                    Padding="40"
+                                    Spacing="12">
+                                    <Label
+                                        FontSize="48"
+                                        HorizontalOptions="Center"
+                                        Text="🗓️" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        HorizontalOptions="Center"
+                                        Text="No hay horarios creados"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                    Dark={StaticResource White}}" />
+                                    <Label
+                                        FontSize="14"
+                                        HorizontalOptions="Center"
+                                        Text="Crea turnos para este día"
+                                        TextColor="{StaticResource Gray500}" />
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:AppointmentSlot">
+                                    <Border Margin="0,6" Style="{StaticResource ListItemCard}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+
+                                            <!--  User Photo (Visible only if booked)  -->
+                                            <Border
+                                                HeightRequest="40"
+                                                IsVisible="{Binding UserId, Converter={StaticResource StringToBoolConverter}}"
+                                                StrokeShape="RoundRectangle 20"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Center"
+                                                WidthRequest="40">
+                                                <Image Aspect="AspectFill" Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.png'}" />
+                                            </Border>
+
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="2"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="18"
+                                                    Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                Dark={StaticResource White}}" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding StatusDisplay}"
+                                                    TextColor="{StaticResource Gray500}" />
+                                                <Label
+                                                    FontSize="12"
+                                                    IsVisible="{Binding UserId, Converter={StaticResource StringToBoolConverter}}"
+                                                    Text="{Binding User.DisplayName, TargetNullValue='Usuario desconocido'}"
+                                                    TextColor="{StaticResource Primary}" />
+                                                <Label
+                                                    FontSize="10"
+                                                    IsVisible="{Binding User.Email, Converter={StaticResource StringToBoolConverter}}"
+                                                    Text="{Binding User.Email}"
+                                                    TextColor="{StaticResource Gray500}" />
+                                            </VerticalStackLayout>
+
+                                            <Button
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminAgendaViewModel}}, Path=EditSlotCommand}"
+                                                CommandParameter="{Binding .}"
+                                                CornerRadius="18"
+                                                FontSize="12"
+                                                Grid.Column="2"
+                                                HeightRequest="36"
+                                                Padding="12,0"
+                                                Text="✏️ Editar" />
+
+                                            <Button
+                                                BackgroundColor="Transparent"
+                                                BorderColor="Transparent"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminAgendaViewModel}}, Path=DeleteSlotCommand}"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="20"
+                                                Grid.Column="3"
+                                                Text="🗑"
+                                                TextColor="{StaticResource Danger}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+                    <!--  Statistics Section  -->
+                    <Border Padding="20" Style="{StaticResource CardFrame}">
+                        <VerticalStackLayout Spacing="12">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="Estadísticas"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                            Dark={StaticResource White}}" />
+
+                            <Grid
+                                ColumnDefinitions="*,*"
+                                ColumnSpacing="12"
+                                RowDefinitions="Auto,Auto"
+                                RowSpacing="12">
+                                <!--  Total Slots  -->
+                                <Border
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight},
+                                                                      Dark={StaticResource PrimaryDark}}"
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label
+                                            FontSize="12"
+                                            Text="Total Turnos"
+                                            TextColor="White" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="20"
+                                            Text="{Binding TotalSlots}"
+                                            TextColor="White" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!--  Pending  -->
+                                <Border
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Warning},
+                                                                      Dark={StaticResource WarningDark}}"
+                                    Grid.Column="1"
+                                    Grid.Row="0"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label
+                                            FontSize="12"
+                                            Text="Pendientes"
+                                            TextColor="White" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="20"
+                                            Text="{Binding PendingCount}"
+                                            TextColor="White" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!--  Confirmed  -->
+                                <Border
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Success},
+                                                                      Dark={StaticResource SuccessDark}}"
+                                    Grid.Column="0"
+                                    Grid.Row="1"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label
+                                            FontSize="12"
+                                            Text="Confirmados"
+                                            TextColor="White" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="20"
+                                            Text="{Binding ConfirmedCount}"
+                                            TextColor="White" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!--  Available  -->
+                                <Border
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryLight},
+                                                                      Dark={StaticResource SecondaryDark}}"
+                                    Grid.Column="1"
+                                    Grid.Row="1"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label
+                                            FontSize="12"
+                                            Text="Disponibles"
+                                            TextColor="White" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="20"
+                                            Text="{Binding AvailableCount}"
+                                            TextColor="White" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+
+        <controls:LoadingOverlay Grid.RowSpan="2" />
+
+
+    </Grid>
+</views:BasePage>

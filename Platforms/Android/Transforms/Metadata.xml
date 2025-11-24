@@ -1,0 +1,5 @@
+&lt;metadata&gt;
+  &lt;!-- Remove duplicate annotation types from Xamarin.GoogleAndroid.Annotations --&gt;
+  &lt;remove-node path="/api/package[@name='android.annotation']/interface[@name='SuppressLint']" /&gt;
+  &lt;remove-node path="/api/package[@name='android.annotation']/interface[@name='TargetApi']" /&gt;
+&lt;/metadata&gt;

@@ -1,0 +1,105 @@
+// Firestore Security Rules - Updated for Agenda Feature
+// Copy these rules to Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isSignedIn() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Transactions collection
+    match /transactions/{transactionId} {
+      allow read: if isSignedIn() && 
+                     (resource.data.fromUserId == request.auth.uid || 
+                      resource.data.toUserId == request.auth.uid ||
+                      isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.fromUserId;
+      allow update, delete: if isAdmin();
+    }
+    
+    // Rewards collection
+    match /rewards/{rewardId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    
+    // Redemptions collection
+    match /redemptions/{redemptionId} {
+      allow read: if isSignedIn() && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow update, delete: if isAdmin();
+    }
+    
+    // Badges collection
+    match /badges/{badgeId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    
+    // User Badges collection
+    match /userBadges/{userBadgeId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+    
+    // ========== NEW: APPOINTMENTS COLLECTION ==========
+    match /appointments/{appointmentId} {
+      // Anyone authenticated can read appointments
+      allow read: if isSignedIn();
+      
+      // Only admins can create new appointment slots
+      allow create: if isAdmin();
+      
+      // Users can update appointments they've booked (to request cancellation)
+      // Admins can update any appointment
+      allow update: if isSignedIn() && 
+                       (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Only admins can delete appointments
+      allow delete: if isAdmin();
+    }
+    
+    // ========== NEW: NOTIFICATIONS COLLECTION ==========
+    match /notifications/{notificationId} {
+      // Users can only read their own notifications
+      // Admins can read all notifications
+      allow read: if isSignedIn() && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Only admins can create notifications (system-generated)
+      allow create: if isAdmin();
+      
+      // Users can update their own notifications (mark as read)
+      // Admins can update any notification
+      allow update: if isSignedIn() && 
+                       (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Only admins can delete notifications
+      allow delete: if isAdmin();
+    }
+  }
+}

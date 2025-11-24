@@ -1,0 +1,241 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║        🚀 PIPELINE DE DESPLIEGUE AUTOMÁTICO - ACUPUNTOS       ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+┌───────────────────────────────────────────────────────────────┐
+│  📋 INICIO RÁPIDO                                             │
+└───────────────────────────────────────────────────────────────┘
+
+1️⃣  PRIMERA VEZ - Configuración Inicial
+   
+   a) Instalar Firebase CLI:
+      > .\install-firebase-cli.bat
+   
+   b) Configurar Firebase:
+      - Editar: firebase-deploy-config.json
+      - Cambiar: "firebase_app_id" con tu App ID de Firebase
+      - Configurar grupos de testers
+   
+   c) Leer documentación completa:
+      > README_DEPLOY.md
+
+2️⃣  USO DIARIO - Despliegue Completo
+   
+   > .\deploy.bat
+   
+   Esto hará:
+   ✅ Incrementar versión
+   ✅ Compilar proyecto (Release)
+   ✅ Generar APK firmado
+   ✅ Subir a Firebase App Distribution
+   ✅ Notificar a testers
+
+┌───────────────────────────────────────────────────────────────┐
+│  ⚡ COMANDOS RÁPIDOS                                          │
+└───────────────────────────────────────────────────────────────┘
+
+Despliegue completo:
+> .\deploy.bat
+
+Build local (sin subir):
+> .\deploy.ps1 -UploadToFirebase:$false
+
+Build Debug:
+> .\deploy.ps1 -Configuration Debug -UploadToFirebase:$false
+
+Subir APK existente:
+> .\deploy.ps1 -SkipBuild
+
+Ver todas las opciones:
+> .\deploy.ps1 -Help
+
+┌───────────────────────────────────────────────────────────────┐
+│  📁 ARCHIVOS DEL PIPELINE                                     │
+└───────────────────────────────────────────────────────────────┘
+
+deploy.bat                    → Script ejecutable principal (doble click)
+deploy.ps1                    → Script PowerShell avanzado
+firebase-deploy-config.json   → Configuración de Firebase
+README_DEPLOY.md              → Documentación completa
+EJEMPLOS_DESPLIEGUE.ps1      → Ejemplos de uso
+install-firebase-cli.bat      → Instalador de Firebase CLI
+deploy-log.txt               → Log de despliegues (generado automáticamente)
+
+┌───────────────────────────────────────────────────────────────┐
+│  🔧 CONFIGURACIÓN DE FIREBASE                                 │
+└───────────────────────────────────────────────────────────────┘
+
+1. Obtener App ID:
+   https://console.firebase.google.com
+   → Project Settings → Your apps → App ID
+
+2. Autenticarse:
+   > firebase login
+
+3. Verificar proyectos:
+   > firebase projects:list
+
+4. Editar configuración:
+   > notepad firebase-deploy-config.json
+
+┌───────────────────────────────────────────────────────────────┐
+│  📊 ESTRUCTURA DEL firebase-deploy-config.json                │
+└───────────────────────────────────────────────────────────────┘
+
+{
+  "firebase_app_id": "1:123456:android:abc123",  ← Tu App ID
+  "release_notes": "Notas de la versión",        ← Descripción
+  "tester_groups": [                             ← Grupos
+    "qa-team",
+    "beta-testers",
+    "amigos"
+  ]
+}
+
+┌───────────────────────────────────────────────────────────────┐
+│  🎯 FLUJO DE TRABAJO RECOMENDADO                              │
+└───────────────────────────────────────────────────────────────┘
+
+1. Hacer cambios en el código
+
+2. Editar release notes:
+   > notepad firebase-deploy-config.json
+
+3. (Opcional) Build local para probar:
+   > .\deploy.ps1 -Configuration Debug -UploadToFirebase:$false
+
+4. Desplegar a Firebase:
+   > .\deploy.bat
+
+5. Verificar en Firebase Console:
+   https://console.firebase.google.com → App Distribution
+
+6. Los testers recibirán notificación automática
+
+┌───────────────────────────────────────────────────────────────┐
+│  🐛 PROBLEMAS COMUNES                                         │
+└───────────────────────────────────────────────────────────────┘
+
+❌ "Firebase CLI no está disponible"
+   > npm install -g firebase-tools
+   > firebase login
+
+❌ "App ID incorrecto"
+   → Verifica firebase-deploy-config.json
+   → Formato: 1:123456789:android:abcdef123456
+
+❌ "Build fallido"
+   > dotnet clean
+   > rd /s /q bin obj
+   > .\deploy.bat
+
+❌ "No tienes permisos en Firebase"
+   > firebase login --reauth
+   → Verifica permisos en Firebase Console
+
+❌ "APK no se encuentra"
+   → Verifica que el build se completó
+   → Revisa: bin\Release\net10.0-android\
+
+┌───────────────────────────────────────────────────────────────┐
+│  📈 SEGUIMIENTO DE VERSIONES                                  │
+└───────────────────────────────────────────────────────────────┘
+
+Archivo del proyecto: AcuPuntos.csproj
+
+<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+  ↑ Versión visible (1.0, 1.1, 2.0, etc.)
+  
+<ApplicationVersion>1</ApplicationVersion>
+  ↑ Build number (incrementa automáticamente)
+
+El pipeline incrementa ApplicationVersion automáticamente.
+Para cambiar ApplicationDisplayVersion, edita manualmente el .csproj
+
+┌───────────────────────────────────────────────────────────────┐
+│  📱 INSTALACIÓN EN DISPOSITIVOS                               │
+└───────────────────────────────────────────────────────────────┘
+
+Vía Firebase App Distribution (Recomendado):
+1. Los testers reciben email/notificación
+2. Click en el link
+3. Descargar e instalar
+
+Vía APK Manual:
+1. APK ubicado en: bin\Release\net10.0-android\
+2. Copiar a dispositivo
+3. Habilitar "Instalar apps desconocidas"
+4. Abrir APK e instalar
+
+┌───────────────────────────────────────────────────────────────┐
+│  🔒 SEGURIDAD                                                 │
+└───────────────────────────────────────────────────────────────┘
+
+⚠️  NO subas a Git:
+   - Tokens de Firebase
+   - Archivos .keystore
+   - Contraseñas
+
+✅  Está configurado en .gitignore:
+   - deploy-log.txt
+   - *.apk
+   - *.aab
+
+┌───────────────────────────────────────────────────────────────┐
+│  💡 TIPS Y MEJORES PRÁCTICAS                                  │
+└───────────────────────────────────────────────────────────────┘
+
+✨ Siempre prueba localmente antes de distribuir
+✨ Actualiza release notes con cada versión
+✨ Usa grupos diferentes para QA y producción
+✨ Revisa los logs en deploy-log.txt
+✨ Mantén backups de APKs importantes
+✨ Documenta cambios importantes en Git
+✨ Verifica que Firebase App Distribution esté activo
+
+┌───────────────────────────────────────────────────────────────┐
+│  📞 RECURSOS Y AYUDA                                          │
+└───────────────────────────────────────────────────────────────┘
+
+📖 Documentación completa:
+   README_DEPLOY.md
+
+📝 Ejemplos de uso:
+   EJEMPLOS_DESPLIEGUE.ps1
+
+🔥 Firebase Console:
+   https://console.firebase.google.com
+
+📚 Firebase CLI Docs:
+   https://firebase.google.com/docs/cli
+
+🛠️  .NET MAUI Docs:
+   https://learn.microsoft.com/en-us/dotnet/maui/
+
+┌───────────────────────────────────────────────────────────────┐
+│  ✅ CHECKLIST ANTES DE DESPLEGAR                              │
+└───────────────────────────────────────────────────────────────┘
+
+[ ] Firebase CLI instalado y autenticado
+[ ] firebase-deploy-config.json configurado
+[ ] App ID correcto
+[ ] Grupos de testers creados en Firebase
+[ ] Código probado localmente
+[ ] Release notes actualizadas
+[ ] Versión incrementada (automático)
+[ ] APK probado en dispositivo físico
+[ ] Backup del código actual (Git commit)
+
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║  🎉 ¡LISTO PARA DESPLEGAR!                                    ║
+║                                                               ║
+║  Ejecuta: .\deploy.bat                                        ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Autor: Hernan Garcia
+Versión: 1.0
+Fecha: 2025-11-24

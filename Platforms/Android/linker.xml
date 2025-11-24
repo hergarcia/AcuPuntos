@@ -1,0 +1,17 @@
+&lt;linker&gt;
+  &lt;!-- Preserve all types in the main assembly --&gt;
+  &lt;assembly fullname="AcuPuntos"&gt;
+    &lt;type fullname="*" /&gt;
+  &lt;/assembly&gt;
+  
+  &lt;!-- Exclude duplicate annotation types from Xamarin.GoogleAndroid.Annotations --&gt;
+  &lt;assembly fullname="Xamarin.GoogleAndroid.Annotations"&gt;
+    &lt;type fullname="Android.Annotation.ISuppressLint" preserve="nothing" /&gt;
+    &lt;type fullname="Android.Annotation.ITargetApi" preserve="nothing" /&gt;
+  &lt;/assembly&gt;
+  
+  &lt;!-- Preserve Firebase types --&gt;
+  &lt;assembly fullname="Plugin.Firebase"&gt;
+    &lt;type fullname="*" /&gt;
+  &lt;/assembly&gt;
+&lt;/linker&gt;
