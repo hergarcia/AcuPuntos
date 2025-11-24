@@ -1,60 +1,82 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net10.0-android</TargetFramework>
-        <OutputType>Exe</OutputType>
-        <RootNamespace>AcuPuntos</RootNamespace>
-        <UseMaui>true</UseMaui>
-        <SingleProject>true</SingleProject>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-
-        <!-- Display name -->
-        <ApplicationTitle>AcuPuntos</ApplicationTitle>
-
-        <!-- App Identifier -->
-        <ApplicationId>com.hergarcia.acupuntos</ApplicationId>
-
-        <!-- Versions -->
-        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-        <ApplicationVersion>1</ApplicationVersion>
-
-<!--        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>-->
-        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
-
-        <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128"/>
-
-        <!-- Images -->
-        <MauiImage Include="Resources\Images\*"/>
-        <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185"/>
-
-        <!-- Custom Fonts -->
-        <MauiFont Include="Resources\Fonts\*"/>
-
-        <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.10" />
-        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
-        <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="Plugin.Firebase" Version="3.1.4" />
-        <PackageReference Include="Plugin.Firebase.Auth.Google" Version="3.1.2" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
-        <GoogleServicesJson Include="Platforms\Android\google-services.json" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AcuPuntos</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Display name -->
+    <ApplicationTitle>AcuPuntos</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>com.hergarcia.acupuntos</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>3</ApplicationVersion>
+    <!--        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>-->
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <!-- Release Configuration for Android -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(TargetFramework)' == 'net10.0-android'">
+    <!-- Enable AOT compilation for better performance -->
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <!-- Linking mode to reduce APK size -->
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <!-- Package format -->
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <!-- Enable R8 code shrinker -->
+    <AndroidEnableProguard>false</AndroidEnableProguard>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
+    <!-- Optimize for size -->
+    <AndroidDexTool>d8</AndroidDexTool>
+    <!-- Enable trimming -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <!-- Handle duplicate types from Firebase/Google dependencies -->
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+    <AndroidErrorOnDuplicateJavaType>false</AndroidErrorOnDuplicateJavaType>
+    <_AndroidAllowDuplicateTypes>true</_AndroidAllowDuplicateTypes>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+  </PropertyGroup>
+  <!-- Include metadata transformation to exclude duplicate types -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+    <TransformFile Include="Platforms\Android\Transforms\Metadata.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- App Icon -->
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+    <!-- Splash Screen -->
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+    <!-- Images -->
+    <MauiImage Include="Resources\Images\*" />
+    <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+    <!-- Custom Fonts -->
+    <MauiFont Include="Resources\Fonts\*" />
+    <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
+    <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Plugin.Firebase" Version="3.1.4">
+      <ExcludeAssets>none</ExcludeAssets>
+      <PrivateAssets>none</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Plugin.Firebase.Auth.Google" Version="3.1.2">
+      <ExcludeAssets>none</ExcludeAssets>
+      <PrivateAssets>none</PrivateAssets>
+    </PackageReference>
+    <!-- Explicitly exclude the conflicting package -->
+    <PackageReference Include="Xamarin.GoogleAndroid.Annotations" Version="4.1.1.16">
+      <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+    <GoogleServicesJson Include="Platforms\Android\google-services.json" />
+  </ItemGroup>
 </Project>

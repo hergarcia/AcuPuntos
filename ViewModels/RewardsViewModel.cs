@@ -14,6 +14,8 @@ namespace AcuPuntos.ViewModels
         private readonly IFirestoreService _firestoreService;
         private readonly IGamificationService _gamificationService;
         private readonly INavigationService _navigationService;
+        private IDisposable? _userListener;
+        private IDisposable? _rewardsListener;
 
         [ObservableProperty]
         private User? currentUser;
@@ -50,11 +52,12 @@ namespace AcuPuntos.ViewModels
 
             CurrentUser = _authService.CurrentUser;
             await LoadRewards();
+            SubscribeToUpdates();
         }
 
-        private async Task LoadRewards()
+        private async Task LoadRewards(bool silent = false)
         {
-            await ExecuteAsync(async () =>
+            Func<Task> operation = async () =>
             {
                 // 1. Obtener datos (IO)
                 var allRewards = await _firestoreService.GetActiveRewardsAsync();
@@ -87,14 +90,33 @@ namespace AcuPuntos.ViewModels
                 });
 
                 // 3. Actualizar UI en el hilo principal
-                Rewards.Clear();
-                foreach (var reward in allRewards)
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    Rewards.Add(reward);
-                }
+                    Rewards.Clear();
+                    foreach (var reward in allRewards)
+                    {
+                        Rewards.Add(reward);
+                    }
 
-                FilterRewards();
-            }, "Cargando recompensas...");
+                    FilterRewards();
+                });
+            };
+
+            if (silent)
+            {
+                try
+                {
+                    await operation();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error loading rewards silently: {ex.Message}");
+                }
+            }
+            else
+            {
+                await ExecuteAsync(operation, "Cargando recompensas...");
+            }
         }
 
         partial void OnSearchTextChanged(string value)
@@ -202,6 +224,90 @@ namespace AcuPuntos.ViewModels
             };
 
             await _navigationService.NavigateToAsync(nameof(RewardDetailPage), parameters);
+        }
+
+        protected override async Task OnAppearingAsync()
+        {
+            await base.OnAppearingAsync();
+        }
+
+        protected override async Task OnDisappearingAsync()
+        {
+            await base.OnDisappearingAsync();
+        }
+
+        private void SubscribeToUpdates()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.Uid)) return;
+
+            UnsubscribeUpdates();
+
+            // Escuchar cambios en el usuario (puntos)
+            _userListener = _firestoreService.ListenToUserChanges(CurrentUser.Uid, user =>
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    CurrentUser = user;
+                    // Recargar recompensas para actualizar estado "CanRedeem"
+                    await LoadRewards(silent: true);
+                });
+            });
+
+            // Escuchar cambios en las recompensas (nuevas, expiradas, etc)
+            _rewardsListener = _firestoreService.ListenToRewards(rewards =>
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await ProcessRewardsList(rewards);
+                });
+            });
+        }
+
+        private void UnsubscribeUpdates()
+        {
+            _userListener?.Dispose();
+            _userListener = null;
+            _rewardsListener?.Dispose();
+            _rewardsListener = null;
+        }
+
+        private async Task ProcessRewardsList(List<Reward> allRewards)
+        {
+             // Capturar valores necesarios para el procesamiento
+            var userPoints = CurrentUser?.Points ?? 0;
+            var isLoggedIn = CurrentUser != null;
+
+            // Procesar datos en segundo plano (CPU)
+            await Task.Run(() =>
+            {
+                foreach (var reward in allRewards)
+                {
+                    // Verificar si el usuario puede canjear
+                    reward.CanRedeem = isLoggedIn && userPoints >= reward.PointsCost;
+
+                    if (!reward.CanRedeem && isLoggedIn)
+                    {
+                        var pointsNeeded = reward.PointsCost - userPoints;
+                        reward.DisabledReason = $"Te faltan {pointsNeeded} puntos";
+                    }
+
+                    // Verificar si ha expirado
+                    if (reward.ExpiryDate.HasValue && reward.ExpiryDate.Value < DateTime.UtcNow)
+                    {
+                        reward.CanRedeem = false;
+                        reward.DisabledReason = "Esta recompensa ha expirado";
+                    }
+                }
+            });
+
+            // Actualizar UI en el hilo principal
+            Rewards.Clear();
+            foreach (var reward in allRewards)
+            {
+                Rewards.Add(reward);
+            }
+
+            FilterRewards();
         }
 
         [RelayCommand]

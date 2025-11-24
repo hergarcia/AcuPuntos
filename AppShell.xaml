@@ -4,24 +4,14 @@
     x:Class="AcuPuntos.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:local="clr-namespace:AcuPuntos.Views"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Shell.Resources>
-        <ResourceDictionary>
-            <Style TargetType="Element" x:Key="BaseStyle">
-                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="Shell.ForegroundColor" Value="White" />
-                <Setter Property="Shell.TitleColor" Value="White" />
-                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
-                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="Shell.TabBarForegroundColor" Value="White" />
-                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarTitleColor" Value="White" />
-            </Style>
-            <Style BasedOn="{StaticResource BaseStyle}" TargetType="TabBar" />
-        </ResourceDictionary>
-    </Shell.Resources>
+    <Shell.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}" StatusBarStyle="LightContent" />
+    </Shell.Behaviors>
+
+
 
     <!--  Página de Splash (inicial)  -->
     <ShellContent
@@ -37,19 +27,23 @@
 
     <!--  Páginas principales con tabs  -->
     <TabBar Route="main">
-        <Tab Title="Inicio">
+        <Tab Route="home" Title="🏠 Inicio">
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
 
-        <Tab Title="Transferir" Route="transfer">
+        <Tab Route="transfer" Title="💸 Transferir">
             <ShellContent ContentTemplate="{DataTemplate local:TransferPage}" />
         </Tab>
 
-        <Tab Title="Recompensas" Route="rewards">
+        <Tab Route="rewards" Title="🎁 Recompensas">
             <ShellContent ContentTemplate="{DataTemplate local:RewardsPage}" />
         </Tab>
 
-        <Tab Title="Perfil" Route="profile">
+        <Tab Route="agenda" Title="📅 Agenda">
+            <ShellContent ContentTemplate="{DataTemplate local:AgendaPage}" />
+        </Tab>
+
+        <Tab Route="profile" Title="👤 Perfil">
             <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
         </Tab>
     </TabBar>

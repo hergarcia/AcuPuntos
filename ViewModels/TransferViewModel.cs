@@ -12,6 +12,7 @@ namespace AcuPuntos.ViewModels
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
         private readonly IGamificationService _gamificationService;
+        private IDisposable? _userListener;
 
         [ObservableProperty]
         private User? currentUser;
@@ -211,6 +212,41 @@ namespace AcuPuntos.ViewModels
                         "OK");
                 }
             }, "Transfiriendo puntos...");
+        }
+
+        protected override async Task OnAppearingAsync()
+        {
+            await base.OnAppearingAsync();
+            SubscribeToUpdates();
+        }
+
+        protected override async Task OnDisappearingAsync()
+        {
+            await base.OnDisappearingAsync();
+            UnsubscribeUpdates();
+        }
+
+        private void SubscribeToUpdates()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.Uid)) return;
+
+            UnsubscribeUpdates();
+
+            _userListener = _firestoreService.ListenToUserChanges(CurrentUser.Uid, user =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    CurrentUser = user;
+                    // Re-validar transferencia con los nuevos puntos
+                    ValidateTransfer();
+                });
+            });
+        }
+
+        private void UnsubscribeUpdates()
+        {
+            _userListener?.Dispose();
+            _userListener = null;
         }
 
         [RelayCommand]

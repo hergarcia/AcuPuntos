@@ -6,7 +6,14 @@ namespace AcuPuntos.Converters
     {
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return !string.IsNullOrWhiteSpace(value?.ToString());
+            bool hasValue = !string.IsNullOrWhiteSpace(value?.ToString());
+
+            if (parameter is string paramStr && paramStr.Equals("Invert", StringComparison.OrdinalIgnoreCase))
+            {
+                return !hasValue;
+            }
+
+            return hasValue;
         }
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

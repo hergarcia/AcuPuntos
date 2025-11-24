@@ -1,37 +1,84 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AcuPuntos.Views.SplashPage"
-             Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Primary}">
+<ContentPage
+    BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                      Dark={StaticResource Gray950}}"
+    Shell.NavBarIsVisible="False"
+    x:Class="AcuPuntos.Views.SplashPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
+        <!--  Background Gradient  -->
+        <BoxView>
+            <BoxView.Background>
+                <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                    <GradientStop Color="{StaticResource PrimaryDark}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource Primary}" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
         <VerticalStackLayout
             HorizontalOptions="Center"
-            VerticalOptions="Center"
-            Spacing="20">
+            Spacing="32"
+            VerticalOptions="Center">
 
-            <!-- Logo o nombre de la app -->
+            <!--  Logo  -->
+            <Border
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                  Dark={StaticResource Gray900}}"
+                HeightRequest="128"
+                HorizontalOptions="Center"
+                StrokeShape="RoundRectangle 64"
+                StrokeThickness="0"
+                WidthRequest="128">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Offset="0,4"
+                        Opacity="0.2"
+                        Radius="16" />
+                </Border.Shadow>
+                <Label
+                    FontSize="64"
+                    HorizontalOptions="Center"
+                    Text="🍃"
+                    VerticalOptions="Center" />
+            </Border>
+
+            <!--  App Name  -->
             <Label
-                Text="AcuPuntos"
-                FontSize="48"
                 FontAttributes="Bold"
-                TextColor="White"
-                HorizontalOptions="Center" />
+                FontFamily="OpenSansBold"
+                FontSize="48"
+                HorizontalOptions="Center"
+                Text="AcuPuntos"
+                TextColor="White">
+                <Label.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Offset="0,2"
+                        Opacity="0.2"
+                        Radius="4" />
+                </Label.Shadow>
+            </Label>
 
-            <!-- Indicador de carga -->
-            <ActivityIndicator
-                IsRunning="True"
-                Color="White"
-                HeightRequest="40"
-                WidthRequest="40"
-                HorizontalOptions="Center" />
+            <!--  Loading Indicator  -->
+            <VerticalStackLayout Spacing="16">
+                <ActivityIndicator
+                    Color="White"
+                    HeightRequest="48"
+                    HorizontalOptions="Center"
+                    IsRunning="True"
+                    WidthRequest="48" />
 
-            <Label
-                Text="Cargando..."
-                FontSize="16"
-                TextColor="White"
-                HorizontalOptions="Center" />
+                <Label
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="Cargando..."
+                    TextColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                Dark={StaticResource Gray400}}" />
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
     </Grid>

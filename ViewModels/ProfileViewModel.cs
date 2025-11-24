@@ -15,6 +15,8 @@ namespace AcuPuntos.ViewModels
         private readonly IFirestoreService _firestoreService;
         private readonly IGamificationService _gamificationService;
         private readonly INavigationService _navigationService;
+        private readonly IThemeService _themeService;
+        private IDisposable? _userListener;
 
         [ObservableProperty]
         private User? currentUser;
@@ -38,19 +40,30 @@ namespace AcuPuntos.ViewModels
         private ObservableCollection<UserBadge> userBadges;
 
         [ObservableProperty]
+        private ObservableCollection<Notification> notifications;
+
+        [ObservableProperty]
         private int badgesCount;
 
         [ObservableProperty]
         private bool hasBadges;
 
-        public ProfileViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService, INavigationService navigationService)
+        [ObservableProperty]
+        private bool isDarkMode;
+
+        public ProfileViewModel(IAuthService authService, IFirestoreService firestoreService, IGamificationService gamificationService, INavigationService navigationService, IThemeService themeService)
         {
             _authService = authService;
             _firestoreService = firestoreService;
             _gamificationService = gamificationService;
             _navigationService = navigationService;
+            _themeService = themeService;
             Title = "Mi Perfil";
             UserBadges = new ObservableCollection<UserBadge>();
+            Notifications = new ObservableCollection<Notification>();
+            
+            // Initialize dark mode state
+            IsDarkMode = _themeService.CurrentTheme == AppTheme.Dark;
         }
 
         protected override async Task InitializeAsync()
@@ -66,12 +79,15 @@ namespace AcuPuntos.ViewModels
             }
 
             await LoadUserStats();
+            await LoadUserStats();
             await LoadUserBadges();
+            await LoadNotifications();
+            SubscribeToUpdates();
         }
 
-        private async Task LoadUserStats()
+        private async Task LoadUserStats(bool silent = false)
         {
-            await ExecuteAsync(async () =>
+            Func<Task> operation = async () =>
             {
                 if (CurrentUser == null)
                     return;
@@ -98,12 +114,28 @@ namespace AcuPuntos.ViewModels
                         ? Convert.ToInt32(UserStats["totalPointsSpent"])
                         : 0;
                 }
-            }, "Cargando estadísticas...");
+            };
+
+            if (silent)
+            {
+                try
+                {
+                    await operation();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error loading user stats silently: {ex.Message}");
+                }
+            }
+            else
+            {
+                await ExecuteAsync(operation, "Cargando estadísticas...");
+            }
         }
 
-        private async Task LoadUserBadges()
+        private async Task LoadUserBadges(bool silent = false)
         {
-            await ExecuteAsync(async () =>
+            Func<Task> operation = async () =>
             {
                 if (CurrentUser == null)
                     return;
@@ -122,7 +154,74 @@ namespace AcuPuntos.ViewModels
 
                 BadgesCount = badges.Count;
                 HasBadges = badges.Count > 0;
+            };
+
+            if (silent)
+            {
+                try
+                {
+                    await operation();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error loading user badges silently: {ex.Message}");
+                }
+            }
+            else
+            {
+                await ExecuteAsync(operation);
+            }
+        }
+
+        private async Task LoadNotifications()
+        {
+            if (CurrentUser == null) return;
+            var notifs = await _firestoreService.GetUserNotificationsAsync(CurrentUser.Uid!);
+            Notifications = new ObservableCollection<Notification>(notifs);
+        }
+
+        [RelayCommand]
+        private async Task MarkNotificationAsRead(Notification notification)
+        {
+            if (notification == null) return;
+            await _firestoreService.MarkNotificationAsReadAsync(notification.Id!);
+            notification.IsRead = true;
+            // Optionally remove from list or just update UI
+            // Notifications.Remove(notification); 
+        }
+
+        protected override async Task OnAppearingAsync()
+        {
+            await base.OnAppearingAsync();
+        }
+
+        protected override async Task OnDisappearingAsync()
+        {
+            await base.OnDisappearingAsync();
+        }
+
+        private void SubscribeToUpdates()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.Uid)) return;
+
+            UnsubscribeUpdates();
+
+            _userListener = _firestoreService.ListenToUserChanges(CurrentUser.Uid, user =>
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    CurrentUser = user;
+                    // Recargar estadísticas y badges cuando cambia el usuario (ej. puntos)
+                    await LoadUserStats(silent: true);
+                    await LoadUserBadges(silent: true);
+                });
             });
+        }
+
+        private void UnsubscribeUpdates()
+        {
+            _userListener?.Dispose();
+            _userListener = null;
         }
 
         [RelayCommand]
@@ -161,6 +260,13 @@ namespace AcuPuntos.ViewModels
                 "Próximamente",
                 "La edición de perfil estará disponible pronto.",
                 "OK");
+        }
+
+        partial void OnIsDarkModeChanged(bool value)
+        {
+            // When IsDarkMode changes, update the theme
+            var newTheme = value ? AppTheme.Dark : AppTheme.Light;
+            _themeService.SetTheme(newTheme);
         }
     }
 }

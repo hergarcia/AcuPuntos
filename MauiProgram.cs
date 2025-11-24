@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AcuPuntos.Handlers;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using CommunityToolkit.Maui;
 using AcuPuntos.Services;
@@ -62,6 +63,9 @@ public static class MauiProgram
         // Registrar Views
         RegisterViews(builder.Services);
 
+        // Registrar Handlers
+        InitializeHandlers();
+        
         return builder.Build();
     }
 
@@ -74,6 +78,7 @@ public static class MauiProgram
         services.AddSingleton<IFirestoreService, FirestoreService>();
         services.AddSingleton<IGamificationService, GamificationService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IThemeService, ThemeService>();
         services.AddSingleton<UserStateService>();
     }
 
@@ -88,6 +93,8 @@ public static class MauiProgram
         services.AddTransient<HistoryViewModel>();
         services.AddTransient<RewardDetailViewModel>();
         services.AddTransient<UserDetailViewModel>();
+        services.AddTransient<AgendaViewModel>();
+        services.AddTransient<AdminAgendaViewModel>();
     }
 
     private static void RegisterViews(IServiceCollection services)
@@ -102,5 +109,15 @@ public static class MauiProgram
         services.AddTransient<HistoryPage>();
         services.AddTransient<RewardDetailPage>();
         services.AddTransient<UserDetailPage>();
+        services.AddTransient<AgendaPage>();
+        services.AddTransient<AdminAgendaPage>();
+    }
+    
+    private static void InitializeHandlers()
+    {
+        CleanEntry.Initialize();
+        CleanDatePicker.Initialize();
+        CleanPicker.Initialize();
+        CleanTimePicker.Initialize();
     }
 }

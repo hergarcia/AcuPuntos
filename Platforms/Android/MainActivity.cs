@@ -38,7 +38,6 @@ public class MainActivity : MauiAppCompatActivity
     {
         try
         {
-
             // Obtener el Shell actual
             if (Shell.Current == null)
             {
@@ -81,13 +80,13 @@ public class MainActivity : MauiAppCompatActivity
                 // Segunda presión dentro del tiempo límite: cerrar la app
                 Finish();
             }
-    
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
-        }}
+        }
+    }
 
     private static async Task ShowExitMessage()
     {

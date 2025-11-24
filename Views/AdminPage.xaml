@@ -1,265 +1,316 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BasePage
-    BackgroundColor="{StaticResource Light}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Light},
+                                      Dark={StaticResource Gray950}}"
     Shell.NavBarIsVisible="True"
     Shell.TabBarIsVisible="False"
     Title="{Binding Title}"
     x:Class="AcuPuntos.Views.AdminPage"
     x:DataType="viewmodels:AdminViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
     xmlns:models="clr-namespace:AcuPuntos.Models"
     xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
     xmlns:views="clr-namespace:AcuPuntos.Views"
-    xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid>
-        <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid RowDefinitions="Auto,*">
+        <!--  Header Background Shape  -->
+        <BoxView
+            Color="{StaticResource Primary}"
+            Grid.RowSpan="2"
+            HeightRequest="200"
+            VerticalOptions="Start" />
 
-            <!--  Estadísticas rápidas  -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <!--  Total usuarios  -->
-                <controls:StatsCard
-                    Grid.Column="0"
-                    Value="{Binding TotalUsers}"
-                    Label="Usuarios"
-                    Icon="👥"
-                    BackgroundColor="{StaticResource Secondary}"
-                    LabelColor="White"
-                    ValueColor="White"
-                    Format="N0"/>
+        <ScrollView Grid.RowSpan="2">
+            <VerticalStackLayout Padding="24" Spacing="24">
+
+                <!--  Estadísticas rápidas  -->
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="16"
+                    Margin="0,10,0,0">
+                    <!--  Total usuarios  -->
+                    <controls:StatsCard
+                        BackgroundColor="{StaticResource Secondary}"
+                        Format="N0"
+                        Grid.Column="0"
+                        Icon="👥"
+                        Label="Usuarios"
+                        LabelColor="White"
+                        Value="{Binding TotalUsers}"
+                        ValueColor="White" />
+
+                    <!--  Canjes pendientes  -->
+                    <controls:StatsCard
+                        BackgroundColor="{StaticResource Warning}"
+                        Format="N0"
+                        Grid.Column="1"
+                        Icon="⏳"
+                        Label="Pendientes"
+                        LabelColor="White"
+                        Value="{Binding PendingRedemptionsCount}"
+                        ValueColor="White" />
+                </Grid>
 
                 <!--  Canjes pendientes  -->
-                <controls:StatsCard
-                    Grid.Column="1"
-                    Value="{Binding PendingRedemptionsCount}"
-                    Label="Pendientes"
-                    Icon="⏳"
-                    BackgroundColor="{StaticResource Warning}"
-                    LabelColor="White"
-                    ValueColor="White"
-                    Format="N0"/>
-            </Grid>
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Text="⏳ Canjes Pendientes"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                Dark={StaticResource White}}" />
 
-            <!--  Canjes pendientes  -->
-            <Label
-                FontAttributes="Bold"
-                FontSize="20"
-                Text="⏳ Canjes Pendientes"
-                TextColor="{StaticResource Dark}" />
+                <CollectionView
+                    HeightRequest="260"
+                    ItemsSource="{Binding PendingRedemptions}"
+                    SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <controls:EmptyStateView Icon="✅" Title="No hay canjes pendientes" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Redemption">
+                            <Border
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                                  Dark={StaticResource Gray900}}"
+                                Margin="0,0,0,12"
+                                Padding="16"
+                                StrokeThickness="0"
+                                Style="{StaticResource ListItemCard}">
+                                <Grid
+                                    ColumnDefinitions="Auto,*,Auto"
+                                    RowDefinitions="Auto,Auto,Auto"
+                                    RowSpacing="8">
 
-            <CollectionView
-                HeightRequest="250"
-                ItemsSource="{Binding PendingRedemptions}"
-                SelectionMode="None">
-                <CollectionView.EmptyView>
-                    <controls:EmptyStateView
-                        Icon="✅"
-                        Title="No hay canjes pendientes"/>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Redemption">
-                        <Border
-                            Margin="0,0,0,10"
-                            Padding="15"
-                            Style="{StaticResource ListItemCard}">
-                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <Border
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100},
+                                                                          Dark={StaticResource Gray800}}"
+                                        Grid.Row="0"
+                                        Grid.RowSpan="2"
+                                        HeightRequest="48"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Start"
+                                        WidthRequest="48">
+                                        <Label
+                                            FontSize="24"
+                                            HorizontalOptions="Center"
+                                            Text="🎁"
+                                            VerticalOptions="Center" />
+                                    </Border>
 
-                                <Label
-                                    FontSize="40"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="2"
-                                    Text="🎁"
-                                    VerticalOptions="Center" />
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Grid.Row="0"
+                                        Margin="16,0,0,0"
+                                        Spacing="4">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="16"
+                                            Text="{Binding Reward.Name}"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                        Dark={StaticResource White}}" />
+                                        <Label
+                                            FontSize="14"
+                                            Text="{Binding User.DisplayName}"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                                        Dark={StaticResource Gray400}}" />
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding RedeemedAt, StringFormat='Canjeado: {0:dd MMM, HH:mm}'}"
+                                            TextColor="{StaticResource Gray500}" />
+                                    </VerticalStackLayout>
 
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    Grid.Row="0"
-                                    Margin="15,0,0,0">
                                     <Label
                                         FontAttributes="Bold"
                                         FontSize="16"
-                                        Text="{Binding Reward.Name}"
-                                        TextColor="{StaticResource Dark}" />
-                                    <Label
-                                        FontSize="14"
-                                        Text="{Binding User.DisplayName}"
-                                        TextColor="{StaticResource Gray}" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="{Binding RedeemedAt, StringFormat='Canjeado: {0:dd/MM/yyyy HH:mm}'}"
-                                        TextColor="{StaticResource Gray400}" />
-                                </VerticalStackLayout>
+                                        Grid.Column="2"
+                                        Grid.Row="0"
+                                        Text="{Binding PointsUsed, StringFormat='{0:N0}'}"
+                                        TextColor="{StaticResource WarningDark}"
+                                        VerticalOptions="Start" />
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="16"
-                                    Grid.Column="2"
-                                    Grid.Row="0"
-                                    Text="{Binding PointsUsed, StringFormat='{0:N0} pts'}"
-                                    TextColor="{StaticResource Warning}"
-                                    VerticalOptions="Start" />
+                                    <HorizontalStackLayout
+                                        Grid.ColumnSpan="3"
+                                        Grid.Row="2"
+                                        Margin="0,8,0,0"
+                                        Spacing="12">
+                                        <Button
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApproveRedemptionCommand}"
+                                            CommandParameter="{Binding .}"
+                                            HeightRequest="40"
+                                            HorizontalOptions="FillAndExpand"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Text="Aprobar" />
+                                        <Button
+                                            BackgroundColor="{StaticResource Danger}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRedemptionCommand}"
+                                            CommandParameter="{Binding .}"
+                                            CornerRadius="12"
+                                            FontAttributes="Bold"
+                                            HeightRequest="40"
+                                            HorizontalOptions="FillAndExpand"
+                                            Text="Rechazar"
+                                            TextColor="White" />
+                                    </HorizontalStackLayout>
 
-                                <HorizontalStackLayout
-                                    Grid.ColumnSpan="3"
-                                    Grid.Row="2"
-                                    Margin="0,10,0,0"
-                                    Spacing="10">
-                                    <Button
-                                        BackgroundColor="{StaticResource Primary}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApproveRedemptionCommand}"
-                                        CommandParameter="{Binding .}"
-                                        CornerRadius="17"
-                                        FontSize="12"
-                                        HeightRequest="35"
-                                        HorizontalOptions="FillAndExpand"
-                                        Text="✅ Aprobar"
-                                        TextColor="White" />
-                                    <Button
-                                        BackgroundColor="{StaticResource Danger}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRedemptionCommand}"
-                                        CommandParameter="{Binding .}"
-                                        CornerRadius="17"
-                                        FontSize="12"
-                                        HeightRequest="35"
-                                        HorizontalOptions="FillAndExpand"
-                                        Text="❌ Rechazar"
-                                        TextColor="White" />
-                                </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <!--  Gestión de usuarios  -->
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Margin="0,8,0,0"
+                    Text="👥 Gestión de Usuarios"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                Dark={StaticResource White}}" />
 
-            <!--  Gestión de usuarios  -->
-            <Label
-                FontAttributes="Bold"
-                FontSize="20"
-                Margin="0,20,0,0"
-                Text="👥 Gestión de Usuarios"
-                TextColor="{StaticResource Dark}" />
+                <Border
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                      Dark={StaticResource Gray900}}"
+                    Padding="16"
+                    Style="{StaticResource CardFrame}">
+                    <VerticalStackLayout Spacing="12">
+                        <SearchBar
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Background},
+                                                              Dark={StaticResource Gray800}}"
+                            Placeholder="Buscar usuarios..."
+                            PlaceholderColor="{StaticResource Gray400}"
+                            Text="{Binding SearchText}"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                        Dark={StaticResource White}}" />
 
-            <SearchBar
-                BackgroundColor="White"
-                Placeholder="Buscar usuarios..."
-                PlaceholderColor="#999999"
-                Text="{Binding SearchText}" />
+                        <CollectionView ItemsSource="{Binding Users}" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <controls:EmptyStateView Icon="👥" Title="No hay usuarios" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:User">
+                                    <Border
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Background},
+                                                                          Dark={StaticResource Gray800}}"
+                                        Margin="0,0,0,8"
+                                        Padding="12"
+                                        StrokeThickness="0"
+                                        Style="{StaticResource ListItemCard}">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewUserDetailCommand}" CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                        <Grid
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto"
+                                            RowSpacing="8">
 
-            <CollectionView ItemsSource="{Binding Users}" SelectionMode="None">
-                <CollectionView.EmptyView>
-                    <controls:EmptyStateView
-                        Icon="👥"
-                        Title="No hay usuarios"/>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:User">
-                        <Border
-                            Margin="0,0,0,10"
-                            Padding="15"
-                            Style="{StaticResource ListItemCard}">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewUserDetailCommand}" CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                            <Border
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                                                  Dark={StaticResource Gray700}}"
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                HeightRequest="48"
+                                                StrokeShape="RoundRectangle 24"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Center"
+                                                WidthRequest="48">
+                                                <Image Aspect="AspectFill" Source="{Binding PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
+                                            </Border>
 
-                                <Border
-                                    BackgroundColor="{StaticResource Gray200}"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="2"
-                                    HeightRequest="55"
-                                    StrokeShape="RoundRectangle 28"
-                                    StrokeThickness="2"
-                                    VerticalOptions="Center"
-                                    WidthRequest="55">
-                                    <Image
-                                        Aspect="AspectFill"
-                                        Source="{Binding PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
-                                </Border>
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Grid.Row="0"
+                                                Margin="12,0,0,0"
+                                                Spacing="2">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="15"
+                                                    Text="{Binding DisplayName}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                Dark={StaticResource White}}" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding Email}"
+                                                    TextColor="{StaticResource Gray500}" />
+                                            </VerticalStackLayout>
 
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    Grid.Row="0"
-                                    Margin="15,0,0,0">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="16"
-                                        Text="{Binding DisplayName}"
-                                        TextColor="{StaticResource Dark}" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="{Binding Email}"
-                                        TextColor="{StaticResource Gray}" />
-                                </VerticalStackLayout>
+                                            <VerticalStackLayout
+                                                Grid.Column="2"
+                                                Grid.Row="0"
+                                                Spacing="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding Points, StringFormat='{0:N0}'}"
+                                                    TextColor="{StaticResource Primary}" />
+                                                <Label
+                                                    FontSize="11"
+                                                    HorizontalOptions="End"
+                                                    Text="puntos"
+                                                    TextColor="{StaticResource Gray400}" />
+                                            </VerticalStackLayout>
 
-                                <VerticalStackLayout Grid.Column="2" Grid.Row="0">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="20"
-                                        HorizontalOptions="End"
-                                        Text="{Binding Points, StringFormat='{0:N0}'}"
-                                        TextColor="{StaticResource Primary}" />
-                                    <Label
-                                        FontSize="12"
-                                        HorizontalOptions="End"
-                                        Text="puntos"
-                                        TextColor="{StaticResource Gray400}" />
-                                </VerticalStackLayout>
+                                            <Button
+                                                BackgroundColor="{StaticResource Secondary}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AssignPointsCommand}"
+                                                CommandParameter="{Binding .}"
+                                                CornerRadius="12"
+                                                FontAttributes="Bold"
+                                                Grid.Column="1"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Row="1"
+                                                HeightRequest="36"
+                                                Margin="12,4,0,0"
+                                                Text="💰 Asignar Puntos"
+                                                TextColor="White" />
 
-                                <Button
-                                    BackgroundColor="{StaticResource Secondary}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AssignPointsCommand}"
-                                    CommandParameter="{Binding .}"
-                                    CornerRadius="17"
-                                    FontSize="12"
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="2"
-                                    Grid.Row="1"
-                                    HeightRequest="35"
-                                    Margin="15,10,0,0"
-                                    Text="💰 Asignar Puntos"
-                                    TextColor="White" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
 
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <!--  Botones de inicialización del sistema  -->
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Margin="0,8,0,0"
+                    Text="⚙️ Configuración del Sistema"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                Dark={StaticResource White}}" />
 
-            <!--  Botones de inicialización del sistema  -->
-            <Label
-                FontAttributes="Bold"
-                FontSize="18"
-                Margin="0,20,0,10"
-                Text="⚙️ Configuración del Sistema"
-                TextColor="{StaticResource Dark}" />
+                <Button
+                    BackgroundColor="{StaticResource Tertiary}"
+                    Command="{Binding InitializeBadgesCommand}"
+                    CornerRadius="12"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    IsEnabled="False"
+                    Margin="0,0,0,8"
+                    Opacity=".3"
+                    Text="🎖️ Inicializar Badges del Sistema"
+                    TextColor="White" />
 
-            <Button
-                BackgroundColor="{StaticResource Tertiary}"
-                Command="{Binding InitializeBadgesCommand}"
-                CornerRadius="25"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Margin="0,0,0,10"
-                Text="🎖️ Inicializar Badges del Sistema"
-                TextColor="White" />
+                <Button
+                    BackgroundColor="{StaticResource Secondary}"
+                    Command="{Binding InitializeRewardsCommand}"
+                    CornerRadius="12"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    IsEnabled="False"
+                    Margin="0,0,0,24"
+                    Opacity=".3"
+                    Text="🎁 Inicializar Recompensas del Sistema"
+                    TextColor="White" />
 
-            <Button
-                BackgroundColor="{StaticResource Secondary}"
-                Command="{Binding InitializeRewardsCommand}"
-                CornerRadius="25"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Margin="0,0,0,20"
-                Text="🎁 Inicializar Recompensas del Sistema"
-                TextColor="White" />
-
-        </VerticalStackLayout>
+            </VerticalStackLayout>
         </ScrollView>
 
         <!--  Loading Overlay Reutilizable  -->
-        <controls:LoadingOverlay />
+        <controls:LoadingOverlay Grid.RowSpan="2" />
     </Grid>
 </views:BasePage>

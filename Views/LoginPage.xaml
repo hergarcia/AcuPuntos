@@ -1,142 +1,191 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:AcuPuntos.Views"
-             xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
-             x:Class="AcuPuntos.Views.LoginPage"
-             x:DataType="viewmodels:LoginViewModel"
-             Title="Login"
-             Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Light}">
+<views:BasePage
+    BackgroundColor="{AppThemeBinding Light={StaticResource Light},
+                                      Dark={StaticResource Gray950}}"
+    Shell.NavBarIsVisible="False"
+    Title="Login"
+    x:Class="AcuPuntos.Views.LoginPage"
+    x:DataType="viewmodels:LoginViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
+    xmlns:views="clr-namespace:AcuPuntos.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!-- Fondo con gradiente -->
+        <!--  Fondo con gradiente  -->
         <BoxView>
             <BoxView.Background>
-                <LinearGradientBrush EndPoint="0,1">
-                    <GradientStop Color="#2ECC71" Offset="0.0" />
-                    <GradientStop Color="#27AE60" Offset="1.0" />
+                <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                    <GradientStop Color="{StaticResource PrimaryDark}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource Primary}" Offset="1.0" />
                 </LinearGradientBrush>
             </BoxView.Background>
         </BoxView>
 
-        <!-- Contenido principal -->
+        <!--  Contenido principal  -->
         <ScrollView>
-            <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
-                
-                <!-- Logo/Icono -->
-                <Border BackgroundColor="White"
-                       WidthRequest="120"
-                       HeightRequest="120"
-                       StrokeShape="RoundRectangle 60"
-                       Stroke="Transparent"
-                       HorizontalOptions="Center">
+            <VerticalStackLayout
+                Padding="32"
+                Spacing="32"
+                VerticalOptions="Center">
+
+                <!--  Logo/Icono  -->
+                <Border
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                      Dark={StaticResource Gray900}}"
+                    HeightRequest="128"
+                    HorizontalOptions="Center"
+                    StrokeShape="RoundRectangle 64"
+                    StrokeThickness="0"
+                    WidthRequest="128">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.3" />
+                        <Shadow
+                            Brush="Black"
+                            Offset="0,4"
+                            Opacity="0.2"
+                            Radius="16" />
                     </Border.Shadow>
-                    <Label Text="🍃"
-                           FontSize="60"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
+                    <Label
+                        FontSize="64"
+                        HorizontalOptions="Center"
+                        Text="🍃"
+                        VerticalOptions="Center" />
                 </Border>
 
-                <!-- Título de la App -->
-                <Label Text="AcuPuntos"
-                       FontSize="36"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center"
-                       Margin="0,10,0,0">
-                    <Label.Shadow>
-                        <Shadow Brush="Black"
-                                Offset="2,2"
-                                Radius="5"
-                                Opacity="0.3"/>
-                    </Label.Shadow>
-                </Label>
+                <!--  Título de la App  -->
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="OpenSansBold"
+                        FontSize="40"
+                        HorizontalOptions="Center"
+                        Text="AcuPuntos"
+                        TextColor="White">
+                        <Label.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,2"
+                                Opacity="0.2"
+                                Radius="4" />
+                        </Label.Shadow>
+                    </Label>
 
-                <!-- Subtítulo -->
-                <Label Text="{Binding SubtitleMessage}"
-                       FontSize="16"
-                       TextColor="White"
-                       HorizontalOptions="Center"
-                       Opacity="0.9"/>
+                    <!--  Subtítulo  -->
+                    <Label
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding SubtitleMessage}"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                    Dark={StaticResource Gray400}}" />
+                </VerticalStackLayout>
 
-                <!-- Espacio -->
-                <BoxView HeightRequest="40"/>
-
-                <!-- Card de Login -->
-                <Border BackgroundColor="White"
-                       StrokeShape="RoundRectangle 20"
-                       Stroke="Transparent"
-                       Padding="30">
+                <!--  Card de Login  -->
+                <Border
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                      Dark={StaticResource Gray900}}"
+                    Margin="0,16"
+                    Padding="32"
+                    StrokeShape="RoundRectangle 24"
+                    StrokeThickness="0">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.3" />
+                        <Shadow
+                            Brush="Black"
+                            Offset="0,8"
+                            Opacity="0.15"
+                            Radius="24" />
                     </Border.Shadow>
-                    <VerticalStackLayout Spacing="20">
-                        
-                        <!-- Mensaje de bienvenida -->
-                        <Label Text="{Binding WelcomeMessage}"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource Dark}"
-                               HorizontalOptions="Center"/>
+                    <VerticalStackLayout Spacing="24">
 
-                        <Label Text="Inicia sesión para comenzar a acumular y canjear tus puntos"
-                               FontSize="14"
-                               TextColor="{StaticResource Gray}"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
+                        <!--  Mensaje de bienvenida  -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                Text="{Binding WelcomeMessage}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                            Dark={StaticResource White}}" />
 
-                        <!-- Separador -->
-                        <BoxView HeightRequest="1"
-                                 BackgroundColor="{StaticResource Gray200}"
-                                 Margin="0,10"/>
+                            <Label
+                                FontSize="15"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                Text="Inicia sesión para comenzar a acumular y canjear tus puntos"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
 
-                        <!-- Botón de Google Sign In -->
-                        <Button Text="Iniciar sesión con Google"
-                                Command="{Binding SignInWithGoogleCommand}"
-                                BackgroundColor="White"
-                                TextColor="{StaticResource Dark}"
-                                BorderColor="#E0E0E0"
-                                BorderWidth="1"
-                                CornerRadius="25"
-                                HeightRequest="50"
-                                FontAttributes="Bold">
+                        <!--  Separador  -->
+                        <BoxView
+                            Color="{AppThemeBinding Light={StaticResource Gray200},
+                                                    Dark={StaticResource Gray700}}"
+                            HeightRequest="1"
+                            Margin="0,8" />
+
+                        <!--  Botón de Google Sign In  -->
+                        <Button
+                            BackgroundColor="White"
+                            BorderColor="{StaticResource Gray300}"
+                            BorderWidth="1"
+                            Command="{Binding SignInWithGoogleCommand}"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HeightRequest="56"
+                            Margin="4"
+                            Text="Iniciar sesión con Google"
+                            TextColor="{StaticResource Gray900}">
                             <Button.ImageSource>
-                                <FileImageSource File="google_logo.png"/>
+                                <FileImageSource File="google_logo.png" />
                             </Button.ImageSource>
                             <Button.Shadow>
-                                <Shadow Brush="#000000"
-                                        Offset="0,2"
-                                        Radius="5"
-                                        Opacity="0.1"/>
+                                <Shadow
+                                    Brush="Black"
+                                    Offset="0,2"
+                                    Opacity="0.1"
+                                    Radius="4" />
                             </Button.Shadow>
                         </Button>
 
-                        <!-- Indicador de carga -->
-                        <ActivityIndicator IsRunning="{Binding IsBusy}"
-                                         IsVisible="{Binding IsBusy}"
-                                         Color="#2ECC71"
-                                         HorizontalOptions="Center"/>
+                        <!--  Indicador de carga  -->
+                        <ActivityIndicator
+                            Color="{StaticResource Primary}"
+                            HorizontalOptions="Center"
+                            IsRunning="{Binding IsBusy}"
+                            IsVisible="{Binding IsBusy}" />
 
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Información adicional -->
-                <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
-                    <Label Text="🎁 Obtén 100 puntos de bienvenida"
-                           TextColor="White"
-                           FontSize="14"
-                           HorizontalOptions="Center"/>
-                    <Label Text="💚 Acumula puntos en cada sesión"
-                           TextColor="White"
-                           FontSize="14"
-                           HorizontalOptions="Center"/>
-                    <Label Text="🎯 Canjea por increíbles recompensas"
-                           TextColor="White"
-                           FontSize="14"
-                           HorizontalOptions="Center"/>
+                <!--  Información adicional  -->
+                <VerticalStackLayout Margin="0,16,0,0" Spacing="16">
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                        <Label FontSize="18" Text="🎁" />
+                        <Label
+                            FontSize="15"
+                            Text="Obtén 100 puntos de bienvenida"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                        <Label FontSize="18" Text="💚" />
+                        <Label
+                            FontSize="15"
+                            Text="Acumula puntos en cada sesión"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                        <Label FontSize="18" Text="🎯" />
+                        <Label
+                            FontSize="15"
+                            Text="Canjea por increíbles recompensas"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>

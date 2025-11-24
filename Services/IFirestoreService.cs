@@ -56,5 +56,23 @@ namespace AcuPuntos.Services
         IDisposable ListenToUserChanges(string uid, Action<User> onUpdate);
         IDisposable ListenToTransactions(string userId, Action<List<Transaction>> onUpdate);
         IDisposable ListenToRewards(Action<List<Reward>> onUpdate);
+
+        // Agenda methods
+        Task<List<AppointmentSlot>> GetAvailableSlotsAsync(DateTimeOffset start, DateTimeOffset end);
+        Task<List<AppointmentSlot>> GetAllSlotsAsync(DateTimeOffset start, DateTimeOffset end);
+        Task<List<AppointmentSlot>> GetUserAppointmentsAsync(string userId);
+        Task<List<AppointmentSlot>> GetPendingAppointmentsAsync();
+        Task CreateSlotAsync(AppointmentSlot slot);
+        Task UpdateSlotAsync(AppointmentSlot slot);
+        Task BookSlotAsync(AppointmentSlot slot); // New method for safe booking
+        Task DeleteSlotAsync(string slotId);
+        IDisposable? ListenToAppointments(DateTimeOffset start, DateTimeOffset end, Action<List<AppointmentSlot>> onUpdate);
+        IDisposable? ListenToUserAppointments(string userId, Action<List<AppointmentSlot>> onUpdate);
+
+        // Notification methods
+        Task<List<Notification>> GetUserNotificationsAsync(string userId);
+        Task CreateNotificationAsync(Notification notification);
+        Task MarkNotificationAsReadAsync(string notificationId);
+        IDisposable? ListenToNotifications(string userId, Action<List<Notification>> onUpdate);
     }
 }

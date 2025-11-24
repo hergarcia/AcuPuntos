@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        x:Class="AcuPuntos.Views.Controls.EmptyStateView"
-        x:Name="emptyState"
-        Style="{StaticResource CardFrame}"
-        Padding="40">
+<Border
+    Padding="40"
+    Style="{StaticResource CardFrame}"
+    x:Class="AcuPuntos.Views.Controls.EmptyStateView"
+    x:Name="emptyState"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <VerticalStackLayout Spacing="10">
-        <Label x:Name="iconLabel"
-               Text="{Binding Source={x:Reference emptyState}, Path=Icon}"
-               FontSize="50"
-               HorizontalOptions="Center"/>
-        <Label x:Name="titleLabel"
-               Text="{Binding Source={x:Reference emptyState}, Path=Title}"
-               FontSize="16"
-               TextColor="{StaticResource Gray}"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"/>
-        <Label x:Name="messageLabel"
-               Text="{Binding Source={x:Reference emptyState}, Path=Message}"
-               FontSize="14"
-               TextColor="{StaticResource Gray400}"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
-               IsVisible="{Binding Source={x:Reference emptyState}, Path=Message, Converter={StaticResource StringToBoolConverter}}"/>
+        <Label
+            FontSize="50"
+            HorizontalOptions="Center"
+            Text="{Binding Source={x:Reference emptyState}, Path=Icon}"
+            x:Name="iconLabel" />
+        <Label
+            FontSize="16"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Text="{Binding Source={x:Reference emptyState}, Path=Title}"
+            TextColor="{AppThemeBinding Light={StaticResource Gray},
+                                        Dark={StaticResource Gray400}}"
+            x:Name="titleLabel" />
+        <Label
+            FontSize="14"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            IsVisible="{Binding Source={x:Reference emptyState}, Path=Message, Converter={StaticResource StringToBoolConverter}}"
+            Text="{Binding Source={x:Reference emptyState}, Path=Message}"
+            TextColor="{AppThemeBinding Light={StaticResource Gray400},
+                                        Dark={StaticResource Gray500}}"
+            x:Name="messageLabel" />
     </VerticalStackLayout>
 
 </Border>

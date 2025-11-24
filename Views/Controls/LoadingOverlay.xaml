@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-      x:Class="AcuPuntos.Views.Controls.LoadingOverlay"
-      IsVisible="{Binding IsBusy}"
-      BackgroundColor="#80000000"
-      VerticalOptions="Fill"
-      HorizontalOptions="Fill">
+<Grid
+    BackgroundColor="{AppThemeBinding Light=#80000000,
+                                      Dark=#B3000000}"
+    HorizontalOptions="Fill"
+    IsVisible="{Binding IsBusy}"
+    VerticalOptions="Fill"
+    x:Class="AcuPuntos.Views.Controls.LoadingOverlay"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <VerticalStackLayout
-        VerticalOptions="Center"
         HorizontalOptions="Center"
-        Spacing="15">
+        Spacing="15"
+        VerticalOptions="Center">
         <ActivityIndicator
-            IsRunning="{Binding IsBusy}"
             Color="{StaticResource Primary}"
-            WidthRequest="50"
-            HeightRequest="50"/>
+            HeightRequest="50"
+            IsRunning="{Binding IsBusy}"
+            WidthRequest="50" />
         <Label
-            Text="{Binding Subtitle}"
-            TextColor="White"
             FontSize="16"
             HorizontalTextAlignment="Center"
-            IsVisible="{Binding Subtitle, Converter={StaticResource StringToBoolConverter}}"/>
+            IsVisible="{Binding Subtitle, Converter={StaticResource StringToBoolConverter}}"
+            Text="{Binding Subtitle}"
+            TextColor="White" />
     </VerticalStackLayout>
 
 </Grid>

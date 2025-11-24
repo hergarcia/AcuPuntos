@@ -2,8 +2,8 @@
 <Application
     x:Class="AcuPuntos.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:local="clr-namespace:AcuPuntos"
     xmlns:converters="clr-namespace:AcuPuntos.Converters"
+    xmlns:local="clr-namespace:AcuPuntos"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
@@ -22,6 +22,8 @@
             <converters:TransactionColorConverter x:Key="TransactionColorConverter" />
             <converters:TransactionIconConverter x:Key="TransactionIconConverter" />
             <converters:TransactionTypeConverter x:Key="TransactionTypeConverter" />
+            <converters:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

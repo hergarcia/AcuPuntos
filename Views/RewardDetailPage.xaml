@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BasePage
-    BackgroundColor="{StaticResource Light}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Light},
+                                      Dark={StaticResource Gray950}}"
     Shell.NavBarIsVisible="True"
     Shell.TabBarIsVisible="False"
     Title="{Binding Title}"
@@ -30,7 +31,8 @@
                         HorizontalOptions="Center"
                         HorizontalTextAlignment="Center"
                         Text="{Binding Reward.Name}"
-                        TextColor="{StaticResource Dark}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Dark},
+                                                    Dark={StaticResource White}}" />
 
                     <!--  Categoría  -->
                     <Border
@@ -75,13 +77,15 @@
                         FontAttributes="Bold"
                         FontSize="16"
                         Text="Descripción"
-                        TextColor="{StaticResource Gray}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray},
+                                                    Dark={StaticResource Gray400}}" />
 
                     <Label
                         FontSize="15"
                         LineBreakMode="WordWrap"
                         Text="{Binding Reward.Description}"
-                        TextColor="{StaticResource Dark}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Dark},
+                                                    Dark={StaticResource White}}" />
 
                     <!--  Información adicional  -->
                     <BoxView
@@ -99,12 +103,14 @@
                             <Label
                                 FontSize="12"
                                 Text="Válido hasta:"
-                                TextColor="{StaticResource Gray}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray},
+                                                            Dark={StaticResource Gray400}}" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="14"
                                 Text="{Binding Reward.ExpiryDate, StringFormat='{0:dd/MM/yyyy}'}"
-                                TextColor="{StaticResource Dark}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Dark},
+                                                            Dark={StaticResource White}}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
@@ -118,12 +124,14 @@
                             <Label
                                 FontSize="12"
                                 Text="Límite por usuario:"
-                                TextColor="{StaticResource Gray}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray},
+                                                            Dark={StaticResource Gray400}}" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="14"
                                 Text="{Binding Reward.MaxRedemptionsPerUser, StringFormat='{0} canjes'}"
-                                TextColor="{StaticResource Dark}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Dark},
+                                                            Dark={StaticResource White}}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
@@ -132,27 +140,28 @@
 
             <!--  Estado del usuario  -->
             <Border
-                BackgroundColor="{StaticResource Gray100}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100},
+                                                  Dark={StaticResource Gray900}}"
                 Padding="20"
                 Style="{StaticResource CardFrame}">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="10">
                         <Border
-                            BackgroundColor="{StaticResource Gray200}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                              Dark={StaticResource Gray800}}"
                             HeightRequest="40"
                             StrokeShape="RoundRectangle 20"
                             StrokeThickness="2"
                             VerticalOptions="Center"
                             WidthRequest="40">
-                            <Image
-                                Aspect="AspectFill"
-                                Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
+                            <Image Aspect="AspectFill" Source="{Binding CurrentUser.PhotoUrl, TargetNullValue='user_placeholder.svg', FallbackValue='user_placeholder.svg'}" />
                         </Border>
                         <VerticalStackLayout>
                             <Label
                                 FontSize="14"
                                 Text="Tus puntos:"
-                                TextColor="{StaticResource Gray}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray},
+                                                            Dark={StaticResource Gray400}}" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="18"
@@ -166,7 +175,8 @@
                         HorizontalTextAlignment="Center"
                         Margin="0,10,0,0"
                         Text="{Binding StatusMessage}"
-                        TextColor="{StaticResource Gray}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray},
+                                                    Dark={StaticResource Gray400}}" />
                 </VerticalStackLayout>
             </Border>
 
@@ -188,7 +198,7 @@
                         TargetType="Button"
                         Value="False">
                         <Setter Property="BackgroundColor" Value="{StaticResource Gray200}" />
-                        <Setter Property="TextColor" Value="{StaticResource Gray}" />
+                        <Setter Property="TextColor" Value="{StaticResource Gray400}" />
                         <Setter Property="Text" Value="No disponible" />
                     </DataTrigger>
                 </Button.Triggers>

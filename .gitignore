@@ -6,3 +6,12 @@ riderModule.iml
 /.idea
 /.idea/.idea.AcuPuntos/.idea
 .idea/.idea.AcuPuntos/.idea/deploymentTargetSelector.xml
+/Pipeline
+
+# Deployment logs and temp files
+deploy-log.txt
+*.apk
+*.aab
+
+# Firebase credentials (keep config template but ignore with sensitive data)
+# firebase-deploy-config.json  # Uncomment this if you add sensitive tokens

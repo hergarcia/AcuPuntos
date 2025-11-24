@@ -11,6 +11,7 @@ namespace AcuPuntos.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly IFirestoreService _firestoreService;
+        private IDisposable? _transactionsListener;
 
         [ObservableProperty]
         private User? currentUser;
@@ -54,53 +55,79 @@ namespace AcuPuntos.ViewModels
 
             CurrentUser = _authService.CurrentUser;
             await LoadTransactions();
+            SubscribeToUpdates();
         }
 
-        private async Task LoadTransactions()
+        private async Task LoadTransactions(bool isRefresh = false)
         {
-            await ExecuteAsync(async () =>
+            if (isRefresh)
             {
-                if (CurrentUser == null)
-                    return;
-
-                // 1. Obtener datos (IO)
-                var allTransactions = await _firestoreService.GetUserTransactionsAsync(CurrentUser.Uid!);
-
-                // 2. Procesar datos en segundo plano (CPU)
-                await Task.Run(() =>
+                if (IsBusy) return;
+                
+                try
                 {
-                    // Calcular estadísticas en background
-                    var totalCount = allTransactions.Count;
-                    
-                    var earned = allTransactions
-                        .Where(t => t.Type == TransactionType.Received || t.Type == TransactionType.Reward)
-                        .Sum(t => t.Amount);
-
-                    var spent = allTransactions
-                        .Where(t => t.Type == TransactionType.Sent || t.Type == TransactionType.Redemption)
-                        .Sum(t => t.Amount);
-
-                    // Actualizar propiedades en el hilo principal luego
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        TotalTransactions = totalCount;
-                        TotalPointsEarned = earned;
-                        TotalPointsSpent = spent;
-                    });
-                });
-
-                // 3. Actualizar colección en el hilo principal
-                Transactions.Clear();
-                foreach (var transaction in allTransactions)
-                {
-                    Transactions.Add(transaction);
+                    // No seteamos IsBusy para mantener la lista visible y evitar el Skeleton
+                    await ProcessTransactions();
                 }
-
-                FilterTransactions();
-            }, "Cargando historial...");
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+                    await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                }
+                finally
+                {
+                    IsRefreshing = false;
+                }
+            }
+            else
+            {
+                await ExecuteAsync(async () =>
+                {
+                    await ProcessTransactions();
+                }, "Cargando historial...");
+            }
         }
 
+        private async Task ProcessTransactions()
+        {
+            if (CurrentUser == null)
+                return;
 
+            // 1. Obtener datos (IO)
+            var allTransactions = await _firestoreService.GetUserTransactionsAsync(CurrentUser.Uid!);
+
+            // 2. Procesar datos en segundo plano (CPU)
+            await Task.Run(() =>
+            {
+                // Calcular estadísticas en background
+                var totalCount = allTransactions.Count;
+                
+                var earned = allTransactions
+                    .Where(t => t.Type == TransactionType.Received || t.Type == TransactionType.Reward)
+                    .Sum(t => t.Amount);
+
+                var spent = allTransactions
+                    .Where(t => t.Type == TransactionType.Sent || t.Type == TransactionType.Redemption)
+                    .Sum(t => t.Amount);
+
+                // Actualizar propiedades en el hilo principal luego
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    TotalTransactions = totalCount;
+                    TotalPointsEarned = earned;
+                    TotalPointsSpent = spent;
+                });
+            });
+
+            // 3. Actualizar colección en el hilo principal
+            Transactions.Clear();
+            foreach (var transaction in allTransactions)
+            {
+                Transactions.Add(transaction);
+            }
+
+            FilterTransactions();
+        }
 
         partial void OnSearchTextChanged(string value)
         {
@@ -144,10 +171,76 @@ namespace AcuPuntos.ViewModels
             }
         }
 
+        protected override async Task OnAppearingAsync()
+        {
+            await base.OnAppearingAsync();
+        }
+
+        protected override async Task OnDisappearingAsync()
+        {
+            await base.OnDisappearingAsync();
+        }
+
+        private void SubscribeToUpdates()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.Uid)) return;
+
+            UnsubscribeUpdates();
+
+            _transactionsListener = _firestoreService.ListenToTransactions(CurrentUser.Uid, transactions =>
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await UpdateTransactionsList(transactions);
+                });
+            });
+        }
+
+        private void UnsubscribeUpdates()
+        {
+            _transactionsListener?.Dispose();
+            _transactionsListener = null;
+        }
+
+        private async Task UpdateTransactionsList(List<Transaction> allTransactions)
+        {
+            // Procesar datos en segundo plano (CPU)
+            await Task.Run(() =>
+            {
+                // Calcular estadísticas en background
+                var totalCount = allTransactions.Count;
+                
+                var earned = allTransactions
+                    .Where(t => t.Type == TransactionType.Received || t.Type == TransactionType.Reward)
+                    .Sum(t => t.Amount);
+
+                var spent = allTransactions
+                    .Where(t => t.Type == TransactionType.Sent || t.Type == TransactionType.Redemption)
+                    .Sum(t => t.Amount);
+
+                // Actualizar propiedades en el hilo principal luego
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    TotalTransactions = totalCount;
+                    TotalPointsEarned = earned;
+                    TotalPointsSpent = spent;
+                });
+            });
+
+            // Actualizar colección en el hilo principal
+            Transactions.Clear();
+            foreach (var transaction in allTransactions)
+            {
+                Transactions.Add(transaction);
+            }
+
+            FilterTransactions();
+        }
+
         [RelayCommand]
         private async Task RefreshHistory()
         {
-            await LoadTransactions();
+            await LoadTransactions(true);
         }
     }
 }

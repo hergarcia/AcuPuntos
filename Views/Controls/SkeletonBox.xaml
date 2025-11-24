@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<BoxView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-         x:Class="AcuPuntos.Views.Controls.SkeletonBox"
-         x:Name="skeletonBox"
-         Color="#E0E0E0"
-         CornerRadius="8"
-         Opacity="0.7">
-
-
-
-</BoxView>
+<BoxView
+    Color="{AppThemeBinding Light={StaticResource Gray200},
+                            Dark={StaticResource Gray700}}"
+    CornerRadius="8"
+    Opacity="0.7"
+    x:Class="AcuPuntos.Views.Controls.SkeletonBox"
+    x:Name="skeletonBox"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" />

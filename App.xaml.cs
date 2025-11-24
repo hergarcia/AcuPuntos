@@ -6,12 +6,21 @@ namespace AcuPuntos;
 public partial class App : Application
 {
     private readonly IAuthService _authService;
+    private readonly IThemeService _themeService;
 
-    public App(IAuthService authService)
+    public App(IAuthService authService, IThemeService themeService)
     {
         InitializeComponent();
         _authService = authService;
+        _themeService = themeService;
+        
+        // Load saved theme preference
+        _themeService.LoadSavedTheme();
+        
         MainPage = new AppShell();
+        
+        // Initialize theme service events (e.g. Shell navigation)
+        _themeService.Initialize();
     }
 
     protected override async void OnStart()

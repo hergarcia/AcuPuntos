@@ -16,6 +16,8 @@ namespace AcuPuntos.Services
         private const string RedemptionsCollection = "redemptions";
         private const string BadgesCollection = "badges";
         private const string UserBadgesCollection = "userBadges";
+        private const string AppointmentsCollection = "appointments";
+        private const string NotificationsCollection = "notifications";
 
         public FirestoreService()
         {
@@ -983,17 +985,329 @@ namespace AcuPuntos.Services
                 });
         }
 
+
         public IDisposable ListenToRewards(Action<List<Reward>> onUpdate)
         {
             return _firestore.GetCollection(RewardsCollection)
                 .WhereEqualsTo("isActive", true)
-                .OrderBy("pointsCost")
-                .AddSnapshotListener<Reward>((querySnapshot) =>
+                .AddSnapshotListener<Reward>((snapshot) =>
                 {
-                    if (querySnapshot != null)
+                    if (snapshot != null)
                     {
-                        var rewards = querySnapshot.Documents.Select(x => x.Data).ToList();
-                        onUpdate(rewards);
+                        var rewards = snapshot.Documents.Select(x => x.Data).OrderBy(r => r.PointsCost).ToList();
+                        onUpdate?.Invoke(rewards);
+                    }
+                });
+        }
+
+        #endregion
+
+        #region Agenda
+
+        public async Task<List<AppointmentSlot>> GetAvailableSlotsAsync(DateTimeOffset start, DateTimeOffset end)
+        {
+            try
+            {
+                var slots = await _firestore.GetCollection(AppointmentsCollection)
+                    .WhereGreaterThanOrEqualsTo("startTime", start)
+                    .WhereLessThanOrEqualsTo("startTime", end)
+                    .GetDocumentsAsync<AppointmentSlot>();
+
+                return slots?.Documents
+                    .Select(x => x.Data)
+                    .Where(x => x.Status == AppointmentStatus.Available)
+                    .OrderBy(x => x.StartTime)
+                    .ToList() ?? new List<AppointmentSlot>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting available slots: {ex.Message}");
+                return new List<AppointmentSlot>();
+            }
+        }
+
+        public async Task<List<AppointmentSlot>> GetAllSlotsAsync(DateTimeOffset start, DateTimeOffset end)
+        {
+            try
+            {
+                var slots = await _firestore.GetCollection(AppointmentsCollection)
+                    .WhereGreaterThanOrEqualsTo("startTime", start)
+                    .WhereLessThanOrEqualsTo("startTime", end)
+                    .GetDocumentsAsync<AppointmentSlot>();
+
+                return slots?.Documents
+                    .Select(x => x.Data)
+                    .OrderBy(x => x.StartTime)
+                    .ToList() ?? new List<AppointmentSlot>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting all slots: {ex.Message}");
+                return new List<AppointmentSlot>();
+            }
+        }
+
+        public async Task<List<AppointmentSlot>> GetUserAppointmentsAsync(string userId)
+        {
+            try
+            {
+                var slots = await _firestore.GetCollection(AppointmentsCollection)
+                    .WhereEqualsTo("userId", userId)
+                    .GetDocumentsAsync<AppointmentSlot>();
+
+                return slots?.Documents
+                    .Select(x => x.Data)
+                    .OrderByDescending(x => x.StartTime)
+                    .ToList() ?? new List<AppointmentSlot>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting user appointments: {ex.Message}");
+                return new List<AppointmentSlot>();
+            }
+        }
+
+        public async Task<List<AppointmentSlot>> GetPendingAppointmentsAsync()
+        {
+            try
+            {
+                // Firestore OR queries are limited. We might need two queries or filter client side.
+                // Status: PendingApproval OR ModificationRequested
+                
+                var allSlots = await _firestore.GetCollection(AppointmentsCollection)
+                    .GetDocumentsAsync<AppointmentSlot>();
+
+                return allSlots?.Documents
+                    .Select(x => x.Data)
+                    .Where(x => x.Status == AppointmentStatus.PendingApproval || x.Status == AppointmentStatus.ModificationRequested)
+                    .OrderBy(x => x.StartTime)
+                    .ToList() ?? new List<AppointmentSlot>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting pending appointments: {ex.Message}");
+                return new List<AppointmentSlot>();
+            }
+        }
+
+        public async Task CreateSlotAsync(AppointmentSlot slot)
+        {
+            try
+            {
+                var docRef = await _firestore.GetCollection(AppointmentsCollection)
+                    .AddDocumentAsync(slot);
+                slot.Id = docRef.Id;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating slot: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task UpdateSlotAsync(AppointmentSlot slot)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(slot.Id))
+                    throw new ArgumentException("Slot ID cannot be null or empty");
+
+                var updates = new Dictionary<object, object>
+                {
+                    { "startTime", slot.StartTime },
+                    { "endTime", slot.EndTime },
+                    { "userId", slot.UserId },
+                    { "status", slot.StatusString },
+                    { "userNotes", slot.UserNotes ?? "" },
+                    { "adminNotes", slot.AdminNotes ?? "" },
+                    { "requestedModification", slot.RequestedModification ?? "" }
+                };
+
+                await _firestore.GetCollection(AppointmentsCollection)
+                    .GetDocument(slot.Id)
+                    .UpdateDataAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating slot: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task BookSlotAsync(AppointmentSlot slot)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(slot.Id))
+                    throw new ArgumentException("Slot ID cannot be null or empty");
+
+                // 1. Get current state of the slot
+                var docRef = _firestore.GetCollection(AppointmentsCollection).GetDocument(slot.Id);
+                var snapshot = await docRef.GetDocumentSnapshotAsync<AppointmentSlot>();
+                
+                if (snapshot == null || snapshot.Data == null)
+                    throw new Exception("El turno ya no existe.");
+
+                var currentSlot = snapshot.Data;
+
+                // 2. Validate availability
+                if (currentSlot.Status != AppointmentStatus.Available)
+                {
+                    throw new Exception("El turno ya no está disponible. Alguien más lo ha reservado.");
+                }
+
+                // 3. Update if available
+                var updates = new Dictionary<object, object>
+                {
+                    { "userId", slot.UserId },
+                    { "status", slot.StatusString },
+                    { "userNotes", slot.UserNotes ?? "" }
+                };
+
+                await docRef.UpdateDataAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error booking slot: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task DeleteSlotAsync(string slotId)
+        {
+            try
+            {
+                await _firestore.GetCollection(AppointmentsCollection)
+                    .GetDocument(slotId)
+                    .DeleteDocumentAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting slot: {ex.Message}");
+                throw;
+            }
+        }
+        public IDisposable? ListenToAppointments(DateTimeOffset start, DateTimeOffset end, Action<List<AppointmentSlot>> onUpdate)
+        {
+            try
+            {
+                return _firestore.GetCollection(AppointmentsCollection)
+                    .WhereGreaterThanOrEqualsTo("startTime", start)
+                    .WhereLessThan("startTime", end)
+                    .OrderBy("startTime")
+                    .AddSnapshotListener<AppointmentSlot>((snapshot) =>
+                    {
+                        if (snapshot != null)
+                        {
+                            var appointments = snapshot.Documents.Select(x => x.Data).ToList();
+                            onUpdate?.Invoke(appointments);
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error setting up appointments listener: {ex.Message}");
+                return null;
+            }
+        }
+
+        public IDisposable? ListenToUserAppointments(string userId, Action<List<AppointmentSlot>> onUpdate)
+        {
+            try
+            {
+                return _firestore.GetCollection(AppointmentsCollection)
+                    .WhereEqualsTo("userId", userId)
+                    .AddSnapshotListener<AppointmentSlot>((snapshot) =>
+                    {
+                        if (snapshot != null)
+                        {
+                            var appointments = snapshot.Documents
+                                .Select(x => x.Data)
+                                .OrderByDescending(x => x.StartTime)
+                                .ToList();
+                            onUpdate?.Invoke(appointments);
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error listening to user appointments: {ex.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Notificaciones
+
+        public async Task<List<Notification>> GetUserNotificationsAsync(string userId)
+        {
+            try
+            {
+                var notifications = await _firestore.GetCollection(NotificationsCollection)
+                    .WhereEqualsTo("userId", userId)
+                    .GetDocumentsAsync<Notification>();
+
+                return notifications?.Documents
+                    .Select(x => x.Data)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .ToList() ?? new List<Notification>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting notifications: {ex.Message}");
+                return new List<Notification>();
+            }
+        }
+
+        public async Task CreateNotificationAsync(Notification notification)
+        {
+            try
+            {
+                var docRef = await _firestore.GetCollection(NotificationsCollection)
+                    .AddDocumentAsync(notification);
+                notification.Id = docRef.Id;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating notification: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task MarkNotificationAsReadAsync(string notificationId)
+        {
+            try
+            {
+                var updates = new Dictionary<object, object>
+                {
+                    { "isRead", true }
+                };
+
+                await _firestore.GetCollection(NotificationsCollection)
+                    .GetDocument(notificationId)
+                    .UpdateDataAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error marking notification as read: {ex.Message}");
+                throw;
+            }
+        }
+
+        public IDisposable ListenToNotifications(string userId, Action<List<Notification>> onUpdate)
+        {
+            return _firestore.GetCollection(NotificationsCollection)
+                .WhereEqualsTo("userId", userId)
+                .AddSnapshotListener<Notification>((snapshot) =>
+                {
+                    if (snapshot != null)
+                    {
+                        var notifications = snapshot.Documents
+                            .Select(x => x.Data)
+                            .OrderByDescending(x => x.CreatedAt)
+                            .ToList();
+                        onUpdate?.Invoke(notifications);
                     }
                 });
         }

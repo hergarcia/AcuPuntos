@@ -2,22 +2,32 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <!--  Estilos para Buttons  -->
-    <Style TargetType="Button">
+    <!--  Estilos para Buttons  -->
+    <Style TargetType="Button" x:Key="PrimaryButton">
         <Setter Property="TextColor" Value="White" />
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-        <Setter Property="CornerRadius" Value="25" />
-        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="52" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="Shadow">
+            <Shadow
+                Brush="{StaticResource Primary}"
+                Offset="0,4"
+                Opacity="0.3"
+                Radius="8" />
+        </Setter>
     </Style>
+
+    <Style BasedOn="{StaticResource PrimaryButton}" TargetType="Button" />
 
     <Style TargetType="Button" x:Key="SecondaryButton">
         <Setter Property="TextColor" Value="{StaticResource Primary}" />
-        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark={StaticResource Gray800}}" />
         <Setter Property="BorderColor" Value="{StaticResource Primary}" />
-        <Setter Property="BorderWidth" Value="2" />
-        <Setter Property="CornerRadius" Value="25" />
-        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="BorderWidth" Value="1.5" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="52" />
         <Setter Property="FontAttributes" Value="Bold" />
     </Style>
 
@@ -30,20 +40,21 @@
     </Style>
 
     <!--  Estilos para Borders (Cards) - Radio aumentado para diseño más moderno  -->
+    <!--  Estilos para Borders (Cards) - Diseño Moderno Clean  -->
     <Style TargetType="Border" x:Key="CardFrame">
-        <Setter Property="BackgroundColor" Value="White" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
-        <Setter Property="Stroke" Value="{StaticResource Gray200}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource Gray900}}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 24" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
         <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="Padding" Value="16" />
-        <Setter Property="Margin" Value="6" />
-        <!--  Sombra más moderna y sutil  -->
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Margin" Value="4,8" />
         <Setter Property="Shadow">
             <Shadow
-                Brush="Black"
-                Offset="0,2"
-                Opacity="0.08"
-                Radius="4" />
+                Brush="{AppThemeBinding Light={StaticResource Gray400},
+                                        Dark=Black}"
+                Offset="0,4"
+                Opacity="0.05"
+                Radius="12" />
         </Setter>
     </Style>
 
@@ -55,21 +66,23 @@
     </Style>
 
     <!--  Card sin sombra para listas (mejor performance en Android)  -->
+    <!--  Card sin sombra para listas (mejor performance en Android)  -->
     <Style TargetType="Border" x:Key="ListItemCard">
-        <Setter Property="BackgroundColor" Value="White" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 18" />
-        <Setter Property="Stroke" Value="{StaticResource Gray200}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource Gray900}}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Padding" Value="16" />
-        <Setter Property="Margin" Value="6,4,6,4" />
+        <Setter Property="Margin" Value="0,6" />
     </Style>
 
     <!--  Estilos para Entry  -->
+    <!--  Estilos para Entry  -->
     <Style TargetType="Entry">
-        <Setter Property="TextColor" Value="{StaticResource Dark}" />
-        <Setter Property="PlaceholderColor" Value="{StaticResource Gray}" />
-        <Setter Property="BackgroundColor" Value="White" />
-        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource Gray400}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource Gray800}}" />
+        <Setter Property="HeightRequest" Value="52" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
     </Style>
 
@@ -111,22 +124,24 @@
     </Style>
 
     <!--  Estilos para NavigationPage  -->
+    <!--  Estilos para NavigationPage  -->
     <Style TargetType="NavigationPage">
-        <Setter Property="BarBackgroundColor" Value="{StaticResource Primary}" />
-        <Setter Property="BarTextColor" Value="White" />
+        <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource Gray950}}" />
+        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
     </Style>
 
     <!--  Estilos para Shell  -->
+    <!--  Estilos para Shell  -->
     <Style TargetType="Element" x:Key="BaseStyle">
-        <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
-        <Setter Property="Shell.ForegroundColor" Value="White" />
-        <Setter Property="Shell.TitleColor" Value="White" />
-        <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
-        <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-        <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
-        <Setter Property="Shell.TabBarForegroundColor" Value="White" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF" />
-        <Setter Property="Shell.TabBarTitleColor" Value="White" />
+        <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource Gray950}}" />
+        <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+        <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+        <Setter Property="Shell.DisabledColor" Value="{StaticResource Gray400}" />
+        <Setter Property="Shell.UnselectedColor" Value="{StaticResource Gray400}" />
+        <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource Gray950}}" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Gray400}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}" />
     </Style>
 
     <Style BasedOn="{StaticResource BaseStyle}" TargetType="TabBar" />
@@ -411,20 +426,20 @@
 
     <Style ApplyToDerivedTypes="True" TargetType="Page">
         <Setter Property="Padding" Value="0" />
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource Gray950}}" />
     </Style>
 
     <Style ApplyToDerivedTypes="True" TargetType="Shell">
-        <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}" />
-        <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
-        <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
-        <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
-        <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray200}}" />
+        <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray950}}" />
+        <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
+        <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
         <Setter Property="Shell.NavBarHasShadow" Value="False" />
-        <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}" />
-        <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
+        <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray950}}" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
     </Style>
 
     <Style TargetType="TabbedPage">

@@ -68,32 +68,59 @@ namespace AcuPuntos.ViewModels
                 // Verificar y otorgar badges automáticamente según nivel/puntos actuales
                 await _gamificationService.CheckAndAwardBadgesAsync(CurrentUser.Uid!);
 
-                // Suscribirse a cambios en tiempo real
-                _userListener = _firestoreService.ListenToUserChanges(CurrentUser.Uid, user =>
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        CurrentUser = user;
-                        UpdatePointsDisplay();
-                    });
-                });
-
-                _transactionsListener = _firestoreService.ListenToTransactions(CurrentUser.Uid, transactions =>
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        RecentTransactions.Clear();
-                        foreach (var transaction in transactions.Take(5))
-                        {
-                            RecentTransactions.Add(transaction);
-                        }
-                        HasTransactions = RecentTransactions.Any();
-                    });
-                });
-
                 await LoadTransactions();
                 await CheckDailyCheckInStatus();
+                SubscribeToUpdates();
             }
+        }
+
+        protected override async Task OnAppearingAsync()
+        {
+            await base.OnAppearingAsync();
+        }
+
+        protected override async Task OnDisappearingAsync()
+        {
+            await base.OnDisappearingAsync();
+        }
+
+        private void SubscribeToUpdates()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.Uid)) return;
+
+            UnsubscribeUpdates(); // Evitar duplicados
+
+            // Suscribirse a cambios en tiempo real
+            _userListener = _firestoreService.ListenToUserChanges(CurrentUser.Uid, user =>
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    CurrentUser = user;
+                    UpdatePointsDisplay();
+                    await CheckDailyCheckInStatus();
+                });
+            });
+
+            _transactionsListener = _firestoreService.ListenToTransactions(CurrentUser.Uid, transactions =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    RecentTransactions.Clear();
+                    foreach (var transaction in transactions.Take(5))
+                    {
+                        RecentTransactions.Add(transaction);
+                    }
+                    HasTransactions = RecentTransactions.Any();
+                });
+            });
+        }
+
+        private void UnsubscribeUpdates()
+        {
+            _userListener?.Dispose();
+            _userListener = null;
+            _transactionsListener?.Dispose();
+            _transactionsListener = null;
         }
 
         private async Task CheckDailyCheckInStatus()
@@ -115,15 +142,6 @@ namespace AcuPuntos.ViewModels
 
             // Calcular progreso del nivel
             LevelProgress = _gamificationService.GetLevelProgress(CurrentUser.Experience);
-        }
-
-        protected override async Task OnDisappearingAsync()
-        {
-            await base.OnDisappearingAsync();
-            
-            // Limpiar listeners
-            _userListener?.Dispose();
-            _transactionsListener?.Dispose();
         }
 
         private async Task LoadTransactions()
@@ -207,7 +225,7 @@ namespace AcuPuntos.ViewModels
 
                 if (success)
                 {
-                    await Shell.Current.DisplayAlert(
+                    await Shell.Current.DisplayAlertAsync(
                         "¡Check-in Completado! 🎉",
                         $"Has ganado {bonus} puntos\nRacha actual: {streak} días consecutivos",
                         "¡Genial!");
@@ -219,7 +237,7 @@ namespace AcuPuntos.ViewModels
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert(
+                    await Shell.Current.DisplayAlertAsync(
                         "Ya hiciste check-in hoy",
                         "Vuelve mañana para continuar tu racha",
                         "OK");

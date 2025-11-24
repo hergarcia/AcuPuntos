@@ -1,162 +1,211 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BasePage
-    BackgroundColor="#F5F5F5"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Light},
+                                      Dark={StaticResource Gray950}}"
     Shell.NavBarIsVisible="True"
     Shell.TabBarIsVisible="False"
     Title="{Binding Title}"
     x:Class="AcuPuntos.Views.HistoryPage"
     x:DataType="viewmodels:HistoryViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
     xmlns:models="clr-namespace:AcuPuntos.Models"
     xmlns:viewmodels="clr-namespace:AcuPuntos.ViewModels"
     xmlns:views="clr-namespace:AcuPuntos.Views"
-    xmlns:controls="clr-namespace:AcuPuntos.Views.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid>
-        <RefreshView Command="{Binding RefreshHistoryCommand}">
-        <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid RowDefinitions="Auto,*">
+        <!--  Header Background Shape  -->
+        <BoxView
+            Color="{StaticResource Primary}"
+            Grid.RowSpan="2"
+            HeightRequest="200"
+            VerticalOptions="Start" />
 
-            <!--  Estadísticas  -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <!--  Puntos ganados  -->
-                <controls:StatsCard
-                    Grid.Column="0"
-                    Value="{Binding TotalPointsEarned}"
-                    Label="Ganados"
-                    Icon="📈"
-                    BackgroundColor="#2ECC71"
-                    LabelColor="White"
-                    ValueColor="White"/>
+        <RefreshView
+            Command="{Binding RefreshHistoryCommand}"
+            Grid.RowSpan="2"
+            IsRefreshing="{Binding IsRefreshing}"
+            RefreshColor="White">
+            <ScrollView>
+                <VerticalStackLayout Padding="24" Spacing="24">
 
-                <!--  Puntos gastados  -->
-                <controls:StatsCard
-                    Grid.Column="1"
-                    Value="{Binding TotalPointsSpent}"
-                    Label="Gastados"
-                    Icon="📉"
-                    BackgroundColor="#E74C3C"
-                    LabelColor="White"
-                    ValueColor="White"/>
-            </Grid>
+                    <!--  Estadísticas  -->
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="16"
+                        Margin="0,10,0,0">
+                        <!--  Puntos ganados  -->
+                        <controls:StatsCard
+                            BackgroundColor="{StaticResource Success}"
+                            Grid.Column="0"
+                            Icon="📈"
+                            Label="Ganados"
+                            LabelColor="White"
+                            Value="{Binding TotalPointsEarned}"
+                            ValueColor="White" />
 
-            <!--  Filtros  -->
-            <Border Padding="15" Style="{StaticResource CardFrame}">
-                <VerticalStackLayout Spacing="10">
-                    <SearchBar
-                        BackgroundColor="#F5F5F5"
-                        Placeholder="Buscar en historial..."
-                        PlaceholderColor="#999999"
-                        Text="{Binding SearchText}" />
+                        <!--  Puntos gastados  -->
+                        <controls:StatsCard
+                            BackgroundColor="{StaticResource Danger}"
+                            Grid.Column="1"
+                            Icon="📉"
+                            Label="Gastados"
+                            LabelColor="White"
+                            Value="{Binding TotalPointsSpent}"
+                            ValueColor="White" />
+                    </Grid>
 
-                    <HorizontalStackLayout Spacing="10">
-                        <Label
-                            FontSize="14"
-                            Text="Filtrar:"
-                            TextColor="#666666"
-                            VerticalOptions="Center" />
-                        <Picker
-                            BackgroundColor="#F5F5F5"
-                            HorizontalOptions="FillAndExpand"
-                            ItemsSource="{Binding Filters}"
-                            SelectedItem="{Binding SelectedFilter}" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
+                    <!--  Filtros  -->
+                    <Border
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                          Dark={StaticResource Gray900}}"
+                        Padding="16"
+                        Style="{StaticResource CardFrame}">
+                        <VerticalStackLayout Spacing="12">
+                            <SearchBar
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Background},
+                                                                  Dark={StaticResource Gray800}}"
+                                Placeholder="Buscar en historial..."
+                                PlaceholderColor="{StaticResource Gray400}"
+                                Text="{Binding SearchText}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                            Dark={StaticResource White}}" />
 
-            <!--  Lista de transacciones  -->
-            <Label
-                FontAttributes="Bold"
-                FontSize="16"
-                Text="{Binding TotalTransactions, StringFormat='Total: {0} transacciones'}"
-                TextColor="#666666" />
-
-            <CollectionView ItemsSource="{Binding FilteredTransactions}" SelectionMode="None">
-                <CollectionView.EmptyView>
-                    <controls:EmptyStateView
-                        Icon="📊"
-                        Title="No hay transacciones"/>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Transaction">
-                        <Border
-                            Margin="0,0,0,10"
-                            Padding="15"
-                            Style="{StaticResource ListItemCard}">
-                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
-
-                                <!--  Icono según tipo  -->
+                            <HorizontalStackLayout Spacing="12">
                                 <Label
-                                    FontSize="40"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="2"
-                                    Text="{Binding Type, Converter={StaticResource TransactionIconConverter}}"
+                                    FontSize="14"
+                                    Text="Filtrar:"
+                                    TextColor="{StaticResource Gray600}"
                                     VerticalOptions="Center" />
+                                <Picker
+                                    BackgroundColor="Transparent"
+                                    HorizontalOptions="FillAndExpand"
+                                    ItemsSource="{Binding Filters}"
+                                    SelectedItem="{Binding SelectedFilter}"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                Dark={StaticResource White}}"
+                                    TitleColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                 Dark={StaticResource White}}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
 
-                                <!--  Descripción  -->
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    Grid.Row="0"
-                                    Margin="15,0,0,0">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="16"
-                                        LineBreakMode="TailTruncation"
-                                        MaxLines="2"
-                                        Text="{Binding Description}"
-                                        TextColor="#333333" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                                        TextColor="{StaticResource Gray400}" />
-                                </VerticalStackLayout>
+                    <!--  Skeleton Loading  -->
+                    <controls:SkeletonList IsVisible="{Binding IsBusy}" />
 
-                                <!--  Monto  -->
-                                <VerticalStackLayout
-                                    Grid.Column="2"
-                                    Grid.Row="0"
-                                    HorizontalOptions="End">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="20"
-                                        HorizontalOptions="End"
-                                        Text="{Binding Amount, StringFormat='{0:+#,0;-#,0;0}'}"
-                                        TextColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}" />
-                                    <Label
-                                        FontSize="12"
-                                        HorizontalOptions="End"
-                                        Text="puntos"
-                                        TextColor="{StaticResource Gray400}" />
-                                </VerticalStackLayout>
+                    <!--  Lista de transacciones  -->
+                    <VerticalStackLayout IsVisible="{Binding IsNotBusy}">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="{Binding TotalTransactions, StringFormat='Total: {0} transacciones'}"
+                            TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                        Dark={StaticResource White}}" />
 
-                                <!--  Tipo de transacción  -->
-                                <Border
-                                    BackgroundColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}"
-                                    Grid.ColumnSpan="3"
-                                    Grid.Row="2"
-                                    HorizontalOptions="Start"
-                                    Margin="0,10,0,0"
-                                    Padding="8,4"
-                                    StrokeShape="RoundRectangle 10">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="12"
-                                        Text="{Binding Type, Converter={StaticResource TransactionTypeConverter}}"
-                                        TextColor="White" />
-                                </Border>
+                        <CollectionView ItemsSource="{Binding FilteredTransactions}" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <controls:EmptyStateView Icon="📊" Title="No hay transacciones" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Transaction">
+                                    <Border
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface},
+                                                                          Dark={StaticResource Gray900}}"
+                                        Margin="0,0,0,12"
+                                        Padding="16"
+                                        StrokeThickness="0"
+                                        Style="{StaticResource ListItemCard}">
+                                        <Grid
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto,Auto"
+                                            RowSpacing="8">
 
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                                            <!--  Icono según tipo  -->
+                                            <Border
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100},
+                                                                                  Dark={StaticResource Gray800}}"
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                HeightRequest="48"
+                                                StrokeShape="RoundRectangle 12"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Start"
+                                                WidthRequest="48">
+                                                <Label
+                                                    FontSize="24"
+                                                    HorizontalOptions="Center"
+                                                    Text="{Binding Type, Converter={StaticResource TransactionIconConverter}}"
+                                                    VerticalOptions="Center" />
+                                            </Border>
 
-            </VerticalStackLayout>
-        </ScrollView>
+                                            <!--  Descripción  -->
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Grid.Row="0"
+                                                Margin="16,0,0,0"
+                                                Spacing="4">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    LineBreakMode="TailTruncation"
+                                                    MaxLines="2"
+                                                    Text="{Binding Description}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                Dark={StaticResource White}}" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding CreatedAt, StringFormat='{0:dd MMM, HH:mm}'}"
+                                                    TextColor="{StaticResource Gray500}" />
+                                            </VerticalStackLayout>
+
+                                            <!--  Monto  -->
+                                            <VerticalStackLayout
+                                                Grid.Column="2"
+                                                Grid.Row="0"
+                                                HorizontalOptions="End"
+                                                Spacing="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="18"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding Amount, StringFormat='{0:+#,0;-#,0;0}'}"
+                                                    TextColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}" />
+                                                <Label
+                                                    FontSize="11"
+                                                    HorizontalOptions="End"
+                                                    Text="puntos"
+                                                    TextColor="{StaticResource Gray400}" />
+                                            </VerticalStackLayout>
+
+                                            <!--  Tipo de transacción  -->
+                                            <Border
+                                                BackgroundColor="{Binding Type, Converter={StaticResource TransactionColorConverter}}"
+                                                Grid.Column="1"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Row="2"
+                                                HorizontalOptions="Start"
+                                                Margin="16,4,0,0"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="11"
+                                                    Text="{Binding Type, Converter={StaticResource TransactionTypeConverter}}"
+                                                    TextColor="White"
+                                                    TextTransform="Uppercase" />
+                                            </Border>
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
         </RefreshView>
-
-        <!--  Loading Overlay Reutilizable  -->
-        <controls:LoadingOverlay />
     </Grid>
 </views:BasePage>
