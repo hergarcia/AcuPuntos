@@ -80,10 +80,14 @@ namespace AcuPuntos.ViewModels
             // 1. Slots Listener for Selected Date
             _slotsListener?.Dispose();
             
-            var start = new DateTimeOffset(SelectedDate.Date);
-            var end = new DateTimeOffset(SelectedDate.Date.AddDays(1).AddTicks(-1));
+            // Create DateTimeOffset from local date (automatically converts to UTC internally)
+            var localStart = new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, 0, 0, 0, DateTimeKind.Local);
+            var localEnd = localStart.AddDays(1).AddTicks(-1);
             
-            _slotsListener = _firestoreService.ListenToAppointments(start, end, async (slots) =>
+            var startUtc = new DateTimeOffset(localStart);
+            var endUtc = new DateTimeOffset(localEnd);
+            
+            _slotsListener = _firestoreService.ListenToAppointments(startUtc, endUtc, async (slots) =>
             {
                 await EnrichSlotsWithUserData(slots);
                 Slots = new ObservableCollection<AppointmentSlot>(slots);
@@ -133,10 +137,14 @@ namespace AcuPuntos.ViewModels
         {
             // Update slots listener for the new date
             _slotsListener?.Dispose();
-            var start = new DateTimeOffset(value.Date);
-            var end = new DateTimeOffset(value.Date.AddDays(1).AddTicks(-1));
+            // Create DateTimeOffset from local date (automatically converts to UTC internally)
+            var localStart = new DateTime(value.Year, value.Month, value.Day, 0, 0, 0, DateTimeKind.Local);
+            var localEnd = localStart.AddDays(1).AddTicks(-1);
             
-            _slotsListener = _firestoreService.ListenToAppointments(start, end, async (slots) =>
+            var startUtc = new DateTimeOffset(localStart);
+            var endUtc = new DateTimeOffset(localEnd);
+            
+            _slotsListener = _firestoreService.ListenToAppointments(startUtc, endUtc, async (slots) =>
             {
                 await EnrichSlotsWithUserData(slots);
                 Slots = new ObservableCollection<AppointmentSlot>(slots);
@@ -146,9 +154,14 @@ namespace AcuPuntos.ViewModels
 
         private async Task LoadSlotsAsync()
         {
-            var start = new DateTimeOffset(SelectedDate.Date);
-            var end = new DateTimeOffset(SelectedDate.Date.AddDays(1).AddTicks(-1));
-            var slots = await _firestoreService.GetAllSlotsAsync(start, end);
+            // Create DateTimeOffset from local date (automatically converts to UTC internally)
+            var localStart = new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, 0, 0, 0, DateTimeKind.Local);
+            var localEnd = localStart.AddDays(1).AddTicks(-1);
+            
+            var startUtc = new DateTimeOffset(localStart);
+            var endUtc = new DateTimeOffset(localEnd);
+
+            var slots = await _firestoreService.GetAllSlotsAsync(startUtc, endUtc);
             await EnrichSlotsWithUserData(slots);
             Slots = new ObservableCollection<AppointmentSlot>(slots);
             UpdateStatistics();
@@ -187,14 +200,20 @@ namespace AcuPuntos.ViewModels
             try
             {
                 IsBusy = true;
-                var localDateTime = SelectedDate.Date.Add(NewSlotTime);
-                var startTime = new DateTimeOffset(localDateTime);
+                // Create DateTimeOffset from Local time (automatically converts to UTC internally)
+                var localStartTime = new DateTime(
+                    SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,
+                    NewSlotTime.Hours, NewSlotTime.Minutes, NewSlotTime.Seconds,
+                    DateTimeKind.Local);
+                
+                var startTime = new DateTimeOffset(localStartTime);
                 var endTime = startTime.AddMinutes(SlotDurationMinutes);
 
                 var slot = new AppointmentSlot
                 {
                     StartTime = startTime,
                     EndTime = endTime,
+                    DurationMinutes = SlotDurationMinutes,
                     Status = AppointmentStatus.Available
                 };
 
@@ -224,14 +243,20 @@ namespace AcuPuntos.ViewModels
 
                 while (currentTime < BatchEndTime)
                 {
-                    var localDateTime = SelectedDate.Date.Add(currentTime);
-                    var slotStart = new DateTimeOffset(localDateTime);
+                    // Create DateTimeOffset from Local time (automatically converts to UTC internally)
+                    var localSlotStart = new DateTime(
+                        SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,
+                        currentTime.Hours, currentTime.Minutes, currentTime.Seconds,
+                        DateTimeKind.Local);
+                    
+                    var slotStart = new DateTimeOffset(localSlotStart);
                     var slotEnd = slotStart.AddMinutes(BatchIntervalMinutes);
 
                     var slot = new AppointmentSlot
                     {
                         StartTime = slotStart,
                         EndTime = slotEnd,
+                        DurationMinutes = BatchIntervalMinutes,
                         Status = AppointmentStatus.Available
                     };
 
@@ -259,29 +284,25 @@ namespace AcuPuntos.ViewModels
         {
             if (slot == null) return;
 
-            var timeString = await App.Current.MainPage.DisplayPromptAsync(
-                "Editar Turno",
-                "Nueva hora (HH:mm):",
-                "Guardar",
-                "Cancelar",
-                slot.StartTime.ToLocalTime().ToString("HH:mm"),
-                maxLength: 5,
-                keyboard: Microsoft.Maui.Keyboard.Numeric);
+            // Create and show time picker dialog
+            var dialog = new Views.Dialogs.TimePickerDialog(slot.StartTime.ToLocalTime().TimeOfDay);
+            await App.Current.MainPage.Navigation.PushModalAsync(dialog);
+            var newTime = await dialog.GetResultAsync();
 
-            if (string.IsNullOrWhiteSpace(timeString))
+            // User cancelled
+            if (newTime == null)
                 return;
-
-            if (!TimeSpan.TryParse(timeString, out var newTime))
-            {
-                await App.Current.MainPage.DisplayAlert("Error", "Formato de hora inválido", "OK");
-                return;
-            }
 
             try
             {
                 IsBusy = true;
-                var localDateTime = SelectedDate.Date.Add(newTime);
-                slot.StartTime = new DateTimeOffset(localDateTime);
+                // Create DateTimeOffset from Local time (automatically converts to UTC internally)
+                var localStartTime = new DateTime(
+                    SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,
+                    newTime.Value.Hours, newTime.Value.Minutes, newTime.Value.Seconds,
+                    DateTimeKind.Local);
+
+                slot.StartTime = new DateTimeOffset(localStartTime);
                 slot.EndTime = slot.StartTime.AddMinutes(60);
 
                 await _firestoreService.UpdateSlotAsync(slot);

@@ -32,6 +32,8 @@
     <Color x:Key="WarningLight">#FEF3C7</Color>
 
     <Color x:Key="Info">#3B82F6</Color>
+    <Color x:Key="InfoDark">#1E40AF</Color>
+    <Color x:Key="InfoLight">#DBEAFE</Color>
 
     <!--  Backgrounds & Surfaces  -->
     <Color x:Key="Background">#F1F5F9</Color>

@@ -57,10 +57,14 @@ namespace AcuPuntos.ViewModels
             // 1. Available Slots Listener for Selected Date
             _availableSlotsListener?.Dispose();
             
-            var start = new DateTimeOffset(SelectedDate.Date);
-            var end = new DateTimeOffset(SelectedDate.Date.AddDays(1).AddTicks(-1));
+            // Create DateTimeOffset from local date (automatically converts to UTC internally)
+            var localStart = new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, 0, 0, 0, DateTimeKind.Local);
+            var localEnd = localStart.AddDays(1).AddTicks(-1);
             
-            _availableSlotsListener = _firestoreService.ListenToAppointments(start, end, (slots) =>
+            var startUtc = new DateTimeOffset(localStart);
+            var endUtc = new DateTimeOffset(localEnd);
+            
+            _availableSlotsListener = _firestoreService.ListenToAppointments(startUtc, endUtc, (slots) =>
             {
                 var available = slots.Where(x => x.Status == AppointmentStatus.Available).OrderBy(x => x.StartTime).ToList();
                 AvailableSlots = new ObservableCollection<AppointmentSlot>(available);
@@ -102,10 +106,14 @@ namespace AcuPuntos.ViewModels
         {
             // Update available slots listener for the new date
             _availableSlotsListener?.Dispose();
-            var start = new DateTimeOffset(value.Date);
-            var end = new DateTimeOffset(value.Date.AddDays(1).AddTicks(-1));
+            // Create DateTimeOffset from local date (automatically converts to UTC internally)
+            var localStart = new DateTime(value.Year, value.Month, value.Day, 0, 0, 0, DateTimeKind.Local);
+            var localEnd = localStart.AddDays(1).AddTicks(-1);
             
-            _availableSlotsListener = _firestoreService.ListenToAppointments(start, end, (slots) =>
+            var startUtc = new DateTimeOffset(localStart);
+            var endUtc = new DateTimeOffset(localEnd);
+            
+            _availableSlotsListener = _firestoreService.ListenToAppointments(startUtc, endUtc, (slots) =>
             {
                 var available = slots.Where(x => x.Status == AppointmentStatus.Available).OrderBy(x => x.StartTime).ToList();
                 AvailableSlots = new ObservableCollection<AppointmentSlot>(available);
@@ -114,9 +122,14 @@ namespace AcuPuntos.ViewModels
 
         private async Task LoadAvailableSlotsAsync()
         {
-            var start = new DateTimeOffset(SelectedDate.Date);
-            var end = new DateTimeOffset(SelectedDate.Date.AddDays(1).AddTicks(-1));
-            var slots = await _firestoreService.GetAvailableSlotsAsync(start, end);
+            // Create DateTimeOffset from local date (automatically converts to UTC internally)
+            var localStart = new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, 0, 0, 0, DateTimeKind.Local);
+            var localEnd = localStart.AddDays(1).AddTicks(-1);
+            
+            var startUtc = new DateTimeOffset(localStart);
+            var endUtc = new DateTimeOffset(localEnd);
+
+            var slots = await _firestoreService.GetAvailableSlotsAsync(startUtc, endUtc);
             AvailableSlots = new ObservableCollection<AppointmentSlot>(slots);
         }
 

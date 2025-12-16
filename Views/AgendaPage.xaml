@@ -31,13 +31,21 @@
                     Text="⚙ Admin" />
             </Grid>
 
+
             <Border Padding="12" Style="{StaticResource CardFrame}">
-                <DatePicker
-                    Date="{Binding SelectedDate}"
-                    FontSize="16"
-                    Format="D"
-                    HorizontalOptions="Center"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                    <Label
+                        FontSize="18"
+                        Text="📅"
+                        VerticalOptions="Center" />
+                    <DatePicker
+                        Date="{Binding SelectedDate}"
+                        FontSize="16"
+                        Format="D"
+                        HorizontalOptions="Center"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
             </Border>
         </VerticalStackLayout>
 
@@ -58,15 +66,37 @@
                                 <Border Margin="0,6" Style="{StaticResource ListItemCard}">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                         <VerticalStackLayout Spacing="4">
+                                            <HorizontalStackLayout Spacing="6">
+                                                <Label
+                                                    FontSize="16"
+                                                    Text="🕐"
+                                                    VerticalOptions="Center" />
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding StartTime, StringFormat='{0:dd/MM HH:mm}'}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
+                                                    VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                            
                                             <Label
-                                                FontAttributes="Bold"
-                                                FontSize="16"
-                                                Text="{Binding StartTime, StringFormat='{0:dd/MM HH:mm}'}"
-                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
-                                            <Label
-                                                FontSize="12"
-                                                Text="{Binding StatusDisplay}"
-                                                TextColor="{StaticResource Gray500}" />
+                                                FontSize="14"
+                                                Text="{Binding DurationMinutes, StringFormat='Duración: {0} min'}"
+                                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                            
+                                            <!--  Status Chip  -->
+                                            <Border
+                                                BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                                HorizontalOptions="Start"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 10"
+                                                StrokeThickness="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="11"
+                                                    Text="{Binding StatusDisplay}"
+                                                    TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter='Text'}" />
+                                            </Border>
                                         </VerticalStackLayout>
 
                                         <Button
@@ -120,11 +150,22 @@
                                 <Border Margin="0,6" Style="{StaticResource ListItemCard}">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                         <VerticalStackLayout VerticalOptions="Center">
+                                            <HorizontalStackLayout Spacing="6">
+                                                <Label
+                                                    FontSize="18"
+                                                    Text="🕐"
+                                                    VerticalOptions="Center" />
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="18"
+                                                    Text="{Binding StartTimeLocal, StringFormat='{0:HH:mm}'}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                                    VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
                                             <Label
-                                                FontAttributes="Bold"
-                                                FontSize="18"
-                                                Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
-                                                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                                FontSize="14"
+                                                Text="{Binding DurationMinutes, StringFormat='Duración: {0} min'}"
+                                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
                                         </VerticalStackLayout>
 
                                         <Button

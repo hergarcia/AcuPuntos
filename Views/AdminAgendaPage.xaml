@@ -18,13 +18,20 @@
             Margin="15"
             Padding="12"
             Style="{StaticResource CardFrame}">
-            <DatePicker
-                Date="{Binding SelectedDate}"
-                FontSize="16"
-                Format="D"
-                HorizontalOptions="Start"
-                TextColor="{AppThemeBinding Light={StaticResource Gray900},
-                                            Dark={StaticResource White}}" />
+            <HorizontalStackLayout Spacing="8">
+                <Label
+                    FontSize="18"
+                    Text="📅"
+                    VerticalOptions="Center" />
+                <DatePicker
+                    Date="{Binding SelectedDate}"
+                    FontSize="16"
+                    Format="D"
+                    HorizontalOptions="Start"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                Dark={StaticResource White}}"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
         </Border>
 
         <ScrollView Grid.Row="1" Padding="15">
@@ -48,7 +55,7 @@
                             <VerticalStackLayout Grid.Column="0" Spacing="4">
                                 <Label
                                     FontSize="12"
-                                    Text="Hora del turno"
+                                    Text="🕐 Hora del turno"
                                     TextColor="{StaticResource Gray500}" />
                                 <TimePicker
                                     FontSize="16"
@@ -105,7 +112,7 @@
                                     Spacing="4">
                                     <Label
                                         FontSize="12"
-                                        Text="Hora inicio"
+                                        Text="🕐 Hora inicio"
                                         TextColor="{StaticResource Gray500}" />
                                     <TimePicker
                                         FontSize="16"
@@ -122,7 +129,7 @@
                                     Spacing="4">
                                     <Label
                                         FontSize="12"
-                                        Text="Hora fin"
+                                        Text="🕐 Hora fin"
                                         TextColor="{StaticResource Gray500}" />
                                     <TimePicker
                                         FontSize="16"
@@ -171,27 +178,161 @@
                                 <DataTemplate x:DataType="models:AppointmentSlot">
                                     <Border
                                         Margin="0,6"
+                                        Padding="16"
                                         Stroke="{StaticResource Warning}"
                                         StrokeThickness="2"
                                         Style="{StaticResource ListItemCard}">
                                         <Grid
-                                            ColumnDefinitions="Auto,*,Auto,Auto"
+                                            ColumnDefinitions="Auto,*"
                                             ColumnSpacing="12"
-                                            RowDefinitions="Auto,Auto"
+                                            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                             RowSpacing="8">
 
                                             <!--  User Photo  -->
                                             <Border
-                                                HeightRequest="40"
-                                                StrokeShape="RoundRectangle 20"
+                                                Grid.RowSpan="4"
+                                                HeightRequest="60"
+                                                StrokeShape="RoundRectangle 30"
                                                 StrokeThickness="0"
-                                                VerticalOptions="Center"
-                                                WidthRequest="40">
+                                                VerticalOptions="Start"
+                                                WidthRequest="60">
                                                 <Image Aspect="AspectFill" Source="{Binding User.PhotoUrl, TargetNullValue='user_placeholder.png'}" />
                                             </Border>
-                                            Text="{Binding RequestedModification, StringFormat='📝 Solicitud: {0}'}"
-                                            TextColor="{StaticResource Info}"
-                                            FontAttributes="Italic"/>
+
+                                            <!--  User Info  -->
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding User.DisplayName, TargetNullValue='Usuario desconocido'}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                Dark={StaticResource White}}" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding User.Email}"
+                                                    TextColor="{StaticResource Gray500}" />
+                                            </VerticalStackLayout>
+
+                                            <!--  Appointment Time  -->
+                                            <HorizontalStackLayout
+                                                Grid.Column="1"
+                                                Grid.Row="1"
+                                                Spacing="8">
+                                                <Label
+                                                    FontSize="14"
+                                                    Text="🕐"
+                                                    VerticalOptions="Center" />
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="14"
+                                                    Text="{Binding StartTime, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                                Dark={StaticResource PrimaryLight}}"
+                                                    VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+
+                                            <!--  Duration  -->
+                                            <Label
+                                                FontSize="12"
+                                                Grid.Column="1"
+                                                Grid.Row="2"
+                                                Text="{Binding DurationMinutes, StringFormat='⏱ Duración: {0} min'}"
+                                                TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                                            Dark={StaticResource Gray400}}" />
+
+                                            <!--  Status Chip  -->
+                                            <Border
+                                                BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                                Grid.Column="1"
+                                                Grid.Row="3"
+                                                HorizontalOptions="Start"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 12"
+                                                StrokeThickness="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="12"
+                                                    Text="{Binding StatusDisplay}"
+                                                    TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter='Text'}" />
+                                            </Border>
+
+                                            <!--  User Notes (if any)  -->
+                                            <Border
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                                                  Dark={StaticResource Gray800}}"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Row="4"
+                                                IsVisible="{Binding UserNotes, Converter={StaticResource StringToBoolConverter}}"
+                                                Padding="12"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="12"
+                                                        Text="Notas del usuario:"
+                                                        TextColor="{StaticResource Gray500}" />
+                                                    <Label
+                                                        FontSize="13"
+                                                        Text="{Binding UserNotes}"
+                                                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                    Dark={StaticResource White}}" />
+                                                </VerticalStackLayout>
+                                            </Border>
+
+                                            <!--  Requested Modification (if any)  -->
+                                            <Border
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource InfoLight},
+                                                                                  Dark={StaticResource InfoDark}}"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Row="5"
+                                                IsVisible="{Binding RequestedModification, Converter={StaticResource StringToBoolConverter}}"
+                                                Padding="12"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="12"
+                                                        Text="📝 Solicitud de modificación:"
+                                                        TextColor="Black" />
+                                                    <Label
+                                                        FontSize="13"
+                                                        Text="{Binding RequestedModification}"
+                                                        TextColor="Black" />
+                                                </VerticalStackLayout>
+                                            </Border>
+
+                                            <!--  Action Buttons  -->
+                                            <Grid
+                                                ColumnDefinitions="*,*"
+                                                ColumnSpacing="8"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Row="6"
+                                                Margin="0,8,0,0">
+                                                <!--  Approve Button  -->
+                                                <Button
+                                                    BackgroundColor="{StaticResource Success}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminAgendaViewModel}}, Path=ApproveRequestCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    CornerRadius="8"
+                                                    FontAttributes="Bold"
+                                                    FontSize="14"
+                                                    Text="✓ Aprobar"
+                                                    TextColor="White" />
+
+                                                <!--  Reject Button  -->
+                                                <Button
+                                                    BackgroundColor="{StaticResource Danger}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminAgendaViewModel}}, Path=RejectRequestCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    CornerRadius="8"
+                                                    FontAttributes="Bold"
+                                                    FontSize="14"
+                                                    Grid.Column="1"
+                                                    Text="✗ Rechazar"
+                                                    TextColor="White" />
+                                            </Grid>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -251,18 +392,50 @@
 
                                             <VerticalStackLayout
                                                 Grid.Column="1"
-                                                Spacing="2"
+                                                Spacing="4"
                                                 VerticalOptions="Center">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Label
+                                                        FontSize="18"
+                                                        Text="🕐"
+                                                        VerticalOptions="Center" />
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="18"
+                                                        Text="{Binding StartTimeLocal, StringFormat='{0:HH:mm}'}"
+                                                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                    Dark={StaticResource White}}"
+                                                        VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+
                                                 <Label
-                                                    FontAttributes="Bold"
-                                                    FontSize="18"
-                                                    Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
-                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
-                                                                                Dark={StaticResource White}}" />
+                                                    FontSize="14"
+                                                    Text="{Binding DurationMinutes, StringFormat='Duración: {0} min'}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                                                Dark={StaticResource Gray400}}" />
+
+                                                <!--  Status Chip (visible if slot has appointment)  -->
+                                                <Border
+                                                    BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                                    HorizontalOptions="Start"
+                                                    IsVisible="{Binding UserId, Converter={StaticResource StringToBoolConverter}}"
+                                                    Padding="8,4"
+                                                    StrokeShape="RoundRectangle 10"
+                                                    StrokeThickness="0">
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="11"
+                                                        Text="{Binding StatusDisplay}"
+                                                        TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter='Text'}" />
+                                                </Border>
+
+                                                <!--  Status Text (visible if no appointment)  -->
                                                 <Label
                                                     FontSize="12"
+                                                    IsVisible="{Binding UserId, Converter={StaticResource StringToBoolConverter}, ConverterParameter='Invert'}"
                                                     Text="{Binding StatusDisplay}"
                                                     TextColor="{StaticResource Gray500}" />
+
                                                 <Label
                                                     FontSize="12"
                                                     IsVisible="{Binding UserId, Converter={StaticResource StringToBoolConverter}}"

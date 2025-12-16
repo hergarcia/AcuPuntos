@@ -18,14 +18,39 @@ namespace AcuPuntos.Models
         [FirestoreDocumentId]
         public string? Id { get; set; }
 
+        private DateTimeOffset _startTime;
         [FirestoreProperty("startTime")]
-        public DateTimeOffset StartTime { get; set; }
+        public DateTimeOffset StartTime
+        {
+            get => _startTime;
+            set
+            {
+                if (SetProperty(ref _startTime, value))
+                {
+                    OnPropertyChanged(nameof(StartTimeLocal));
+                }
+            }
+        }
 
+        private DateTimeOffset _endTime;
         [FirestoreProperty("endTime")]
-        public DateTimeOffset EndTime { get; set; }
+        public DateTimeOffset EndTime
+        {
+            get => _endTime;
+            set
+            {
+                if (SetProperty(ref _endTime, value))
+                {
+                    OnPropertyChanged(nameof(EndTimeLocal));
+                }
+            }
+        }
 
         [FirestoreProperty("userId")]
         public string? UserId { get; set; }
+
+        [FirestoreProperty("durationMinutes")]
+        public int DurationMinutes { get; set; } = 60; // Duración por defecto: 60 minutos
 
         private string _statusString = AppointmentStatus.Available.ToString();
 
@@ -62,6 +87,9 @@ namespace AcuPuntos.Models
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         // Propiedades de UI (No mapeadas a Firestore)
+        public DateTime StartTimeLocal => StartTime.LocalDateTime;
+        public DateTime EndTimeLocal => EndTime.LocalDateTime;
+
         public string StatusDisplay
         {
             get
